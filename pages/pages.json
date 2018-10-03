@@ -1,0 +1,13 @@
+{
+  "pages": {
+    "wishlist": {
+      "path": "/_v/wishlist"
+    }
+  },
+  "extensions": {
+    "wishlist": {
+      "component": "index",
+      "props": {}
+    }
+  }
+} 
