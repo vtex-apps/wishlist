@@ -3,7 +3,7 @@ import { Button } from 'vtex.styleguide'
 import { isMobile } from 'react-device-detect'
 
 import Sidebar from './components/Sidebar'
-import Popup from './components/Popup'
+import BottomBar from './components/BottomBar'
 import WishListContent from './components/WishListContent'
 
 const MINIMUM_MAX_QUANTITY = 1
@@ -29,7 +29,6 @@ export class WishList extends Component {
   }
 
   handleClickButton = event => {
-    console.log('this.state.openContent => ', this.state.openContent)
     if (!this.props.hideContent) {
       this.setState({
         openContent: !this.state.openContent,
@@ -48,56 +47,40 @@ export class WishList extends Component {
 
   render() {
     const { openContent } = this.state
-    const {
-      type,
-      hideContent,
-    } = this.props
-
-    const quantity = 0
 
     const large =
-      (type && type === 'sidebar') ||
       isMobile ||
       (window && window.innerWidth <= 480)
 
-    return (
+    return openContent && (
       <div
-        className="vtex-WishList relative fr"
+        className="vtex-add-wishlist"
         ref={e => {
           this.iconRef = e
         }}
       >
-        <Button
-          variation="tertiary"
-          icon
-          onClick={event => this.handleClickButton(event)}
-        >
-          <div className="flex items-center">
-            <span className={`vtex-WishList__label dn-m db-l f6 pl6`}>
-              WishList
-            </span>
-          </div>
-        </Button>
-        {!hideContent &&
-          (large ? (
-            <Sidebar
-              onOutsideClick={this.handleUpdateContentVisibility}
-              isOpen={openContent}
-            >
-              <WishListContent large={large} />
-            </Sidebar>
-          ) : (
-            openContent && (
-              <Popup
-                onOutsideClick={this.handleUpdateContentVisibility}
-              >
-                <WishListContent large={large} />
-              </Popup>
-            )
-          ))}
+        <BottomBar onOutsideClick={this.handleUpdateContentVisibility}>
+          <WishListContent large={large} />
+        </BottomBar>
       </div>
     )
   }
 }
-
+// {!hideContent &&
+//   (large ? (
+//     <Sidebar
+//       onOutsideClick={this.handleUpdateContentVisibility}
+//       isOpen={openContent}
+//     >
+//       <WishListContent large={large} />
+//     </Sidebar>
+//   ) : (
+//     openContent && (
+//       <BottomBar
+//         onOutsideClick={this.handleUpdateContentVisibility}
+//       >
+//         <WishListContent large={large} />
+//       </BottomBar>
+//     )
+//   ))}
 export default WishList

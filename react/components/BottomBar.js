@@ -20,12 +20,10 @@ export default class Popup extends Component {
     return (
       <OutsideClickHandler onOutsideClick={onOutsideClick}>
         <div
-          className="vtex-minicart__box dn db-ns absolute z-max flex flex-colunm"
-          style={boxPositionStyle}
+          className="vtex-wishlist__box w-100 left-0 h-5 fixed bottom-0 z-9999"
         >
           <div className="shadow-3">
-            <div className="vtex-minicart__arrow-up absolute top-0 shadow-3 bg-white h1 w1 pa4 rotate-45" />
-            <div className="mt3 bg-white relative flex flex-column">{children}</div>
+            <div className="mt3 flex flex-column">{children}</div>
           </div>
         </div>
       </OutsideClickHandler>
