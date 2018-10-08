@@ -2,22 +2,32 @@ import React, { Component, Fragment } from 'react'
 import { injectIntl, intlShape } from 'react-intl'
 import classNames from 'classnames'
 
+import AddToList from './AddToList'
+import AddList from './AddList'
+
 /**
  * Minicart content component
  */
 class WishListContent extends Component {
+  state = {
+    addingList: false,
+  }
+
+  switchAddList = () => {
+    console.log('Called')
+    this.setState(({ addingList }) => ({ addingList: !addingList }))
+  }
+
   render() {
+    const { addingList } = this.state
+
     return (
-      <div className="flex flex-column tc bg-white f6 shadow-2">
-        <div className="w-100 h2 bb pv3 ttu dark-gray b--light-gray">
-          Adicionar a Lista
-        </div>
-        <div className="w-100 gray f5 pv5">
-          Você não possui listas salvas
-        </div>
-        <div className="w-100 pv3 dark-gray bg-light-gray pointer">
-          + criar nova lista
-        </div>
+      <div className="flex flex-column tc bg-white f6">
+        {addingList ? (
+          <AddList onFinishAdding={this.switchAddList} />
+        ) : (
+          <AddToList onAddList={this.switchAddList} />
+        )}
       </div>
     )
   }
