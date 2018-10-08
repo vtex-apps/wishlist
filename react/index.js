@@ -39,7 +39,7 @@ export class WishList extends Component {
 
   handleUpdateContentVisibility = () => {
     this.setState({
-      openContent: false,
+      openContent: true,
     })
   }
 
