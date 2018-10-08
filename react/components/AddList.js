@@ -3,7 +3,7 @@ import { injectIntl, intlShape } from 'react-intl'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
-import { IconCaretLeft, Input, Button } from 'vtex.styleguide'
+import { IconCaretLeft, Input, Button, Toggle } from 'vtex.styleguide'
 
 /**
  * Wishlist element to add product to a list
@@ -31,9 +31,24 @@ class AddList extends Component {
               label="NOME DA LISTA"
             />
           </div>
+          <div className="flex flex-row justify-around tl mt3">
+            <div className="flex flex-column">
+              <span className="gray mt2">Não Compartilhar</span>
+              <span className="light-gray">
+                Apenas você poderá ver essa lista
+              </span>
+            </div>
+            <div className="mt2">
+              <Toggle
+                checked={true}
+                size="small"
+                onChange={() => {}}
+              />
+            </div>
+          </div>
         </div>
-        <div className="flex flex-row items-center">
-          <Button className="flex" variation="primary" size="small">
+        <div className="flex flex-row justify-center pb3">
+          <Button variation="primary" size="small">
             Criar
           </Button>
         </div>
