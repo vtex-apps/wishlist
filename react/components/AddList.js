@@ -31,20 +31,18 @@ class AddList extends Component {
               label="NOME DA LISTA"
             />
           </div>
-          <div className="flex flex-row justify-around tl mt3">
+          <div className="flex flex-row justify-between tl mt5">
             <div className="flex flex-column">
               <span className="gray mt2">Não Compartilhar</span>
               <span className="light-gray">
                 Apenas você poderá ver essa lista
               </span>
             </div>
-            <div className="mt2">
-              <Toggle
+            <Toggle
                 checked={true}
                 size="small"
                 onChange={() => {}}
               />
-            </div>
           </div>
         </div>
         <div className="flex flex-row justify-center pb3">
