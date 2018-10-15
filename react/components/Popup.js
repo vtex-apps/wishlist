@@ -6,15 +6,15 @@ import { injectIntl, intlShape } from 'react-intl'
 import OutsideClickHandler from 'react-outside-click-handler'
 import { Transition } from 'react-spring'
 
-const OPEN_SIDEBAR_CLASS = 'vtex-minicart-sidebar-open'
+const OPEN_POPUP_CLASS = 'vtex-wishlist-popup-open'
 
-/* SideBar component */
-class Sidebar extends Component {
+/* Popup component */
+class Popup extends Component {
   updateComponent() {
     if (this.props.isOpen) {
-      document.body.classList.add(OPEN_SIDEBAR_CLASS)
+      document.body.classList.add(OPEN_POPUP_CLASS)
     } else {
-      document.body.classList.remove(OPEN_SIDEBAR_CLASS)
+      document.body.classList.remove(OPEN_POPUP_CLASS)
     }
   }
 
@@ -27,19 +27,19 @@ class Sidebar extends Component {
   }
 
   componentWillUnmount() {
-    document.body.classList.remove(OPEN_SIDEBAR_CLASS)
+    document.body.classList.remove(OPEN_POPUP_CLASS)
   }
 
-  renderSidebar = styles => {
+  renderPopup = styles => {
     const { onOutsideClick, intl } = this.props
 
     return (
       <OutsideClickHandler onOutsideClick={onOutsideClick}>
         <div
-          className="vtex-minicart__sidebar w-100 w-auto-ns h-100 fixed top-0 right-0 z-9999 bg-white shadow-2 flex flex-column"
+          className="vtex-minicart__Popup w-100 w-auto-ns h-100 fixed top-0 right-0 z-9999 bg-white shadow-2 flex flex-column"
           style={styles}
         >
-          <div className="vtex-minicart__sidebar-header pointer flex flex-row items-center pa5 h3 shadow-4 bg-white w-100 z-max">
+          <div className="vtex-minicart__Popup-header pointer flex flex-row items-center pa5 h3 shadow-4 bg-white w-100 z-max">
             <div
               className="mid-gray pa4 flex items-center"
               onClick={onOutsideClick}
@@ -67,22 +67,22 @@ class Sidebar extends Component {
         enter={{ transform: 'translateX(0%)' }}
         leave={{ transform: 'translateX(100%)' }}
       >
-        {isOpen ? [this.renderSidebar] : []}
+        {isOpen ? [this.renderPopup] : []}
       </Transition>,
       document.body
     )
   }
 }
 
-Sidebar.propTypes = {
+Popup.propTypes = {
   /* Internationalization */
   intl: intlShape.isRequired,
-  /* Set the sideBar visibility */
+  /* Set the Popup visibility */
   isOpen: PropTypes.bool,
-  /* Sidebar content */
+  /* Popup content */
   children: PropTypes.object.isRequired,
-  /* Function to be called when click in the close sidebar button or outside the sidebar */
+  /* Function to be called when click in the close Popup button or outside the Popup */
   onOutsideClick: PropTypes.func,
 }
 
-export default injectIntl(Sidebar)
+export default injectIntl(Popup)
