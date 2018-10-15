@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import { Button } from 'vtex.styleguide'
 import { isMobile } from 'react-device-detect'
 
-import Sidebar from './components/Sidebar'
 import BottomBar from './components/BottomBar'
 import WishListContent from './components/WishListContent'
 
@@ -68,12 +66,12 @@ export class WishList extends Component {
 }
 // {!hideContent &&
 //   (large ? (
-//     <Sidebar
+//     <Popup
 //       onOutsideClick={this.handleUpdateContentVisibility}
 //       isOpen={openContent}
 //     >
 //       <WishListContent large={large} />
-//     </Sidebar>
+//     </Popup>
 //   ) : (
 //     openContent && (
 //       <BottomBar
