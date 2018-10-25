@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, MouseEvent, createRef, ReactNode } from 'react'
 import { isMobile } from 'react-device-detect'
 
 import BottomBar from './components/BottomBar'
@@ -10,57 +10,64 @@ const DEFAULT_MAX_QUANTITY = 1
 const DEFAULT_LABEL_CLASSES = ''
 const DEFAULT_ICON_CLASSES = 'gray'
 
+interface WishListState {
+  openContent: boolean
+}
+
+interface WishListProps {
+  maxQuantity: number
+  labelClasses: string
+  iconClasses: string
+  hideContent: boolean
+}
+
 /**
  * WishList component
  */
-export class WishList extends Component {
+class WishList extends Component<WishListProps, WishListState> {
   // static propTypes = WishListPropTypes
 
-  static defaultProps = {
+  static defaultProps: WishListProps = {
     maxQuantity: DEFAULT_MAX_QUANTITY,
     labelClasses: DEFAULT_LABEL_CLASSES,
     iconClasses: DEFAULT_ICON_CLASSES,
+    hideContent: false
   }
 
-  state = {
-    openContent: true,
+  public state: WishListState = {
+    openContent: true
   }
 
-  handleClickButton = event => {
+  public iconRef = React.createRef<HTMLDivElement>()
+
+  public handleClickButton = (event: MouseEvent<HTMLElement>): void => {
     if (!this.props.hideContent) {
       this.setState({
-        openContent: !this.state.openContent,
+        openContent: !this.state.openContent
       })
     }
     event.persist()
   }
 
-  handleUpdateContentVisibility = () => {
+  public handleUpdateContentVisibility = (): void => {
     this.setState({
-      openContent: true,
+      openContent: true
     })
   }
 
-  handleItemAdd = () => {}
-
-  render() {
+  public render(): ReactNode {
     const { openContent } = this.state
 
-    const large =
-      isMobile ||
-      (window && window.innerWidth <= 480)
+    const large = isMobile || (window && window.innerWidth <= 480)
 
-    return openContent && (
-      <div
-        className="vtex-add-wishlist"
-        ref={e => {
-          this.iconRef = e
-        }}
-      >
-        <BottomBar onOutsideClick={this.handleUpdateContentVisibility}>
-          <WishListContent large={large} />
-        </BottomBar>
-      </div>
+    return (
+      openContent && (
+        <div className="vtex-add-wishlist" ref={this.iconRef}>
+          <BottomBar onOutsideClick={this.handleUpdateContentVisibility}>
+            <WishListContent large={large} />
+          </BottomBar>
+        </div>
+      )
     )
   }
 }

@@ -1,11 +1,10 @@
-import React, { Component, ReactNode } from 'react'
+import React, { Component, ReactNode, MouseEvent } from 'react'
 import PropTypes from 'prop-types'
 import OutsideClickHandler from 'react-outside-click-handler'
 
 interface PopupProps {
   children: ReactNode,
-  onOutsideClick: () => void,
-  buttonOffsetWidth: number
+  onOutsideClick: (e: MouseEvent<HTMLElement>) => void
 }
 
 /**
@@ -15,8 +14,6 @@ export default class Popup extends Component<PopupProps> {
   public static propTypes = {
     /* The pop-up's content */
     children: PropTypes.object,
-    /* Offset width to set the arrow position */
-    buttonOffsetWidth: PropTypes.number,
     /* Function to be called when click occurs outside the popup */
     onOutsideClick: PropTypes.func,
   }
@@ -25,12 +22,7 @@ export default class Popup extends Component<PopupProps> {
     const {
       children,
       onOutsideClick,
-      buttonOffsetWidth,
     } = this.props
-
-    const boxPositionStyle = {
-      right: buttonOffsetWidth && buttonOffsetWidth - 49,
-    }
 
     return (
       <OutsideClickHandler onOutsideClick={onOutsideClick}>
