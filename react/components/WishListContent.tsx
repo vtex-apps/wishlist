@@ -7,7 +7,9 @@ interface WishListContentState {
   addingList: boolean
 }
 
-interface WishListContentProps {}
+interface WishListContentProps {
+  large: boolean
+}
 
 /**
  * 
