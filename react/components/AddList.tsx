@@ -1,6 +1,6 @@
 import React, { Component, Fragment, ReactNode, FormEvent } from "react";
 import PropTypes from "prop-types";
-import { injectIntl, intlShape, FormattedMessage } from "react-intl";
+import { injectIntl, FormattedMessage } from "react-intl";
 
 import { IconCaretLeft, Input, Button, Toggle } from "vtex.styleguide";
 

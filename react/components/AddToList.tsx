@@ -1,5 +1,5 @@
 import React, { Component, Fragment, ReactNode } from 'react'
-import { injectIntl, intlShape } from 'react-intl'
+import { FormattedMessage } from 'react-intl'
 import PropTypes from 'prop-types'
 
 interface AddToListProps {
@@ -23,18 +23,18 @@ class AddToList extends Component<AddToListProps, AddToListState> {
     return (
       <Fragment>
         <div className="w-100 h2 bb pv3 ttu dark-gray b--light-gray">
-          Adicionar a Lista
+          <FormattedMessage id="wishlist-add-to-list"/>
         </div>
-        <div className="w-100 gray f5 pv5">Você não possui listas salvas</div>
+        <div className="w-100 gray f5 pv5"><FormattedMessage id="wishlist-no-lists"/></div>
         <div
           className="w-100 pv3 dark-gray bg-light-gray pointer"
           onClick={onAddList}
         >
-          + criar nova lista
+          <FormattedMessage id="wishlist-new-button"/>
         </div>
       </Fragment>
     )
   }
 }
 
-export default injectIntl(AddToList)
+export default AddToList
