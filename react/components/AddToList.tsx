@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 
 interface AddToListProps {
   onAddList: () => void
-  intl: any
 }
 
 interface AddToListState {}
