@@ -12,7 +12,7 @@ interface AddListProps {
 interface AddListState {
   listData: {
     name: string,
-    isPublic: boolean
+    isPrivate: boolean
   },
   isLoading: boolean,
   isValid: boolean
@@ -25,7 +25,7 @@ class AddList extends Component<AddListProps, AddListState> {
   public state: AddListState = {
     listData: {
       name: "",
-      isPublic: true
+      isPrivate: false
     },
     isLoading: false,
     isValid: false
@@ -33,6 +33,8 @@ class AddList extends Component<AddListProps, AddListState> {
 
   public onSubmit = (): void => {
     this.setState({ isLoading: true });
+    const { listData } = this.state
+    console.log('listData: ', listData)
   };
 
   public onChangeName = (event: FormEvent<HTMLInputElement>): void => {
@@ -45,10 +47,10 @@ class AddList extends Component<AddListProps, AddListState> {
   };
 
   public onChangePublic = (): void => {
-    const { isPublic } = this.state.listData;
+    const { isPrivate } = this.state.listData;
     this.setState(
       {
-        listData: { ...this.state.listData, isPublic: !isPublic }
+        listData: { ...this.state.listData, isPrivate: !isPrivate }
       },
       this.checkValidity
     );
@@ -56,7 +58,7 @@ class AddList extends Component<AddListProps, AddListState> {
 
   public checkValidity = (): void => {
     const { name } = this.state.listData;
-    this.setState({ isValid: name && name.length < 5 || false });
+    this.setState({ isValid: name && name.length > 6 || false });
   };
 
   public translateMessage = (id: string): string => this.props.intl.formatMessage({ id: id })
@@ -71,7 +73,7 @@ class AddList extends Component<AddListProps, AddListState> {
 
     const { isLoading, isValid } = this.state;
 
-    const { name, isPublic } = this.state.listData;
+    const { name, isPrivate } = this.state.listData;
 
     return (
       <Fragment>
@@ -101,7 +103,7 @@ class AddList extends Component<AddListProps, AddListState> {
             </div>
             <Toggle
               size="small"
-              checked={isPublic}
+              checked={isPrivate}
               onChange={this.onChangePublic}
             />
           </div>
@@ -112,6 +114,7 @@ class AddList extends Component<AddListProps, AddListState> {
             size="small"
             disabled={!isValid}
             isLoading={isLoading}
+            onClick={this.onSubmit}
           >
             <FormattedMessage id="wishlist-add-button" />
           </Button>
