@@ -10,6 +10,8 @@ const DEFAULT_MAX_QUANTITY = 1
 const DEFAULT_LABEL_CLASSES = ''
 const DEFAULT_ICON_CLASSES = 'gray'
 
+export const WISHLIST_STORAKE_KEY = 'vtexwishlists'
+
 interface WishListState {
   openContent: boolean
 }
