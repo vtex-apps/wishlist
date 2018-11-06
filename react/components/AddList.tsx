@@ -1,21 +1,14 @@
 import React, { Component, Fragment, ReactNode, FormEvent } from 'react'
 import PropTypes from 'prop-types'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { graphql, ChildProps, MutationFn, compose } from 'react-apollo'
+import { graphql, ChildProps } from 'react-apollo'
 import { IconCaretLeft, Input, Button, Toggle } from 'vtex.styleguide'
 import createList from '../graphql/mutations/createList.gql'
 
-interface Result {
-  createList: {
-    list: {
-      name: string
-      isPublic: boolean
-    }
-  }
-}
+const LIST_NAME_MINIMUM_LENGTH = 6
 
 interface AddListProps {
-  onFinishAdding: () => void
+  onFinishAdding: (id: string) => void
   intl: any
 }
 
@@ -28,8 +21,13 @@ interface AddListState {
   isValid: boolean
 }
 
-type Props = ChildProps<AddListProps, Result>
+type Response = {
+  id: string;
+};
 
+type Props = ChildProps<AddListProps, Response>
+
+const withCreateList = graphql<AddListProps, Response>(createList)
 /**
  * Wishlist element to add product to a list
  */
@@ -46,9 +44,9 @@ class AddList extends Component<Props, AddListState> {
   public onSubmit = async (): Promise<any> => {
     this.setState({ isLoading: true })
     const { listData } = this.state 
-    const response: any = await this.props.mutate({variables: { ...listData}})
-    this.setState({ isLoading: true })
-    this.props.onFinishAdding()
+    const { data: { createList: { id }}} = await this.props.mutate({variables: { ...listData}})
+    this.setState({ isLoading: false })
+    this.props.onFinishAdding(id)
   }
 
   public onChangeName = (event: FormEvent<HTMLInputElement>): void => {
@@ -72,7 +70,7 @@ class AddList extends Component<Props, AddListState> {
 
   public checkValidity = (): void => {
     const { name } = this.state.listData
-    this.setState({ isValid: (name && name.length > 6) || false })
+    this.setState({ isValid: (name && name.length >= LIST_NAME_MINIMUM_LENGTH) || false })
   }
 
   public translateMessage = (id: string): string =>
@@ -141,4 +139,4 @@ class AddList extends Component<Props, AddListState> {
   }
 }
 
-export default injectIntl(graphql<Props, any, any, Props>(createList)(AddList))
+export default injectIntl(withCreateList(AddList))
