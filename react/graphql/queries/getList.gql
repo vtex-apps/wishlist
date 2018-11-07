@@ -1,0 +1,5 @@
+query list($id: ID) {
+  list(id: $id) {
+    name
+  }
+}
