@@ -91,7 +91,7 @@ class AddList extends Component<Props, AddListState> {
     return (
       <Fragment>
         <div className="w-100 bb pv3 ttu dark-gray tc b--light-gray">
-          <div className="pointer h3 absolute nt1 ml3" onClick={onFinishAdding}>
+          <div className="pointer h3 absolute nt1 ml3" onClick={() => onFinishAdding()}>
             <IconCaretLeft size={17} />
           </div>
           <FormattedMessage id="wishlist-new" />

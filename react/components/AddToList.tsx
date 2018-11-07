@@ -2,11 +2,14 @@ import React, { Component, Fragment, ReactNode } from 'react'
 import { FormattedMessage } from 'react-intl'
 import PropTypes from 'prop-types'
 import { Spinner, IconVisibilityOn, IconPlusLines } from 'vtex.styleguide'
-
+import { withApollo } from 'react-apollo'
+import { ApolloClient } from 'apollo-client';
 import { WISHLIST_STORAKE_KEY } from '../'
+import getList from '../graphql/queries/getList.gql'
 
 interface AddToListProps {
-  onAddList: () => void
+  onAddList: () => void,
+  client: ApolloClient<any>
 }
 
 interface AddToListState {
@@ -19,7 +22,7 @@ interface AddToListState {
  */
 class AddToList extends Component<AddToListProps, AddToListState> {
   state = {
-    loading: false,
+    loading: true,
     loadedLists: [{ name: 'Viagem pra Parari', loading: false }]
   }
 
@@ -28,18 +31,20 @@ class AddToList extends Component<AddToListProps, AddToListState> {
   }
 
   public async componentDidMount() {
-    // const listsRefs = localStorage.getItem(WISHLIST_STORAKE_KEY)
-    // if (!listsRefs) {
-    //   return this.setState({loading: false})
-    // }
-    // const lists = await Promise.all(listsRefs.split(',').map((id: string) => {
-    //   return new Promise((resolve) => {
-    //     setTimeout(() => {
-    //       resolve({name: 'Lista bonita'})
-    //     }, 2000)
-    //   })
-    // }))
-    // this.setState({loadedLists: lists, loading: false})
+    const listsRefs = localStorage.getItem(WISHLIST_STORAKE_KEY)
+    if (!listsRefs) {
+      return this.setState({loading: false})
+    }
+    const { client } = this.props
+    const lists = await Promise.all(listsRefs.split(',').map((id: string) => {
+      return client.query({
+        query: getList,
+        variables: {
+          id
+        }
+      }).then(({data: { list }})=> ({...list, loading: false}))
+    }))
+    this.setState({loadedLists: lists, loading: false})
   }
 
   public setListLoading = (listIndex: number, value: boolean): void => {
@@ -56,12 +61,11 @@ class AddToList extends Component<AddToListProps, AddToListState> {
 
   public renderItems = (): ReactNode => {
     const { loadedLists: lists } = this.state
-    console.log(lists)
     if (!lists || !lists.length) return null
     return lists.map(
       ({ loading, name}, i): ReactNode => (
         <Fragment key={i}>
-          <div className="flex flex-row justify-between w-100 h2 mv2 hover" onClick={() => this.addItemToList(i)} >
+          <div className="flex flex-row justify-between w-100 h2 mv2 pointer" onClick={() => this.addItemToList(i)} >
             <div className="w-10 pt2">
               <IconVisibilityOn size={15} />
             </div>
@@ -111,4 +115,4 @@ class AddToList extends Component<AddToListProps, AddToListState> {
   }
 }
 
-export default AddToList
+export default withApollo<AddToListProps, {}>(AddToList)

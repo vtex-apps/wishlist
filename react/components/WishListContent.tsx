@@ -30,11 +30,12 @@ class WishListContent extends Component<
     this.setState(({ addingList }) => ({ addingList: !addingList }))
   }
 
-  public onFinishingAddingList = (id: string): void => {
+  public onFinishingAddingList = (id?: string): void => {
+    this.switchAddList()
+    if (!id) return;
     const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
     let newLists = lists ? lists + ',' + id : id
     localStorage.setItem(WISHLIST_STORAKE_KEY, newLists)
-    this.switchAddList()
   }
 
   render(): ReactNode {
