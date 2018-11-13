@@ -23,6 +23,7 @@ interface LoadedList {
 
 interface AddToListState {
   loading: boolean
+  disabled: boolean
   loadedLists: LoadedList[]
 }
 
@@ -32,6 +33,7 @@ interface AddToListState {
 class AddToList extends Component<AddToListProps, AddToListState> {
   public state: AddToListState = {
     loading: true,
+    disabled: false,
     loadedLists: []
   }
 
@@ -60,7 +62,7 @@ class AddToList extends Component<AddToListProps, AddToListState> {
     const { loadedLists } = this.state
     const refreshedLists = [...loadedLists]
     refreshedLists[listIndex].loading = value
-    this.setState({loadedLists: refreshedLists})
+    this.setState({loadedLists: refreshedLists, disabled: value})
   }
 
   public addItemToList = async (listIndex: number): Promise<any> => {
@@ -81,12 +83,12 @@ class AddToList extends Component<AddToListProps, AddToListState> {
   }
 
   public renderItems = (): ReactNode => {
-    const { loadedLists: lists } = this.state
+    const { loadedLists: lists, disabled } = this.state
     if (!lists || !lists.length) return null
     return lists.map(
       ({ loading, name}, i): ReactNode => (
         <Fragment key={i}>
-          <div className="flex flex-row justify-between w-100 h2 mv2 pointer" onClick={() => this.addItemToList(i)} >
+          <div className={`flex flex-row justify-between w-100 h2 mv2 ${!disabled && 'pointer'}`} onClick={() => !disabled && this.addItemToList(i)} >
             <div className="w-10 pt2">
               <IconVisibilityOn size={15} />
             </div>
