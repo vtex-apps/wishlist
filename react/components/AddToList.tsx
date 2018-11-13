@@ -6,10 +6,13 @@ import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client';
 import { WISHLIST_STORAKE_KEY } from '../'
 import getList from '../graphql/queries/getList.gql'
+import addToList from '../graphql/mutations/addToList.gql'
 
 interface AddToListProps {
   onAddList: () => void,
-  client: ApolloClient<any>
+  client: ApolloClient<any>,
+  skuId?: string
+  productId?: string
 }
 
 interface AddToListState {
@@ -23,7 +26,7 @@ interface AddToListState {
 class AddToList extends Component<AddToListProps, AddToListState> {
   state = {
     loading: true,
-    loadedLists: [{ name: 'Viagem pra Parari', loading: false }]
+    loadedLists: []
   }
 
   public static proptypes = {
@@ -31,6 +34,7 @@ class AddToList extends Component<AddToListProps, AddToListState> {
   }
 
   public async componentDidMount() {
+    console.log(this.props)
     const listsRefs = localStorage.getItem(WISHLIST_STORAKE_KEY)
     if (!listsRefs) {
       return this.setState({loading: false})
@@ -42,7 +46,7 @@ class AddToList extends Component<AddToListProps, AddToListState> {
         variables: {
           id
         }
-      }).then(({data: { list }})=> ({...list, loading: false}))
+      }).then(({data: { list }})=> ({...list, id, loading: false}))
     }))
     this.setState({loadedLists: lists, loading: false})
   }
@@ -54,9 +58,22 @@ class AddToList extends Component<AddToListProps, AddToListState> {
     this.setState({loadedLists: refreshedLists})
   }
 
-  public addItemToList = (listIndex: number): void => {
-    // do some async things here and whatnot...
+  public addItemToList = async (listIndex: number): Promise<any> => {
+    console.log(this.state.loadedLists)
+    const { id: listId } = this.state.loadedLists[listIndex]
+    const { client, skuId, productId, onAddList } = this.props  
     this.setListLoading(listIndex, true)
+    await client.mutate({
+      mutation: addToList,
+      variables: {
+        listId,
+        productId,
+        skuId,
+        quantity: 1   
+      }
+    })
+    this.setListLoading(listIndex, false)
+    onAddList()
   }
 
   public renderItems = (): ReactNode => {

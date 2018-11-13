@@ -1,0 +1,10 @@
+mutation addListItem($listId: ID!, $productId: ID!, $skuId: ID!, $quantity: Int) {
+    addListItem(listItem: {
+        listId: $listId
+        productId: $productId
+        skuId: $skuId
+        quantity: $quantity   
+    }) {
+        id
+    }
+}

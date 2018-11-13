@@ -10,8 +10,9 @@ interface WishListContentState {
 
 interface WishListContentProps {
   large: boolean
+  skuId?: string
+  productId?: string
 }
-
 
 /**
  *
@@ -21,7 +22,6 @@ class WishListContent extends Component<
   WishListContentProps,
   WishListContentState
 > {
-
   public state = {
     addingList: false
   }
@@ -32,7 +32,7 @@ class WishListContent extends Component<
 
   public onFinishingAddingList = (id?: string): void => {
     this.switchAddList()
-    if (!id) return;
+    if (!id) return
     const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
     let newLists = lists ? lists + ',' + id : id
     localStorage.setItem(WISHLIST_STORAKE_KEY, newLists)
@@ -40,6 +40,7 @@ class WishListContent extends Component<
 
   render(): ReactNode {
     const { addingList } = this.state
+    const { skuId, productId } = this.props
 
     return (
       <Fragment>
@@ -48,7 +49,11 @@ class WishListContent extends Component<
           {addingList ? (
             <AddList onFinishAdding={this.onFinishingAddingList} />
           ) : (
-            <AddToList onAddList={this.switchAddList} />
+            <AddToList
+              onAddList={this.switchAddList}
+              skuId={skuId}
+              productId={productId}
+            />
           )}
         </div>
       </Fragment>
