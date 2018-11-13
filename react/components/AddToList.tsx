@@ -15,16 +15,22 @@ interface AddToListProps {
   productId?: string
 }
 
+interface LoadedList {
+  id: string
+  name: string
+  loading: boolean
+}
+
 interface AddToListState {
   loading: boolean
-  loadedLists: Array<any>
+  loadedLists: LoadedList[]
 }
 
 /**
  * Wishlist element to add a new list
  */
 class AddToList extends Component<AddToListProps, AddToListState> {
-  state = {
+  public state: AddToListState = {
     loading: true,
     loadedLists: []
   }
@@ -34,7 +40,6 @@ class AddToList extends Component<AddToListProps, AddToListState> {
   }
 
   public async componentDidMount() {
-    console.log(this.props)
     const listsRefs = localStorage.getItem(WISHLIST_STORAKE_KEY)
     if (!listsRefs) {
       return this.setState({loading: false})
@@ -59,7 +64,6 @@ class AddToList extends Component<AddToListProps, AddToListState> {
   }
 
   public addItemToList = async (listIndex: number): Promise<any> => {
-    console.log(this.state.loadedLists)
     const { id: listId } = this.state.loadedLists[listIndex]
     const { client, skuId, productId, onAddList } = this.props  
     this.setListLoading(listIndex, true)
