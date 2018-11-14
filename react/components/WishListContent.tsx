@@ -12,6 +12,7 @@ interface WishListContentProps {
   large: boolean
   skuId?: string
   productId?: string
+  onSuccess: () => void
 }
 
 /**
@@ -37,14 +38,10 @@ class WishListContent extends Component<
     let newLists = lists ? lists + ',' + id : id
     localStorage.setItem(WISHLIST_STORAKE_KEY, newLists)
   }
-
-  public onFinishingAddingToList = (): void => {
-
-  }
-
+  
   render(): ReactNode {
     const { addingList } = this.state
-    const { skuId, productId } = this.props
+    const { skuId, productId, onSuccess } = this.props
 
     return (
       <Fragment>
@@ -54,7 +51,7 @@ class WishListContent extends Component<
             <AddList onFinishAdding={this.onFinishingAddingList} />
           ) : (
             <AddToList
-              onAddList={this.onFinishingAddingToList}
+              onAddList={onSuccess}
               skuId={skuId}
               productId={productId}
             />
