@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom'
 import { isMobile } from 'react-device-detect'
 import Heart from '../Heart'
 import WishListContent from '../WishListContent'
+import SnackBar from './../SnackBar'
 
 interface AddProductState {
   isOpened: boolean
+  snackMessage?: string
 }
 
 interface AddProductProps {
@@ -18,7 +20,8 @@ interface AddProductProps {
  */
 class AddProduct extends Component<AddProductProps, AddProductState> {
   public state: AddProductState = {
-    isOpened: false
+    isOpened: false,
+    snackMessage: null
   }
 
   public toggleMode = (): void => {
@@ -27,8 +30,14 @@ class AddProduct extends Component<AddProductProps, AddProductState> {
     })
   }
 
+  public onSuccess = (): void => {
+    this.toggleMode()
+    this.setState({snackMessage: 'Produto adicionado com sucesso'})
+    setTimeout(() => this.setState({snackMessage: null}), 2000)
+  }
+
   public render(): ReactNode {
-    const { isOpened } = this.state
+    const { isOpened, snackMessage } = this.state
     const { skuId, productId } = this.props
 
     const large = isMobile || (window && window.innerWidth <= 480)
@@ -42,6 +51,14 @@ class AddProduct extends Component<AddProductProps, AddProductState> {
               large={large}
               skuId={skuId}
               productId={productId}
+              onSuccess={this.onSuccess}
+            />,
+            document.body
+          )}
+        {snackMessage &&
+          ReactDOM.createPortal(
+            <SnackBar
+              text="Sucesso demais, parça"
             />,
             document.body
           )}
