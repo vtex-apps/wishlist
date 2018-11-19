@@ -73,21 +73,4 @@ class WishList extends Component<WishListProps, WishListState> {
     )
   }
 }
-// {!hideContent &&
-//   (large ? (
-//     <Popup
-//       onOutsideClick={this.handleUpdateContentVisibility}
-//       isOpen={openContent}
-//     >
-//       <WishListContent large={large} />
-//     </Popup>
-//   ) : (
-//     openContent && (
-//       <BottomBar
-//         onOutsideClick={this.handleUpdateContentVisibility}
-//       >
-//         <WishListContent large={large} />
-//       </BottomBar>
-//     )
-//   ))}
 export default WishList
