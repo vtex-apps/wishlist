@@ -52,6 +52,7 @@ class AddProduct extends Component<AddProductProps, AddProductState> {
               skuId={skuId}
               productId={productId}
               onSuccess={this.onSuccess}
+              onClose={this.toggleMode}
             />,
             document.body
           )}
