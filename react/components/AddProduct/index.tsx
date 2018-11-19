@@ -29,19 +29,19 @@ class AddProduct extends Component<AddProductProps, AddProductState> {
       isOpened: !this.state.isOpened
     })
   }
-
   public onSuccess = (): void => {
     this.toggleMode()
-    this.setState({snackMessage: 'Produto adicionado com sucesso'})
-    setTimeout(() => this.setState({snackMessage: null}), 2000)
+    this.setState({ snackMessage: 'Produto adicionado com sucesso' })
+    setTimeout(() => this.setState({ snackMessage: null }), 2000)
   }
 
   public render(): ReactNode {
-    const { isOpened, snackMessage } = this.state
+    const { isOpened, snackMessage, snackNode } = this.state
     const { skuId, productId } = this.props
 
     const large = isMobile || (window && window.innerWidth <= 480)
 
+    if (typeof document === 'undefined') return null
     return (
       <Fragment>
         <Heart onClick={this.toggleMode} />
@@ -55,13 +55,7 @@ class AddProduct extends Component<AddProductProps, AddProductState> {
             />,
             document.body
           )}
-        {snackMessage &&
-          ReactDOM.createPortal(
-            <SnackBar
-              text="Sucesso demais, parça"
-            />,
-            document.body
-          )}
+        {snackMessage && ReactDOM.createPortal(<SnackBar text={snackMessage} />, document.body)}
       </Fragment>
     )
   }

@@ -10,6 +10,7 @@ import addToList from '../graphql/mutations/addToList.gql'
 
 interface AddToListProps {
   onAddList: () => void,
+  onSuccess: () => void,
   client: ApolloClient<any>,
   skuId?: string
   productId?: string
@@ -67,7 +68,7 @@ class AddToList extends Component<AddToListProps, AddToListState> {
 
   public addItemToList = async (listIndex: number): Promise<any> => {
     const { id: listId } = this.state.loadedLists[listIndex]
-    const { client, skuId, productId, onAddList } = this.props  
+    const { client, skuId, productId, onSuccess } = this.props  
     this.setListLoading(listIndex, true)
     await client.mutate({
       mutation: addToList,
@@ -79,7 +80,7 @@ class AddToList extends Component<AddToListProps, AddToListState> {
       }
     })
     this.setListLoading(listIndex, false)
-    onAddList()
+    onSuccess()
   }
 
   public renderItems = (): ReactNode => {
@@ -126,7 +127,7 @@ class AddToList extends Component<AddToListProps, AddToListState> {
             </Fragment>
           )}
         {!loading &&
-          loadedLists.length && <Fragment>{this.renderItems()}</Fragment>}
+          !!loadedLists.length && <Fragment>{this.renderItems()}</Fragment>}
         <div
           className="w-100 pv3 dark-gray bg-light-gray pointer"
           onClick={onAddList}

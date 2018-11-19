@@ -32,13 +32,14 @@ class WishListContent extends Component<
   }
 
   public onFinishingAddingList = (id?: string): void => {
+    if (id) {
+      const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
+      let newLists = lists ? lists + ',' + id : id
+      localStorage.setItem(WISHLIST_STORAKE_KEY, newLists)
+    }
     this.switchAddList()
-    if (!id) return
-    const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
-    let newLists = lists ? lists + ',' + id : id
-    localStorage.setItem(WISHLIST_STORAKE_KEY, newLists)
   }
-  
+
   render(): ReactNode {
     const { addingList } = this.state
     const { skuId, productId, onSuccess } = this.props
@@ -51,7 +52,8 @@ class WishListContent extends Component<
             <AddList onFinishAdding={this.onFinishingAddingList} />
           ) : (
             <AddToList
-              onAddList={onSuccess}
+              onAddList={this.switchAddList}
+              onSuccess={onSuccess}
               skuId={skuId}
               productId={productId}
             />

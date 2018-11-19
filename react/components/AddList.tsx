@@ -8,7 +8,7 @@ import createList from '../graphql/mutations/createList.gql'
 const LIST_NAME_MINIMUM_LENGTH = 6
 
 interface AddListProps {
-  onFinishAdding: (id: string) => void
+  onFinishAdding: (id?: string) => void
   intl: any
 }
 
