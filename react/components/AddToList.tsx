@@ -89,12 +89,12 @@ class AddToList extends Component<AddToListProps, AddToListState> {
     return lists.map(
       ({ loading, name}, i): ReactNode => (
         <Fragment key={i}>
-          <div className={`flex flex-row justify-between w-100 h2 mv2 ${!disabled && 'pointer'}`} onClick={() => !disabled && this.addItemToList(i)} >
+          <div className={`flex flex-row justify-between w-100 h2 pt2 ${disabled ? 'bg-muted-3' : 'pointer'}`} onClick={() => !disabled && this.addItemToList(i)} >
             <div className="w-10 pt2">
               <IconVisibilityOn size={15} />
             </div>
             <div className="w-80 tl ttu mt2">{name}</div>
-            <div className="w-10 pt2 pointer">
+            <div className={`w-10 pt2 ${!disabled && 'pointer'}`}>
               {loading && <Spinner color="currentColor" size={15} />}
               {!loading && <IconPlusLines size={15} />}
             </div>
