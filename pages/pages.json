@@ -1,13 +1,12 @@
 {
-  "pages": {
-    "wishlist": {
-      "path": "/_v/wishlist"
+  "routes": {
+    "store/wishlist": {
+      "path": "/wishlist"
     }
   },
   "extensions": {
-    "wishlist": {
-      "component": "index",
-      "props": {}
+    "store/wishlist": {
+      "component": "Lists"
     }
   }
 } 
