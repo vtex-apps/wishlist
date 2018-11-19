@@ -22,10 +22,6 @@
  # Folder config file
  Desktop.ini
 
- # Recycle Bin used on file shares
- $RECYCLE.BIN/
-
- # App specific
  node_modules/
  docs/_book/
  .tmp
