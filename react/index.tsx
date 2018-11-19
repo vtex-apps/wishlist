@@ -27,7 +27,6 @@ interface WishListProps {
  * WishList component
  */
 class WishList extends Component<WishListProps, WishListState> {
-  // static propTypes = WishListPropTypes
 
   static defaultProps: WishListProps = {
     maxQuantity: DEFAULT_MAX_QUANTITY,
