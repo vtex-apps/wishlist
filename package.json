@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "apollo-client": "^2.4.7",
     "react-apollo": "^2.2.4",
     "react-dom": "^16.6.0"
   },
