@@ -10,7 +10,7 @@ import React, { Component, MouseEvent, createRef, ReactNode } from 'react'
 // const DEFAULT_LABEL_CLASSES = ''
 // const DEFAULT_ICON_CLASSES = 'gray'
 
-// export const WISHLIST_STORAKE_KEY = 'vtexwishlists'
+export const WISHLIST_STORAKE_KEY = 'vtexwishlists'
 
 // interface WishListState {
 //   openContent: boolean

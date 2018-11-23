@@ -1,68 +1,35 @@
-import React, { Component, ReactNode, Fragment } from 'react'
+import React, { Component, ReactNode } from 'react'
+import ListItem from './ListItem'
+import { WISHLIST_STORAKE_KEY } from '../../'
+import withUserLists from './../withUserLists'
 
-import AddToList from './AddToList'
-import AddList from './AddList'
-import { WISHLIST_STORAKE_KEY } from '../'
-
-interface WishListContentState {
-  addingList: boolean
+interface ListsStates {
+  listSelected: null
 }
 
-interface WishListContentProps {
-  large: boolean
-  skuId?: string
-  productId?: string
-  onSuccess: () => void
-  onClose: () => void
+interface ListsProps {
+  lists: any[]
+  loadingLists: boolean
 }
 
-/**
- *
- * Minicart content component
- */
-class Lists extends Component<
-  WishListContentProps,
-  WishListContentState
-> {
-  public state = {
-    addingList: false
-  }
-
-  public switchAddList = (): void => {
-    this.setState(({ addingList }) => ({ addingList: !addingList }))
-  }
-
-  public onFinishingAddingList = (id?: string): void => {
-    if (id) {
-      const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
-      let newLists = lists ? lists + ',' + id : id
-      localStorage.setItem(WISHLIST_STORAKE_KEY, newLists)
-    }
-    this.switchAddList()
-  }
-
-  render(): ReactNode {
-    const { addingList } = this.state
-    const { skuId, productId, onSuccess, onClose} = this.props
-
+class Lists extends Component<ListsProps, ListsStates> {
+  render = (): ReactNode => {
+    const { loadingLists, lists = [] } = this.props
     return (
-      <Fragment>
-        <div className="vtex-wishlist__overlay fixed w-100 h-100 top-0 left-0 right-0 bottom-0 bg-black-50 z-9999" onClick={onClose}/>
-        <div className="vtex-wishlist__box flex flex-column tc bg-white fixed w-100 left-0 bottom-0 z-max ">
-          {addingList ? (
-            <AddList onFinishAdding={this.onFinishingAddingList} />
-          ) : (
-            <AddToList
-              onAddList={this.switchAddList}
-              onSuccess={onSuccess}
-              skuId={skuId}
-              productId={productId}
-            />
-          )}
+      <div className="w-100">
+        <div className="w-100 tc ttu f4 pv4 bb c-muted-1 b--muted-2">
+          Minhas Listas
         </div>
-      </Fragment>
+        <ListItem key={'as'} name={'lucis'} onClick={() => {}} isPublic />
+        {loadingLists && 'Carregando...'}
+        {/* {!loadingLists &&
+          lists.map(({ name, id }, key) => (
+            <ListItem key={key} name={name} onClick={() => {}} isPublic />
+          ))} */}
+      </div>
     )
   }
 }
-
+// export default withUserLists(Lists)
 export default Lists
+
