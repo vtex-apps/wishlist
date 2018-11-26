@@ -20,6 +20,7 @@
   "dependencies": {
     "vtex.store-components": "2.x",
     "vtex.styleguide": "7.x",
-    "vtex.store-graphql": "2.x"
+    "vtex.store-graphql": "2.x",
+    "vtex.product-summary": "1.x"
   }
 }

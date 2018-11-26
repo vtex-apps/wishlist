@@ -1,12 +1,21 @@
 {
   "routes": {
-    "store/wishlist": {
-      "path": "/wishlist"
+    "store/lists": {
+      "path": "/lists"
+    },
+    "store/listDetail": {
+      "path": "/listDetail/:listId"
     }
   },
   "extensions": {
-    "store/wishlist": {
+    "store/lists": {
       "component": "Lists"
+    },
+    "store/listDetail": {
+      "component": "ListDetail"
+    },
+    "store/listDetail/product-sumary": {
+      "component": "vtex.product-summary/index"
     }
   }
 } 
