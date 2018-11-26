@@ -52,6 +52,6 @@ const withUserListsProps = <P extends object>(
     }
   }
 
-export default withApollo<WithUserListsProps, {}>(withUserListsProps)
+export default withApollo<WithUserListsProps, {any}>(withUserListsProps)
 // export default withUserListsProps
 
