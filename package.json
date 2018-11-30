@@ -6,6 +6,7 @@
   },
   "devDependencies": {
     "@types/graphql": "^14.0.3",
+    "@types/ramda": "^0.25.42",
     "@types/react-dom": "^16.0.9",
     "graphql": "^14.0.2",
     "graphql-tag": "^2.10.0"

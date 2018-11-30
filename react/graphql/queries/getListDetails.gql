@@ -16,6 +16,7 @@ query getListDetails($id: ID) {
               ListPrice
               Price
             }
+            sellerId
           }
         }
       }

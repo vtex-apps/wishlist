@@ -3,22 +3,29 @@ import { withRuntimeContext, ExtensionPoint } from 'render'
 import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
 import { FormattedMessage } from 'react-intl'
+import { head, map, path, pick, prop } from 'ramda'
+import { Button } from 'vtex.styleguide'
+import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
+
 import getListDetails from '../../graphql/queries/getListDetails.gql'
 
 interface ListDetailState {
   list: any
   loading: boolean
+  isAddingToCart: boolean
 }
 
 interface ListDetailProps {
   client: ApolloClient<any>
-  runtime: any
+  runtime: any,
+  orderFormContext: any,
 }
 
 class ListDetail extends Component<ListDetailProps, ListDetailState> {
   state: ListDetailState = {
     loading: true,
-    list: null
+    list: null,
+    isAddingToCart: false
   }
 
   public async componentDidMount() {
@@ -41,13 +48,9 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
     this.setState({ list, loading: false })
   }
 
-  createProductShapeFromItem = ({ product: {
-    productName,
-    linkText,
-    items
-  }}: any) => {
-    console.log('name =>', productName)
-    console.log('sku =>', items)
+  createProductShapeFromItem = ({
+    product: { productName, linkText, items }
+  }: any) => {
     const sku = items[0]
     return {
       productName,
@@ -61,11 +64,46 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
     }
   }
 
+  createItemShapeFromItem = ({
+    product: { items }
+  }: any) => {
+    const sku = items[0]
+    return {
+      quantity: 1,
+      seller: Number(sku.sellers[0].sellerId),
+      id: Number(sku.itemId)
+    }
+  }
+
+  public addItensToCart = () => {
+    const { orderFormContext } = this.props
+
+    const { list: { items }} = this.state
+
+    const minicartButton = document.querySelector('.vtex-minicart .vtex-button')
+
+    this.setState({ isAddingToCart: true })
+  //   id: Int
+  // index: Int
+  // quantity: Int
+  // seller: Int
+    orderFormContext
+      .addItem({
+        variables: {
+          orderFormId: path(['orderForm', 'orderFormId'], orderFormContext),
+          items: map(
+            this.createItemShapeFromItem,
+            items)
+        }
+      })
+      .then(() => {
+        this.setState({ isAddingToCart: false })
+        orderFormContext.refetch().then(() => minicartButton && (minicartButton as any).click())
+      })
+  }
+
   render = (): ReactNode => {
-    const {
-      loading,
-      list
-    } = this.state
+    const { loading, list, isAddingToCart } = this.state
 
     if (loading) return 'Carregando...'
 
@@ -90,13 +128,24 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
                 showBadge={false}
                 showInstallments={false}
                 showLabels={false}
-                actionOnClick={() => console.log('clicou')}
               />
             </Fragment>
           ))}
+        <div>
+          <div
+            className="flex justify-between items-center ph3"
+          >
+            <div className="c-muted-1">Total: R$ 1.000</div>
+            <div>
+              <Button variation="primary" size="small" onClick={this.addItensToCart} disabled={isAddingToCart}>
+                <FormattedMessage id="wishlist-buy-all" />
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
 }
 
-export default withRuntimeContext(withApollo<ListDetailProps, {}>(ListDetail))
+export default orderFormConsumer(withRuntimeContext(withApollo<ListDetailProps, {}>(ListDetail)))
