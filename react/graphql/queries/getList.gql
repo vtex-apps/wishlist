@@ -1,5 +1,15 @@
-query list($id: ID) {
+query getList($id: ID){
   list(id: $id) {
     name
+    isPublic
+    owner
+    items {
+      product{
+        productId
+        items {
+          itemId
+        }
+      }
+    }
   }
 }

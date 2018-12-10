@@ -44,6 +44,7 @@ class AddList extends Component<Props, AddListState> {
   public onSubmit = async (): Promise<any> => {
     this.setState({ isLoading: true })
     const { listData } = this.state 
+    console.log('listData', listData)
     const { data: { createList: { id }}} = await this.props.mutate({variables: { ...listData}})
     this.setState({ isLoading: false })
     this.props.onFinishAdding(id)

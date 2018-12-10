@@ -1,0 +1,5 @@
+mutation updateList($id: ID!, $list: ListInput) {
+    updateList(list: $list, id: $id) {
+        id
+    }
+}
