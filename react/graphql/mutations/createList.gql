@@ -2,6 +2,7 @@ mutation createList($name: String!, $isPublic: Boolean) {
     createList(list: {
         name: $name,
         isPublic: $isPublic
+        items: []
     }) {
         id
     }

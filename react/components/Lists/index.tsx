@@ -3,6 +3,8 @@ import ListItem from './ListItem'
 import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
 import { FormattedMessage } from 'react-intl'
+import { Spinner } from 'vtex.styleguide'
+import { withRuntimeContext } from 'render'
 import getList from '../../graphql/queries/getList.gql'
 import { WISHLIST_STORAKE_KEY } from '../../'
 
@@ -21,8 +23,8 @@ interface ListsProps {
 class Lists extends Component<ListsProps, ListsStates> {
   state: ListsStates = {
     lists: [],
-    loading: false,
-    listSelected: null
+    loading: true,
+    listSelected: null,
   }
 
   public async componentDidMount() {
@@ -37,8 +39,8 @@ class Lists extends Component<ListsProps, ListsStates> {
           .query({
             query: getList,
             variables: {
-              id
-            }
+              id,
+            },
           })
           .then(({ data: { list } }) => ({ ...list, id, loading: false }))
       })
@@ -46,17 +48,37 @@ class Lists extends Component<ListsProps, ListsStates> {
     this.setState({ lists, loading: false })
   }
 
+  public goToListDetail = (id: string) => {
+    const {
+      runtime: { navigate },
+    } = this.props
+    navigate({ to: `/listDetail/${id}` })
+  }
+
   render = (): ReactNode => {
     const { loading, lists = [] } = this.state
     return (
       <div className="w-100">
         <div className="w-100 tc ttu f4 pv4 bb c-muted-1 b--muted-2">
-        <FormattedMessage id="wishlist-my-lists" />
+          <FormattedMessage id="wishlist-my-lists" />
         </div>
-        {loading && 'Carregando...'}
+        {loading && (
+          <div className="flex justify-center pt4">
+            <span className="dib c-muted-1">
+              <Spinner color="currentColor" size={20} />
+            </span>
+          </div>
+        )}
         {!loading &&
-          lists.map(({ name, id }, key) => (
-            <ListItem key={key} name={name} onClick={() => {}} isPublic />
+          lists.map(({ name, id, isPublic }, key) => (
+            <ListItem
+              key={key}
+              name={name}
+              onClick={() => {
+                this.goToListDetail(id)
+              }}
+              isPublic={isPublic}
+            />
           ))}
         {!loading && !lists.length && (
           <div className="tc pv4 c-muted-2">
@@ -68,4 +90,4 @@ class Lists extends Component<ListsProps, ListsStates> {
   }
 }
 
-export default withApollo<ListsProps, {}>(Lists)
+export default withRuntimeContext(withApollo<ListsProps, {}>(Lists))
