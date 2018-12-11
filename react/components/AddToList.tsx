@@ -71,7 +71,7 @@ class AddToList extends Component<AddToListProps, AddToListState> {
     this.setState({ loadedLists: refreshedLists, disabled: value });
   };
 
-  public addItemToList = async (listIndex: number): Promise<any> => {
+  public addItemToList = async (listIndex: number): Promise<void> => {
     const list = this.state.loadedLists[listIndex];
     const { client, skuId, productId, onSuccess } = this.props;
     this.setListLoading(listIndex, true);
