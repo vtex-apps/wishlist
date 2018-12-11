@@ -7,12 +7,12 @@ import createList from '../graphql/mutations/createList.gql'
 
 const LIST_NAME_MINIMUM_LENGTH = 6
 
-interface AddListProps {
+interface CreateListProps {
   onFinishAdding: (id?: string) => void
   intl: any
 }
 
-interface AddListState {
+interface CreateListState {
   listData: {
     name: string
     isPublic: boolean
@@ -25,14 +25,14 @@ type Response = {
   id: string;
 };
 
-type Props = ChildProps<AddListProps, Response>
+type Props = ChildProps<CreateListProps, Response>
 
-const withCreateList = graphql<AddListProps, Response>(createList)
+const withCreateList = graphql<CreateListProps, Response>(createList)
 /**
  * Wishlist element to add product to a list
  */
-class AddList extends Component<Props, AddListState> {
-  public state: AddListState = {
+class CreateList extends Component<Props, CreateListState> {
+  public state: CreateListState = {
     listData: {
       name: '',
       isPublic: true
@@ -44,8 +44,7 @@ class AddList extends Component<Props, AddListState> {
   public onSubmit = async (): Promise<any> => {
     this.setState({ isLoading: true })
     const { listData } = this.state 
-    console.log('listData', listData)
-    const { data: { createList: { id }}} = await this.props.mutate({variables: { ...listData}})
+    const { data: { createList: { id }}} = await this.props.mutate({variables: listData})
     this.setState({ isLoading: false })
     this.props.onFinishAdding(id)
   }
@@ -85,14 +84,12 @@ class AddList extends Component<Props, AddListState> {
   public render() {
     const { onFinishAdding } = this.props
 
-    const { isLoading, isValid } = this.state
-
-    const { name, isPublic } = this.state.listData
+    const { isLoading, isValid, listData: { name, isPublic } } = this.state
 
     return (
       <Fragment>
         <div className="w-100 bb pv3 ttu dark-gray tc b--light-gray">
-          <div className="pointer h3 absolute nt1 ml3" onClick={() => onFinishAdding()}>
+          <div className="pointer h3 absolute nt1 ml3" onClick={onFinishAdding}>
             <IconCaretLeft size={17} />
           </div>
           <FormattedMessage id="wishlist-new" />
@@ -140,4 +137,4 @@ class AddList extends Component<Props, AddListState> {
   }
 }
 
-export default injectIntl(withCreateList(AddList))
+export default injectIntl(withCreateList(CreateList))

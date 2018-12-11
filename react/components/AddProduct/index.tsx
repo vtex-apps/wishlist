@@ -41,7 +41,6 @@ class AddProduct extends Component<AddProductProps, AddProductState> {
 
     const large = isMobile || (window && window.innerWidth <= 480)
 
-    if (typeof document === 'undefined') return null
     return (
       <Fragment>
         <Heart onClick={this.toggleMode} />
