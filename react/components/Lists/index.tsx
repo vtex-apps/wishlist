@@ -4,7 +4,7 @@ import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
 import { FormattedMessage } from 'react-intl'
 import { Spinner } from 'vtex.styleguide'
-import { withRuntimeContext } from 'render'
+import { withRuntimeContext } from 'vtex.render-runtime'
 import getList from '../../graphql/queries/getList.gql'
 import { WISHLIST_STORAKE_KEY } from '../../'
 

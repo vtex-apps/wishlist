@@ -5,8 +5,8 @@
   "version": "0.0.0",
   "defaultLocale": "pt-BR",
   "builders": {
-    "pages": "0.x",
-    "react": "2.x"
+    "store": "0.x",
+    "react": "3.x"
   },
   "mustUpdateAt": "2019-04-20",
   "categories": [],
@@ -19,9 +19,9 @@
   },
   "dependencies": {
     "vtex.store-components": "2.x",
-    "vtex.styleguide": "7.x",
+    "vtex.styleguide": "9.x",
     "vtex.store-graphql": "2.x",
     "vtex.product-summary": "1.x",
-    "vtex.store": "1.x"
+    "vtex.store-resources": "0.x"
   }
 }
