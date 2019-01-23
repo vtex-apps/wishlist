@@ -1,5 +1,5 @@
 import React, { Component, ReactNode, Fragment } from 'react'
-import { withRuntimeContext, ExtensionPoint } from 'render'
+import { withRuntimeContext, ExtensionPoint } from 'vtex.render-runtime'
 import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
 import { FormattedMessage } from 'react-intl'
@@ -9,7 +9,7 @@ import ProductPrice from 'vtex.store-components/ProductPrice'
 import {
   orderFormConsumer,
   contextPropTypes,
-} from 'vtex.store/OrderFormContext'
+} from 'vtex.store-resources/OrderFormContext'
 
 import getListDetails from '../../graphql/queries/getListDetails.gql'
 
