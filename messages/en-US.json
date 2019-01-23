@@ -1,0 +1,14 @@
+{
+    "wishlist-title": "Wish Lists",
+    "wishlist-new": "Create List",
+    "wishlist-add-button": "Create",
+    "wishlist-list-name-label": "LIST NAME",
+    "wishlist-list-name-placeholder": "Ex: To my office",
+    "wishlist-is-public": "Do not share",
+    "wishlist-is-public-hint": "Only you can see this list",
+    "wishlist-add-to-list": "Add to Wishlist",
+    "wishlist-no-lists": "You have no saved lists",
+    "wishlist-new-button": "+ create new list",
+    "wishlist-my-lists": "My Lists",
+    "wishlist-buy-all": "Add to Cart"
+  }

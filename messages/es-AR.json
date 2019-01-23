@@ -1,0 +1,14 @@
+{
+    "wishlist-title": "Listas de Deseo",
+    "wishlist-new": "Crear Lista",
+    "wishlist-add-button": "Crear",
+    "wishlist-list-name-label": "NOMBRE DE LA LISTA",
+    "wishlist-list-name-placeholder": "Ex: Para mi oficina",
+    "wishlist-is-public": "No Compartir",
+    "wishlist-is-public-hint": "Sólo usted puede ver esta lista",
+    "wishlist-add-to-list": "Agregar a la lista",
+    "wishlist-no-lists": "Usted no tiene listas guardadas",
+    "wishlist-new-button": "+ Crear nueva lista",
+    "wishlist-my-lists": "Mis Listas",
+    "wishlist-buy-all": "Comprar Todo"
+  }
