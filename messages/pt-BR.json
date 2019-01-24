@@ -6,9 +6,10 @@
   "wishlist-list-name-placeholder": "Ex: Para meu escritório",
   "wishlist-is-public": "Não Compartilhar",
   "wishlist-is-public-hint": "Apenas você poderá ver essa lista",
-  "wishlist-add-to-list": "Adicionar à Lista",
+  "wishlist-add-to-list": "Selecione uma lista",
   "wishlist-no-lists": "Você não possui listas salvas",
   "wishlist-new-button": "+ criar nova lista",
   "wishlist-my-lists": "Minhas Listas",
-  "wishlist-buy-all": "Comprar Tudo"
+  "wishlist-buy-all": "Comprar Tudo",
+  "wishlist-apply": "aplicar"
 }

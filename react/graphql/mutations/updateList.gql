@@ -1,5 +1,20 @@
 mutation updateList($id: ID!, $list: ListInput) {
     updateList(list: $list, id: $id) {
         id
+        name
+        isPublic
+        owner
+        items {
+        id
+        productId
+        skuId
+        quantity
+        product{
+            productId
+            items {
+            itemId
+            }
+        }
+    }
     }
 }
