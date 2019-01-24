@@ -38,11 +38,10 @@ class Lists extends Component<ListsProps, ListsStates> {
         return client
           .query({
             query: getList,
-            variables: {
-              id,
-            },
+            variables: { id },
           })
           .then(({ data: { list } }) => ({ ...list, id, loading: false }))
+          .catch(err => console.log('Error:', err))
       })
     )
     this.setState({ lists, loading: false })

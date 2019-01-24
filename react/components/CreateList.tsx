@@ -2,7 +2,7 @@ import React, { Component, Fragment, ReactNode, FormEvent } from 'react'
 import PropTypes from 'prop-types'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { graphql, ChildProps } from 'react-apollo'
-import { IconCaretLeft, Input, Button, Toggle } from 'vtex.styleguide'
+import { IconClose, Input, Button, Toggle } from 'vtex.styleguide'
 import createList from '../graphql/mutations/createList.gql'
 
 const LIST_NAME_MINIMUM_LENGTH = 6
@@ -83,14 +83,13 @@ class CreateList extends Component<Props, CreateListState> {
 
   public render() {
     const { onFinishAdding } = this.props
-
     const { isLoading, isValid, listData: { name, isPublic } } = this.state
 
     return (
-      <Fragment>
+      <div className="vh-100">
         <div className="w-100 bb pv3 ttu dark-gray tc b--light-gray">
           <div className="pointer h3 absolute nt1 ml3" onClick={onFinishAdding}>
-            <IconCaretLeft size={17} />
+            <IconClose size={17} />
           </div>
           <FormattedMessage id="wishlist-new" />
         </div>
@@ -132,7 +131,7 @@ class CreateList extends Component<Props, CreateListState> {
             <FormattedMessage id="wishlist-add-button" />
           </Button>
         </div>
-      </Fragment>
+      </div>
     )
   }
 }

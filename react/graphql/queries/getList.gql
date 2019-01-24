@@ -4,6 +4,10 @@ query getList($id: ID){
     isPublic
     owner
     items {
+      id
+      productId
+      skuId
+      quantity
       product{
         productId
         items {

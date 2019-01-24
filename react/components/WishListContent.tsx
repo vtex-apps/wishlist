@@ -55,6 +55,7 @@ class WishListContent extends Component<
             <AddToList
               onAddList={this.switchAddList}
               onSuccess={onSuccess}
+              onClose={onClose}
               skuId={skuId}
               productId={productId}
             />
