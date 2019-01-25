@@ -8,11 +8,13 @@ import SnackBar from './../SnackBar'
 interface AddProductState {
   isOpened: boolean
   snackMessage?: string
+  showMenu?: boolean
 }
 
 interface AddProductProps {
   skuId?: string
-  productId?: string
+  productId?: string,
+  showMenu?: boolean,
 }
 
 /**
@@ -21,12 +23,14 @@ interface AddProductProps {
 class AddProduct extends Component<AddProductProps, AddProductState> {
   public state: AddProductState = {
     isOpened: false,
-    snackMessage: ""
+    snackMessage: "",
+    showMenu: false,
   }
 
   public toggleMode = (): void => {
     this.setState({
-      isOpened: !this.state.isOpened
+      isOpened: !this.state.isOpened,
+      showMenu: false,
     })
   }
   public onSuccess = (): void => {
@@ -37,16 +41,19 @@ class AddProduct extends Component<AddProductProps, AddProductState> {
 
   public render(): ReactNode {
     const { isOpened, snackMessage } = this.state
-    const { skuId, productId } = this.props
+    const { skuId, productId, showMenu } = this.props
 
     const large = isMobile || (window && window.innerWidth <= 480)
 
     return (
       <Fragment>
-        <Heart onClick={this.toggleMode} />
+        <Heart
+        onClick={this.toggleMode}
+        onLongClick={() => this.setState({ showMenu: true })} />
         {isOpened &&
           ReactDOM.createPortal(
             <WishListContent
+              showMenu={showMenu}
               large={large}
               skuId={skuId}
               productId={productId}
