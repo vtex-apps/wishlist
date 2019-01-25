@@ -1,8 +1,8 @@
-mutation createList($name: String!, $isPublic: Boolean) {
+mutation createList($name: String!, $isPublic: Boolean, $items: [ListItemInput]) {
     createList(list: {
         name: $name,
         isPublic: $isPublic
-        items: []
+        items: $items
     }) {
         id
     }
