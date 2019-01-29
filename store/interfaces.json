@@ -1,5 +1,5 @@
 {
-    "wishlist": {
-        "component": "index"
+    "list-detail": {
+        "component": "ListDetail"
     }
 }

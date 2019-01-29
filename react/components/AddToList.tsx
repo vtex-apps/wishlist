@@ -85,7 +85,7 @@ class AddToList extends Component<AddToListProps, AddToListState> {
           id: listsRefs.split(',')[0].replace("\"", "").replace("\"", "")
         }
       }).then(response => console.log('result', response))
-      .catch(err => console.log('err', err))
+        .catch(err => console.log('err', err))
       console.log(lists)
       this.setState({ loadedLists: lists, loading: false });
     }
@@ -145,7 +145,10 @@ class AddToList extends Component<AddToListProps, AddToListState> {
     let refreshedLists = [...loadedLists];
     if (list) refreshedLists = update(listIndex, list, loadedLists)
     if (refreshedLists[listIndex]) refreshedLists[listIndex].loading = value;
-    this.setState({ loadedLists: refreshedLists, disabled: value });
+    console.log('The list supplied to state for index', listIndex, ' is ', refreshedLists[listIndex])
+    this.setState({ loadedLists: refreshedLists, disabled: value }, () => {
+      console.log('After update, it is:', this.state.loadedLists[0])
+    });
   };
 
   public handleApply = async (): Promise<void> => {
@@ -175,6 +178,7 @@ class AddToList extends Component<AddToListProps, AddToListState> {
   public handleAddToSingleList = async (listIndex: Number): Promise<void> => {
     const { client, skuId, productId, onSuccess } = this.props;
     const { loadedLists } = this.state
+    console.log('addSingle for', listIndex)
     console.log(loadedLists)
     const list = loadedLists[listIndex];
     return client.mutate({
@@ -183,7 +187,10 @@ class AddToList extends Component<AddToListProps, AddToListState> {
         id: list.id,
         list: this.getListInputForAddedItem(list, skuId, productId)
       }
-    }).then(response => this.setListLoading(listIndex, false, response.data.updateList))
+    }).then(response => {
+      console.log('Updated list', response.data.updateList)
+      this.setListLoading(listIndex, false, response.data.updateList)
+    })
   }
 
   public addItemToList = async (listIndex: number): Promise<void> => {
@@ -204,13 +211,11 @@ class AddToList extends Component<AddToListProps, AddToListState> {
     const currentItems = items.map(
       ({ id, productId, skuId, quantity }) => ({ itemId: id, productId, skuId, quantity })
     );
-    console.log('currentItems', currentItems)
-    console.log(append({ skuId, productId, quantity: 1 }, currentItems))
-    console.log(currentItems)
 
+    console.log('outcome', [...currentItems, { skuId, productId, quantity: 1 }])
     return {
       ...list,
-      items: append({ skuId, productId, quantity: 1 }, currentItems)
+      items: [...currentItems, { skuId, productId, quantity: 1 }]
     };
   };
 
