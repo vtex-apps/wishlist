@@ -1,5 +1,5 @@
 {
-    "list-detail": {
-        "component": "ListDetail"
+    "add-to-list-btn": {
+        "component": "AddProductBtn"
     }
 }

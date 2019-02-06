@@ -11,5 +11,8 @@
   "wishlist-new-button": "+ criar nova lista",
   "wishlist-my-lists": "Minhas Listas",
   "wishlist-buy-all": "Comprar Tudo",
-  "wishlist-apply": "aplicar"
+  "wishlist-apply": "aplicar",
+  "wishlist-add-product-success": "Produto adicionado à lista",
+  "wishlist-add-product-fail": "Produto não foi adicionado",
+  "wishlist-see-lists": "VER LISTAS"
 }

@@ -8,11 +8,8 @@ query getList($id: ID){
       productId
       skuId
       quantity
-      product{
-        productId
-        items {
-          itemId
-        }
+      product {
+        productName
       }
     }
   }
