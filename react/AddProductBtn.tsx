@@ -32,7 +32,6 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
 
   private handleAddProductSuccess = (response: any): void => {
     const { intl } = this.props
-    console.log('response', response)
     this.props.showToast({
       message: translate('wishlist-add-product-success', intl),
       action: {

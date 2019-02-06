@@ -59,12 +59,10 @@ class AddToList extends Component<AddToListProps, AddToListState> {
   };
 
   public updateListOnState = async (index: number): Promise<void> => {
-    console.log("on update lists")
     const listsRefs = localStorage.getItem(WISHLIST_STORAKE_KEY);
     if (!listsRefs) {
       return this.setState({ loading: false });
     } else {
-      console.log(listsRefs.split(','))
       const { client } = this.props;
       const lists = await Promise.all(
         listsRefs.split(",").map((id: string) => {
@@ -76,7 +74,7 @@ class AddToList extends Component<AddToListProps, AddToListState> {
               }
             })
             .then(({ data: { list } }) => ({ ...list, id, loading: false }))
-            .catch(err => console.log('Erro no fetch', err))
+            .catch(err => console.error('Erro no fetch', err))
         })
       );
       client.query({
@@ -85,8 +83,7 @@ class AddToList extends Component<AddToListProps, AddToListState> {
           id: listsRefs.split(',')[0].replace("\"", "").replace("\"", "")
         }
       }).then(response => console.log('result', response))
-        .catch(err => console.log('err', err))
-      console.log(lists)
+        .catch(err => console.error('err', err))
       this.setState({ loadedLists: lists, loading: false });
     }
   }
@@ -107,19 +104,16 @@ class AddToList extends Component<AddToListProps, AddToListState> {
               }
             })
             .then(({ data: { list } }) => ({ ...list, id, loading: false }))
-            .catch(err => console.log('Erro no fetch', err))
+            .catch(err => console.error('Erro no fetch', err))
         })
       );
-      console.log(lists)
       this.setState({ loadedLists: lists, loading: false });
     }
   }
 
   public addProductToGeneralList = async (): Promise<void> => {
     const { client, productId, skuId, onFinishAdding } = this.props
-    console.log('In add to general list')
     if (!localStorage.getItem(WISHLIST_STORAKE_KEY)) {
-      console.log("No list")
       client.mutate({
         mutation: createList,
         variables: {
@@ -128,10 +122,9 @@ class AddToList extends Component<AddToListProps, AddToListState> {
           items: [{ productId, skuId, quantity: 1 }]
         }
       }).then(response => {
-        console.log(response)
         onFinishAdding(response.data.createList.id)
       }).catch(err => {
-        console.log('Something went wrong')
+        console.error('Something went wrong', err)
       })
     } else {
       this.handleAddToSingleList(0)
@@ -145,9 +138,7 @@ class AddToList extends Component<AddToListProps, AddToListState> {
     let refreshedLists = [...loadedLists];
     if (list) refreshedLists = update(listIndex, list, loadedLists)
     if (refreshedLists[listIndex]) refreshedLists[listIndex].loading = value;
-    console.log('The list supplied to state for index', listIndex, ' is ', refreshedLists[listIndex])
     this.setState({ loadedLists: refreshedLists, disabled: value }, () => {
-      console.log('After update, it is:', this.state.loadedLists[0])
     });
   };
 
@@ -170,7 +161,7 @@ class AddToList extends Component<AddToListProps, AddToListState> {
       Promise.all(promises).then(response => {
         onSuccess();
       }).catch(err => {
-        console.log('Error: could not add product to list', err)
+        
       })
     }
   }
@@ -178,8 +169,6 @@ class AddToList extends Component<AddToListProps, AddToListState> {
   public handleAddToSingleList = async (listIndex: Number): Promise<void> => {
     const { client, skuId, productId, onSuccess } = this.props;
     const { loadedLists } = this.state
-    console.log('addSingle for', listIndex)
-    console.log(loadedLists)
     const list = loadedLists[listIndex];
     return client.mutate({
       mutation: updateList,
@@ -188,7 +177,6 @@ class AddToList extends Component<AddToListProps, AddToListState> {
         list: this.getListInputForAddedItem(list, skuId, productId)
       }
     }).then(response => {
-      console.log('Updated list', response.data.updateList)
       this.setListLoading(listIndex, false, response.data.updateList)
     })
   }
@@ -210,9 +198,7 @@ class AddToList extends Component<AddToListProps, AddToListState> {
   ): any => {
     const currentItems = items.map(
       ({ id, productId, skuId, quantity }) => ({ itemId: id, productId, skuId, quantity })
-    );
-
-    console.log('outcome', [...currentItems, { skuId, productId, quantity: 1 }])
+    )
     return {
       ...list,
       items: [...currentItems, { skuId, productId, quantity: 1 }]

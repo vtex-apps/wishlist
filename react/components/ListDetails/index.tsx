@@ -117,8 +117,6 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
 
     const { name, items } = list
 
-    console.log('Items of list', items)
-
     const totalPrice = items
       .map(({ product: { items: [item] } }) => {
         const {
