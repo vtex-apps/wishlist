@@ -45,7 +45,7 @@ class Lists extends Component<ListsProps, ListsStates> {
               variables: { id: id.replace("\"", "").replace("\"", "") },
             })
             .then(({ data: { list } }) => ({ ...list, id, loading: false }))
-            .catch(err => console.log('Error:', err))
+            .catch(err => console.error('Error:', err))
         })
       )
       this.setState({ lists, loading: false })
