@@ -1,5 +1,5 @@
-import React, { Component, ReactNode } from 'react'
-import AddProduct from './AddProduct'
+import React, { Component, ReactNode, Fragment } from 'react'
+import ListMenu from './ListMenu'
 import Icon from 'vtex.use-svg/Icon'
 import { withToast } from 'vtex.styleguide'
 import { withApollo } from "react-apollo"
@@ -30,7 +30,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     showContent: false
   }
 
-  private handleAddProductSuccess = (response: any): void => {
+  private handleAddProductSuccess = (): void => {
     const { intl } = this.props
     this.props.showToast({
       message: translate('wishlist-add-product-success', intl),
@@ -57,17 +57,19 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   public render(): ReactNode {
     const { showContent } = this.state
     return (
-      <div
-        className="z-9999 w2 h2 mt1 ml1 pa3 pointer hover-bg-light-gray"
-        onClick={this.onAddProductClick}
-      >
-        <Icon id="mpa-heart" />
+      <Fragment>
+        <div
+          className="z-9999 w2 h2 mt1 ml1 pa3 pointer hover-bg-light-gray"
+          onClick={this.onAddProductClick}
+        >
+          <Icon id="mpa-heart" />
+        </div>
         {showContent && (
-          <AddProduct
+          <ListMenu
             onClose={() => this.setState({ showContent: false })}
           />
         )}
-      </div>
+      </Fragment>
     )
   }
 }
