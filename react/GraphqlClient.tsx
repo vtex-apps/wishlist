@@ -18,7 +18,7 @@ const getListsIdFromCookies = () => {
   return lists && lists.split(',').map((id: string) => id.replace("\"", "").replace("\"", ""))
 }
 
-const saveListIdInLocalStorage = (id: string): void => {
+export const saveListIdInLocalStorage = (id: string): void => {
   const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
   let newLists = lists ? lists + ',' + id : id
   localStorage.setItem(WISHLIST_STORAKE_KEY, newLists)

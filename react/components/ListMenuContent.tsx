@@ -12,8 +12,8 @@ import {
 } from 'vtex.styleguide'
 import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
-import { getListsFromLocaleStorage } from '../GraphqlClient'
-import { map } from 'ramda'
+import { getListsFromLocaleStorage, saveListIdInLocalStorage } from '../GraphqlClient'
+import { map, append } from 'ramda'
 import CreateList from './CreateList'
 
 import wishlist from '../wishList.css'
@@ -21,7 +21,7 @@ import wishlist from '../wishList.css'
 interface List {
   id: string
   name: string
-  isPublic: string
+  isPublic: boolean
   isSelected?: boolean
 }
 
@@ -51,6 +51,12 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
         this.setState({ isLoading: false, lists: lists })
       })
       .catch(() => this.setState({ isLoading: false }))
+  }
+
+  private onListCreated = (list: any): void => {
+    const { lists } = this.state
+    saveListIdInLocalStorage(list.id)
+    this.setState({ showCreateList: false, lists: append(list, lists) })
   }
 
   private renderHeader = (): ReactNode => {
@@ -88,7 +94,12 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
         {
           lists.map((list: List, index: number) => (
             <div key={list.id} className="w-100 bt b--muted-4 flex flex-row pv3 ph4 c-muted-3">
-              <div className="flex items-center">{list.isPublic ? <IconVisibilityOn /> : <IconVisibilityOff />}</div>
+              <div className="flex items-center ml2">{list.isPublic ?
+                <IconVisibilityOn />
+                :
+                <IconVisibilityOff />
+              }
+              </div>
               <span className="w-100 mh4 mv1 c-muted-1">{list.name}</span>
               <div className="flex items-center c-action-primary">{(list.isSelected || index === 0) && <IconCheck />}</div>
             </div>
@@ -121,7 +132,12 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
         {this.renderHeader()}
         {this.renderMainContent()}
         {this.renderFooter()}
-        { showCreateList &&  <CreateList onFinishAdding={(id: string) => console.log('id da nova lista', id)} />}
+        {showCreateList && (
+          <CreateList
+            onFinishAdding={this.onListCreated}
+            onClose={() => this.setState({ showCreateList: false })}
+          />
+        )}
       </div>
     )
   }
