@@ -1,6 +1,6 @@
-import React, { Component, ReactNode, Fragment } from "react"
+import React, { Component, ReactNode } from "react"
 import { injectIntl, intlShape } from 'react-intl'
-import { translate } from './utils/translate'
+import { translate } from '../utils/translate'
 import {
   Button,
   IconClose,
@@ -12,10 +12,11 @@ import {
 } from 'vtex.styleguide'
 import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
-import { getListsFromLocaleStorage } from './GraphqlClient'
+import { getListsFromLocaleStorage } from '../GraphqlClient'
 import { map } from 'ramda'
+import CreateList from './CreateList'
 
-import wishlist from './wishList.css'
+import wishlist from '../wishList.css'
 
 interface List {
   id: string
@@ -32,6 +33,7 @@ interface ListMenuContentProps {
 
 interface ListMenuContentState {
   isLoading: boolean
+  showCreateList?: boolean
   lists: List[]
 }
 
@@ -55,13 +57,16 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
     const { intl, onClose } = this.props
     return (
       <div className="flex flex-row pa4 items-center bb bt b--muted-4">
-        <div className="flex items-center" onClick={onClose}>
-          <IconClose size={24} />
+        <div className="flex items-center pointer" onClick={onClose}>
+          <IconClose size={23} />
         </div>
         <span className="t-heading-6 w-100 mh5 flex justify-center">
           {translate('wishlist-add-to-list', intl)}
         </span>
-        <div className="flex items-center">
+        <div
+          className="flex items-center pointer"
+          onClick={() => this.setState({ showCreateList: true })}
+        >
           <IconPlusLines size={20} />
         </div>
       </div>
@@ -110,11 +115,13 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
   }
 
   public render(): ReactNode {
+    const { showCreateList } = this.state
     return (
       <div className="w-100 bg-black fixed bottom-0 z-max bg-base">
         {this.renderHeader()}
         {this.renderMainContent()}
         {this.renderFooter()}
+        { showCreateList &&  <CreateList onFinishAdding={(id: string) => console.log('id da nova lista', id)} />}
       </div>
     )
   }

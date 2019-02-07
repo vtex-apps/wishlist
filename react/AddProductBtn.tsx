@@ -1,5 +1,5 @@
 import React, { Component, ReactNode, Fragment } from 'react'
-import ListMenu from './ListMenu'
+import ListMenu from './components/ListMenu'
 import Icon from 'vtex.use-svg/Icon'
 import { withToast, Spinner } from 'vtex.styleguide'
 import { withApollo } from "react-apollo"
