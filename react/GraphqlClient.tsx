@@ -24,7 +24,7 @@ export const saveListIdInLocalStorage = (id: string): void => {
   localStorage.setItem(WISHLIST_STORAKE_KEY, newLists)
 }
 
-const ProductsToListItemInput = (items: any): any => (
+export const ProductsToListItemInput = (items: any): any => (
   map((product: Product) => ({
     itemId: product.id,
     skuId: product.skuId,

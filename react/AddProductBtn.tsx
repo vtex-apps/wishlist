@@ -59,6 +59,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   }
 
   public render(): ReactNode {
+    const { product, showToast } = this.props
     const { showContent, isLoading } = this.state
     return (
       <Fragment>
@@ -70,6 +71,9 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
         </div>
         {showContent && (
           <ListMenu
+            onAddToListsFail={() => showToast({ message: 'Não adicionou às listas' })}
+            onAddToListsSuccess={() => showToast({ message: 'Adicionou a todas listas' })}
+            product={product}
             onClose={() => this.setState({ showContent: false })}
           />
         )}
