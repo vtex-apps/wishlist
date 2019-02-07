@@ -78,3 +78,12 @@ export const addProductToDefaultList = (client: ApolloClient<any>, product: any)
     )
   }
 }
+
+export const getListsFromLocaleStorage = (client: ApolloClient<any>): Promise<any> => {
+  const listsId = getListsIdFromCookies() || []
+  return Promise.all(
+    map((id: string) => {
+      return getList(client, id)
+    }, listsId)
+  )
+}
