@@ -16,7 +16,6 @@ import { getListsFromLocaleStorage } from './GraphqlClient'
 import { map } from 'ramda'
 
 import wishlist from './wishList.css'
-import { number } from "prop-types";
 
 interface List {
   id: string
@@ -77,12 +76,6 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
     )
   }
 
-  // private renderListElement = (list: List): ReactNode => {
-  //   return (
-
-  //   )
-  // }
-
   private renderSwitchLists = (): ReactNode => {
     const { lists } = this.state
     return (
@@ -92,7 +85,7 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
             <div key={list.id} className="w-100 bt b--muted-4 flex flex-row pv3 ph4 c-muted-3">
               <div className="flex items-center">{list.isPublic ? <IconVisibilityOn /> : <IconVisibilityOff />}</div>
               <span className="w-100 mh4 mv1 c-muted-1">{list.name}</span>
-              <div className="flex items-center c-success">{(list.isSelected || index === 0) && <IconCheck />}</div>
+              <div className="flex items-center c-action-primary">{(list.isSelected || index === 0) && <IconCheck />}</div>
             </div>
           ))
         }
