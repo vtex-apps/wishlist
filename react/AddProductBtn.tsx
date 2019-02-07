@@ -1,7 +1,7 @@
 import React, { Component, ReactNode, Fragment } from 'react'
 import ListMenu from './ListMenu'
 import Icon from 'vtex.use-svg/Icon'
-import { withToast } from 'vtex.styleguide'
+import { withToast, Spinner } from 'vtex.styleguide'
 import { withApollo } from "react-apollo"
 import { ApolloClient } from "apollo-client"
 import { addProductToDefaultList } from './GraphqlClient'
@@ -22,7 +22,8 @@ interface AddProductBtnProps {
 }
 
 interface AddProductBtnState {
-  showContent: boolean
+  showContent: boolean,
+  isLoading?: boolean,
 }
 
 class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
@@ -32,8 +33,9 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
 
   private handleAddProductSuccess = (): void => {
     const { intl } = this.props
+    this.setState({ isLoading: false })
     this.props.showToast({
-      message: translate('wishlist-add-product-success', intl),
+      message: translate('wishlist-add-to-list', intl),
       action: {
         label: translate('wishlist-see-lists', intl),
         onClick: () => this.setState({ showContent: true })
@@ -43,26 +45,28 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
 
   private handleAddProductFailed = (error: string): void => {
     const { intl } = this.props
+    this.setState({ isLoading: false })
     console.error('Add product error', error)
     this.props.showToast({ message: translate('wishlist-add-product-fail', intl) })
   }
 
   private onAddProductClick = (): void => {
     const { client, product } = this.props
+    this.setState({ isLoading: true })
     addProductToDefaultList(client, product)
       .then(this.handleAddProductSuccess)
       .catch(this.handleAddProductFailed)
   }
 
   public render(): ReactNode {
-    const { showContent } = this.state
+    const { showContent, isLoading } = this.state
     return (
       <Fragment>
         <div
-          className="z-9999 w2 h2 mt1 ml1 pa3 pointer hover-bg-light-gray"
-          onClick={this.onAddProductClick}
+          className="pa4 pointer hover-bg-light-gray flex items-center"
+          onClick={!isLoading ? this.onAddProductClick : () => { }}
         >
-          <Icon id="mpa-heart" />
+          {isLoading ? <Spinner size={17} /> : <Icon id="mpa-heart" />}
         </div>
         {showContent && (
           <ListMenu
