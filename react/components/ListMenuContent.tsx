@@ -3,9 +3,7 @@ import { injectIntl, intlShape } from 'react-intl'
 import { translate } from '../utils/translate'
 import {
   Button,
-  IconClose,
   IconCheck,
-  IconPlusLines,
   IconVisibilityOn,
   IconVisibilityOff,
   Spinner,
@@ -15,6 +13,7 @@ import { ApolloClient } from 'apollo-client'
 import { getListsFromLocaleStorage, saveListIdInLocalStorage } from '../GraphqlClient'
 import { map, append } from 'ramda'
 import CreateList from './CreateList'
+import Header from './Header'
 
 import wishlist from '../wishList.css'
 
@@ -57,26 +56,6 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
     const { lists } = this.state
     saveListIdInLocalStorage(list.id)
     this.setState({ showCreateList: false, lists: append(list, lists) })
-  }
-
-  private renderHeader = (): ReactNode => {
-    const { intl, onClose } = this.props
-    return (
-      <div className="flex flex-row pa4 items-center bb bt b--muted-4">
-        <div className="flex items-center pointer" onClick={onClose}>
-          <IconClose size={23} />
-        </div>
-        <span className="t-heading-6 w-100 mh5 flex justify-center">
-          {translate('wishlist-add-to-list', intl)}
-        </span>
-        <div
-          className="flex items-center pointer"
-          onClick={() => this.setState({ showCreateList: true })}
-        >
-          <IconPlusLines size={20} />
-        </div>
-      </div>
-    )
   }
 
   private renderLoading = (): ReactNode => {
@@ -126,10 +105,15 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
   }
 
   public render(): ReactNode {
+    const { onClose, intl } = this.props
     const { showCreateList } = this.state
     return (
       <div className="w-100 bg-black fixed bottom-0 z-max bg-base">
-        {this.renderHeader()}
+        <Header
+          title={translate('wishlist-add-to-list', intl)}
+          onClose={onClose}
+          action={() => this.setState({ showCreateList: true })}
+        />
         {this.renderMainContent()}
         {this.renderFooter()}
         {showCreateList && (

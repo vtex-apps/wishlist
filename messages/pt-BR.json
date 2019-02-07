@@ -12,7 +12,9 @@
   "wishlist-my-lists": "Minhas Listas",
   "wishlist-buy-all": "Comprar Tudo",
   "wishlist-apply": "aplicar",
-  "wishlist-add-product-success": "Produto adicionado à lista",
+  "wishlist-add-product-success": "Salvo em todos os itens",
   "wishlist-add-product-fail": "Produto não foi adicionado",
-  "wishlist-see-lists": "VER LISTAS"
+  "wishlist-see": "VER",
+  "wishlist-see-lists": "VER LISTAS",
+  "wishlist-product-added-to-list": "item adicionado à lista"
 }

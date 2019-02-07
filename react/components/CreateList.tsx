@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
-import { IconClose, Input, Button, Toggle } from 'vtex.styleguide'
-import { createList, saveListIdInLocalStorage } from '../GraphqlClient'
+import { Input, Button, Toggle } from 'vtex.styleguide'
+import { createList } from '../GraphqlClient'
+import Header from './Header'
+import { translate } from '../utils/translate';
 
 const LIST_NAME_MINIMUM_LENGTH = 6
 
@@ -80,17 +82,12 @@ class CreateList extends Component<CreateListProps, CreateListState> {
   }
 
   public render() {
-    const { onClose } = this.props
+    const { onClose, intl } = this.props
     const { isLoading, isValid, listData: { name, isPublic } } = this.state
 
     return (
       <div className="vh-100">
-        <div className="w-100 bb pv3 ttu dark-gray tc b--light-gray">
-          <div className="pointer h3 absolute nt1 ml3" onClick={onClose}>
-            <IconClose size={17} />
-          </div>
-          <FormattedMessage id="wishlist-new" />
-        </div>
+        <Header title={translate("wishlist-new", intl)} onClose={onClose} />
         <div className="w-100 gray f5 pv5 pa4">
           <div className="tl">
             <Input

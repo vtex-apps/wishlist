@@ -37,7 +37,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     this.props.showToast({
       message: translate('wishlist-add-to-list', intl),
       action: {
-        label: translate('wishlist-see-lists', intl),
+        label: translate('wishlist-see', intl),
         onClick: () => this.setState({ showContent: true })
       }
     })
