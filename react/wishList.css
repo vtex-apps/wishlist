@@ -1,3 +1,5 @@
 .applyButton > button {
     border-radius: 0px;
+    padding-bottom: 0.5625em;
+    padding-top: 0.5625em;
 }
