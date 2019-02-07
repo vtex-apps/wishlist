@@ -5,5 +5,14 @@ mutation createList($name: String!, $isPublic: Boolean, $items: [ListItemInput])
         items: $items
     }) {
         id
+        name
+        owner
+        isPublic
+        items {
+            id
+            quantity
+            productId
+            quantity
+        }
     }
 }

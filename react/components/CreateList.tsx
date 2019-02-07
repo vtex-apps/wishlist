@@ -1,61 +1,61 @@
 import React, { Component, Fragment, ReactNode, FormEvent } from 'react'
 import PropTypes from 'prop-types'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { graphql, ChildProps } from 'react-apollo'
+import { withApollo } from 'react-apollo'
+import { ApolloClient } from 'apollo-client'
 import { IconClose, Input, Button, Toggle } from 'vtex.styleguide'
-import createList from '../graphql/mutations/createList.gql'
+import { createList, saveListIdInLocalStorage } from '../GraphqlClient'
 
 const LIST_NAME_MINIMUM_LENGTH = 6
 
 interface CreateListProps {
-  onFinishAdding: (id?: string) => void
-  intl: any
+  onFinishAdding: (list: any) => void
+  onClose: () => void
+  intl?: any
+  client?: ApolloClient<any>
 }
 
 interface CreateListState {
   listData: {
-    name: string
-    isPublic: boolean
+    name?: string
+    isPublic?: boolean
   }
   isLoading: boolean
   isValid: boolean
 }
 
-type Response = {
-  id: string;
-};
-
-type Props = ChildProps<CreateListProps, Response>
-
-const withCreateList = graphql<CreateListProps, Response>(createList)
 /**
  * Wishlist element to add product to a list
  */
-class CreateList extends Component<Props, CreateListState> {
+class CreateList extends Component<CreateListProps, CreateListState> {
   public state: CreateListState = {
-    listData: {
-      name: '',
-      isPublic: true
-    },
+    listData: {},
     isLoading: false,
     isValid: false
   }
 
-  public onSubmit = async (): Promise<any> => {
+  public onSubmit = (): void => {
     this.setState({ isLoading: true })
-    const { listData } = this.state 
-    const { data: { createList: { id }}} = await this.props.mutate({variables: listData})
-    this.setState({ isLoading: false })
-    this.props.onFinishAdding(id)
+    const { client } = this.props
+    const { listData } = this.state
+    client && createList(client, { ...listData, items: [] })
+      .then(response => {
+        this.setState({ isLoading: false })
+        this.props.onFinishAdding(response.data.createList)
+      })
+      .catch(err => {
+        console.log('something went wrong', err)
+      })
   }
 
   public onChangeName = (event: FormEvent<HTMLInputElement>): void => {
+    const { listData } = this.state
     const target = event.target as HTMLInputElement
     const name = target.value
-    this.setState(
-      { listData: { ...this.state.listData, name } },
-      this.checkValidity
-    )
+    this.setState({
+      listData: { isPublic: listData.isPublic, name },
+      isValid: this.isNameValid(name)
+    })
   }
 
   public onChangePublic = (): void => {
@@ -63,14 +63,12 @@ class CreateList extends Component<Props, CreateListState> {
     this.setState(
       {
         listData: { ...this.state.listData, isPublic: !isPublic }
-      },
-      this.checkValidity
+      }
     )
   }
 
-  public checkValidity = (): void => {
-    const { name } = this.state.listData
-    this.setState({ isValid: (name && name.length >= LIST_NAME_MINIMUM_LENGTH) || false })
+  public isNameValid = (name: string): boolean => {
+    return (name !== 'undefined' && name.length >= LIST_NAME_MINIMUM_LENGTH)
   }
 
   public translateMessage = (id: string): string =>
@@ -82,13 +80,13 @@ class CreateList extends Component<Props, CreateListState> {
   }
 
   public render() {
-    const { onFinishAdding } = this.props
+    const { onClose } = this.props
     const { isLoading, isValid, listData: { name, isPublic } } = this.state
 
     return (
       <div className="vh-100">
         <div className="w-100 bb pv3 ttu dark-gray tc b--light-gray">
-          <div className="pointer h3 absolute nt1 ml3" onClick={onFinishAdding}>
+          <div className="pointer h3 absolute nt1 ml3" onClick={onClose}>
             <IconClose size={17} />
           </div>
           <FormattedMessage id="wishlist-new" />
@@ -97,9 +95,7 @@ class CreateList extends Component<Props, CreateListState> {
           <div className="tl">
             <Input
               value={name}
-              placeholder={this.translateMessage(
-                'wishlist-list-name-placeholder'
-              )}
+              placeholder={this.translateMessage('wishlist-list-name-placeholder')}
               label={this.translateMessage('wishlist-list-name-label')}
               onChange={this.onChangeName}
             />
@@ -136,4 +132,4 @@ class CreateList extends Component<Props, CreateListState> {
   }
 }
 
-export default injectIntl(withCreateList(CreateList))
+export default withApollo(injectIntl(CreateList))
