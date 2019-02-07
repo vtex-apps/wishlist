@@ -3,16 +3,18 @@ import ListMenuContent from './ListMenuContent'
 import { createPortal } from 'react-dom'
 
 interface ListMenuProps {
+  product: any
   onClose: () => void
+  onAddToListsSuccess: () => void
+  onAddToListsFail: () => void
 }
 
 interface ListMenuState { }
 
 class ListMenu extends Component<ListMenuProps, ListMenuState> {
   public render(): ReactNode {
-    const { onClose } = this.props
     return createPortal(
-      <ListMenuContent onClose={onClose} />,
+      <ListMenuContent {...this.props} />,
       document.body
     )
   }

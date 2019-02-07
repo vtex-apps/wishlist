@@ -1,50 +1,58 @@
 import React, { Component, ReactNode } from "react"
 import { injectIntl, intlShape } from 'react-intl'
 import { translate } from '../utils/translate'
-import {
-  Button,
-  IconCheck,
-  IconVisibilityOn,
-  IconVisibilityOff,
-  Spinner,
-} from 'vtex.styleguide'
+import { Button, Spinner } from 'vtex.styleguide'
 import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
-import { getListsFromLocaleStorage, saveListIdInLocalStorage } from '../GraphqlClient'
-import { map, append } from 'ramda'
+import {
+  getListsFromLocaleStorage,
+  saveListIdInLocalStorage,
+  updateList,
+  ProductsToListItemInput
+} from '../GraphqlClient'
+import { map, append, contains, remove, indexOf } from 'ramda'
 import CreateList from './CreateList'
 import Header from './Header'
+import ListItem from './ListItem'
 
 import wishlist from '../wishList.css'
+
+const DEFAULT_LIST_INDEX = 0
 
 interface List {
   id: string
   name: string
   isPublic: boolean
-  isSelected?: boolean
+  owner: string
+  items: any
 }
 
 interface ListMenuContentProps {
+  product: any
   onClose: () => void
-  intl: intlShape
-  client: ApolloClient<any>
+  onAddToListsSuccess: () => void
+  onAddToListsFail: () => void
+  intl?: intlShape
+  client?: ApolloClient<any>
 }
 
 interface ListMenuContentState {
   isLoading: boolean
   showCreateList?: boolean
   lists: List[]
+  selectedLists: number[]
 }
 
 class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentState> {
   public state: ListMenuContentState = {
     isLoading: true,
-    lists: []
+    lists: [],
+    selectedLists: []
   }
 
   public componentDidMount(): void {
     const { client } = this.props
-    getListsFromLocaleStorage(client)
+    client && getListsFromLocaleStorage(client)
       .then(response => {
         const lists = map(item => item.data.list, response)
         this.setState({ isLoading: false, lists: lists })
@@ -58,6 +66,29 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
     this.setState({ showCreateList: false, lists: append(list, lists) })
   }
 
+  private addProductToSelectedLists = (): void => {
+    const { client, product, onClose, onAddToListsSuccess, onAddToListsFail } = this.props
+    const { lists, selectedLists } = this.state
+    if (client) {
+      Promise.all(map(index => {
+        const { id, name, isPublic, owner, items } = lists[index]
+        return updateList(client, id, {
+          name, isPublic, owner,
+          items: append(product, ProductsToListItemInput(items))
+        })
+      }, selectedLists))
+      .then(() => {
+        onClose()
+        setTimeout(onAddToListsSuccess, 500)
+      })
+      .catch(err => {
+        console.error('something went wrong', err)
+        onClose()
+        setTimeout(onAddToListsFail, 500)
+      })
+    }
+  }
+
   private renderLoading = (): ReactNode => {
     return (
       <div className="w-100 h3 flex justify-center items-center">
@@ -66,22 +97,36 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
     )
   }
 
+  private isSelected = (index: number): boolean => {
+    const { selectedLists } = this.state
+    return contains(index, selectedLists)
+  }
+
+  private handleListClicked = (listIndex: number): void => {
+    if (listIndex !== DEFAULT_LIST_INDEX) {
+      const { selectedLists } = this.state
+      const index = indexOf(listIndex, selectedLists)
+      if (index !== -1) {
+        this.setState({ selectedLists: remove(index, 1, selectedLists) })
+      } else {
+        this.setState({ selectedLists: append(listIndex, selectedLists) })
+      }
+    }
+  }
+
   private renderSwitchLists = (): ReactNode => {
     const { lists } = this.state
     return (
       <div className="flex flex-column">
         {
           lists.map((list: List, index: number) => (
-            <div key={list.id} className="w-100 bt b--muted-4 flex flex-row pv3 ph4 c-muted-3">
-              <div className="flex items-center ml2">{list.isPublic ?
-                <IconVisibilityOn />
-                :
-                <IconVisibilityOff />
-              }
-              </div>
-              <span className="w-100 mh4 mv1 c-muted-1">{list.name}</span>
-              <div className="flex items-center c-action-primary">{(list.isSelected || index === 0) && <IconCheck />}</div>
-            </div>
+            <ListItem
+              key={index}
+              id={index}
+              list={list}
+              isDefault={index === DEFAULT_LIST_INDEX}
+              isSelected={index === DEFAULT_LIST_INDEX || this.isSelected(index)}
+              onClick={this.handleListClicked} />
           ))
         }
       </div>
@@ -95,9 +140,15 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
 
   private renderFooter = (): ReactNode => {
     const { intl } = this.props
+    const { selectedLists } = this.state
     return (
       <div className={wishlist.applyButton}>
-        <Button vatiation="primary" block>
+        <Button
+          vatiation="primary"
+          disabled={!selectedLists.length}
+          block
+          onClick={this.addProductToSelectedLists}
+        >
           {translate("wishlist-apply", intl)}
         </Button>
       </div>

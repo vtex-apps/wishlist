@@ -1,5 +1,6 @@
 query getList($id: ID){
   list(id: $id) {
+    id
     name
     isPublic
     owner
