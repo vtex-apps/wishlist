@@ -88,7 +88,7 @@ class CreateList extends Component<CreateListProps, CreateListState> {
     return (
       <div className="vh-100">
         <Header title={translate("wishlist-new", intl)} onClose={onClose} />
-        <div className="w-100 gray f5 pv5 pa4">
+        <div className="w-100 gray f5 pv5 ph5">
           <div className="tl">
             <Input
               value={name}
@@ -99,10 +99,10 @@ class CreateList extends Component<CreateListProps, CreateListState> {
           </div>
           <div className="flex flex-row justify-between tl mt5">
             <div className="flex flex-column">
-              <span className="gray mt2">
+              <span className="c-on-base mt1 t-small">
                 <FormattedMessage id="wishlist-is-public" />
               </span>
-              <span className="light-gray">
+              <span className="light-gray mt3">
                 <FormattedMessage id="wishlist-is-public-hint" />
               </span>
             </div>
