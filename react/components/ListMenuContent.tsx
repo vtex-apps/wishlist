@@ -38,6 +38,7 @@ interface ListMenuContentProps {
 
 interface ListMenuContentState {
   isLoading: boolean
+  isAdding?: boolean
   showCreateList?: boolean
   lists: List[]
   selectedLists: number[]
@@ -70,6 +71,7 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
     const { client, product, onClose, onAddToListsSuccess, onAddToListsFail } = this.props
     const { lists, selectedLists } = this.state
     if (client) {
+      this.setState({ isAdding: true })
       Promise.all(map(index => {
         const { id, name, isPublic, owner, items } = lists[index]
         return updateList(client, id, {
@@ -140,7 +142,7 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
 
   private renderFooter = (): ReactNode => {
     const { intl } = this.props
-    const { selectedLists } = this.state
+    const { selectedLists, isAdding } = this.state
     return (
       <div className={wishlist.applyButton}>
         <Button
@@ -148,6 +150,7 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
           disabled={!selectedLists.length}
           block
           onClick={this.addProductToSelectedLists}
+          isLoading={isAdding}
         >
           {translate("wishlist-apply", intl)}
         </Button>
