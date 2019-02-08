@@ -58,8 +58,24 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
       .catch(this.handleAddProductFailed)
   }
 
+  private onAddToListsFail = (): void => {
+    const { showToast, intl } = this.props
+    showToast({ message: translate('wishlist-add-product-fail', intl) })
+  }
+
+  private onAddToListsSuccess = (): void => {
+    const { showToast, intl } = this.props
+    showToast({
+      message: translate('wishlist-product-added-to-list', intl),
+      action: {
+        onClick: () => console.log('redirect to my-lists'),
+        label: translate('wishlist-see-lists', intl)
+      }
+    })
+  }
+
   public render(): ReactNode {
-    const { product, showToast } = this.props
+    const { product } = this.props
     const { showContent, isLoading } = this.state
     return (
       <Fragment>
@@ -71,8 +87,8 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
         </div>
         {showContent && (
           <ListMenu
-            onAddToListsFail={() => showToast({ message: 'Não adicionou às listas' })}
-            onAddToListsSuccess={() => showToast({ message: 'Adicionou a todas listas' })}
+            onAddToListsFail={this.onAddToListsFail}
+            onAddToListsSuccess={this.onAddToListsSuccess}
             product={product}
             onClose={() => this.setState({ showContent: false })}
           />
