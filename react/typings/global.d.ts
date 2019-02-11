@@ -1,1 +1,3 @@
-declare var global: any
+declare global {
+    
+}
