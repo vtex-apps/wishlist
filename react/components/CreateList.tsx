@@ -1,4 +1,4 @@
-import React, { Component, Fragment, ReactNode, FormEvent } from 'react'
+import React, { Component, FormEvent } from 'react'
 import PropTypes from 'prop-types'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { withApollo } from 'react-apollo'
@@ -18,10 +18,7 @@ interface CreateListProps {
 }
 
 interface CreateListState {
-  listData: {
-    name?: string
-    isPublic?: boolean
-  }
+  listData: List
   isLoading: boolean
   isValid: boolean
 }
