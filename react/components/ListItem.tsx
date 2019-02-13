@@ -6,11 +6,6 @@ import {
 } from "vtex.styleguide"
 import classNames from 'classnames'
 
-interface List {
-  name: string
-  isPublic: boolean
-}
-
 interface ListItemProps {
   id: number
   list: List

@@ -8,12 +8,6 @@ import { addProductToDefaultList } from './GraphqlClient'
 import { injectIntl, intlShape } from 'react-intl'
 import { translate } from './utils/translate'
 
-interface Product {
-  productId: string
-  skuId: string
-  quantity: number
-}
-
 interface AddProductBtnProps {
   product: Product
   showToast: ({ }) => void
