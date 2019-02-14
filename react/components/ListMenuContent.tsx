@@ -41,14 +41,14 @@ interface ListMenuContentState {
   isAdding?: boolean
   showCreateList?: boolean
   lists: List[]
-  selectedLists: number[]
+  changedLists: number[]
 }
 
 class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentState> {
   public state: ListMenuContentState = {
     isLoading: true,
     lists: [],
-    selectedLists: []
+    changedLists: []
   }
 
   public componentDidMount(): void {
@@ -67,9 +67,9 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
     this.setState({ showCreateList: false, lists: append(list, lists) })
   }
 
-  private addProductToSelectedLists = (): void => {
+  private addProductTochangedLists = (): void => {
     const { client, product, onClose, onAddToListsSuccess, onAddToListsFail } = this.props
-    const { lists, selectedLists } = this.state
+    const { lists, changedLists } = this.state
     if (client) {
       this.setState({ isAdding: true })
       Promise.all(map(index => {
@@ -78,7 +78,7 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
           name, isPublic, owner,
           items: append(product, ProductsToListItemInput(items))
         })
-      }, selectedLists))
+      }, changedLists))
       .then(() => {
         onClose()
         setTimeout(onAddToListsSuccess, 500)
@@ -104,12 +104,25 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
     return filter(item => item.productId === product.productId && item.skuId === product.skuId, list.items).length > 0
   }
 
+  private updateChangedLists = (listIndex: number): void => {
+    const { changedLists } = this.state
+    if (listIndex !== DEFAULT_LIST_INDEX) {
+      const index = indexOf(listIndex, changedLists)
+      if (index !== -1) {
+        this.setState({ changedLists: remove(index, 1, changedLists) })
+      } else {
+        this.setState({ changedLists: append(listIndex, changedLists) })
+      }
+    }
+  }
+
   private addProductToList = (index: number): void => {
     const { product } = this.props
     const { lists } = this.state
     const list = lists[index]
     const listUpdated = { ...list, items: append(product, list.items) }
     const listsUpdated = update(index, listUpdated, lists)
+    this.updateChangedLists(index)
     this.setState({ lists: listsUpdated })
   }
 
@@ -119,6 +132,7 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
     const list = lists[index]
     const items = filter(item => item.productId !== productId || item.skuId !== skuId, list.items)
     const listsUpdated = update(index, { ...list, items }, lists)
+    this.updateChangedLists(index)
     this.setState({ lists: listsUpdated })
   }
 
@@ -149,14 +163,14 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
 
   private renderFooter = (): ReactNode => {
     const { intl } = this.props
-    const { selectedLists, isAdding } = this.state
+    const { changedLists, isAdding } = this.state
     return (
       <div className={wishlist.applyButton}>
         <Button
           vatiation="primary"
-          disabled={!selectedLists.length}
+          disabled={!changedLists.length}
           block
-          onClick={this.addProductToSelectedLists}
+          onClick={this.addProductTochangedLists}
           isLoading={isAdding}
         >
           {translate("wishlist-apply", intl)}
