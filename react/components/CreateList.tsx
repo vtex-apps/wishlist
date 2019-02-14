@@ -8,7 +8,7 @@ import { createList } from '../GraphqlClient'
 import Header from './Header'
 import { translate } from '../utils/translate';
 
-const LIST_NAME_MINIMUM_LENGTH = 6
+const LIST_NAME_MINIMUM_LENGTH = 1
 
 interface CreateListProps {
   onFinishAdding: (list: any) => void
