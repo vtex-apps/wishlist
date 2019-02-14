@@ -10,7 +10,7 @@ import {
   updateList,
   ProductsToListItemInput
 } from '../GraphqlClient'
-import { map, append, contains, filter, remove, indexOf, update } from 'ramda'
+import { map, append, filter, remove, indexOf, update } from 'ramda'
 import CreateList from './CreateList'
 import Header from './Header'
 import ListItem from './ListItem'
@@ -76,18 +76,18 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
         const { id, name, isPublic, owner, items } = lists[index]
         return updateList(client, id, {
           name, isPublic, owner,
-          items: append(product, ProductsToListItemInput(items))
+          items: ProductsToListItemInput(items)
         })
       }, changedLists))
-      .then(() => {
-        onClose()
-        setTimeout(onAddToListsSuccess, 500)
-      })
-      .catch(err => {
-        console.error('something went wrong', err)
-        onClose()
-        setTimeout(onAddToListsFail, 500)
-      })
+        .then(() => {
+          onClose()
+          setTimeout(onAddToListsSuccess, 500)
+        })
+        .catch(err => {
+          console.error('something went wrong', err)
+          onClose()
+          setTimeout(onAddToListsFail, 500)
+        })
     }
   }
 
@@ -101,7 +101,10 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
 
   private containsProduct = (list: List): boolean => {
     const { product } = this.props
-    return filter(item => item.productId === product.productId && item.skuId === product.skuId, list.items).length > 0
+    return filter(item =>
+      item.productId === product.productId &&
+      item.skuId === product.skuId, list.items)
+      .length > 0
   }
 
   private updateChangedLists = (listIndex: number): void => {
