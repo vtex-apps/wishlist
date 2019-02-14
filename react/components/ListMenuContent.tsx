@@ -10,7 +10,7 @@ import {
   updateList,
   ProductsToListItemInput
 } from '../GraphqlClient'
-import { map, append, contains, remove, indexOf } from 'ramda'
+import { map, append, contains, filter, remove, indexOf, update } from 'ramda'
 import CreateList from './CreateList'
 import Header from './Header'
 import ListItem from './ListItem'
@@ -99,21 +99,27 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
     )
   }
 
-  private isSelected = (index: number): boolean => {
-    const { selectedLists } = this.state
-    return contains(index, selectedLists)
+  private containsProduct = (list: List): boolean => {
+    const { product } = this.props
+    return filter(item => item.productId === product.productId && item.skuId === product.skuId, list.items).length > 0
   }
 
-  private handleListClicked = (listIndex: number): void => {
-    if (listIndex !== DEFAULT_LIST_INDEX) {
-      const { selectedLists } = this.state
-      const index = indexOf(listIndex, selectedLists)
-      if (index !== -1) {
-        this.setState({ selectedLists: remove(index, 1, selectedLists) })
-      } else {
-        this.setState({ selectedLists: append(listIndex, selectedLists) })
-      }
-    }
+  private addProductToList = (index: number): void => {
+    const { product } = this.props
+    const { lists } = this.state
+    const list = lists[index]
+    const listUpdated = { ...list, items: append(product, list.items) }
+    const listsUpdated = update(index, listUpdated, lists)
+    this.setState({ lists: listsUpdated })
+  }
+
+  private removeProductFromList = (index: number): void => {
+    const { product: { productId, skuId } } = this.props
+    const { lists } = this.state
+    const list = lists[index]
+    const items = filter(item => item.productId !== productId || item.skuId !== skuId, list.items)
+    const listsUpdated = update(index, { ...list, items }, lists)
+    this.setState({ lists: listsUpdated })
   }
 
   private renderSwitchLists = (): ReactNode => {
@@ -127,8 +133,9 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
               id={index}
               list={list}
               isDefault={index === DEFAULT_LIST_INDEX}
-              isSelected={index === DEFAULT_LIST_INDEX || this.isSelected(index)}
-              onClick={this.handleListClicked} />
+              isSelected={index === DEFAULT_LIST_INDEX || this.containsProduct(list)}
+              onUnselectedClick={this.addProductToList}
+              onSelectedClick={this.removeProductFromList} />
           ))
         }
       </div>
@@ -160,7 +167,8 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
 
   public render(): ReactNode {
     const { onClose, intl } = this.props
-    const { showCreateList } = this.state
+    const { showCreateList, lists } = this.state
+    console.log('lists', lists)
     return (
       <div className="w-100 bg-black fixed bottom-0 z-max bg-base">
         <Header
