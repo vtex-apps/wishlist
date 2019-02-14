@@ -1,4 +1,5 @@
 import React, { Component, ReactNode, MouseEvent } from 'react'
+import { createPortal } from 'react-dom'
 import PropTypes from 'prop-types'
 import OutsideClickHandler from 'react-outside-click-handler'
 
@@ -24,16 +25,11 @@ export default class Popup extends Component<PopupProps> {
       onOutsideClick,
     } = this.props
 
-    return (
+    return createPortal(
       <OutsideClickHandler onOutsideClick={onOutsideClick}>
-        <div
-          className="vtex-wishlist__box w-100 left-0 h-5 fixed bottom-0 z-9999"
-        >
-          <div className="shadow-3">
-            <div className="mt3 flex flex-column">{children}</div>
-          </div>
-        </div>
-      </OutsideClickHandler>
+        {children}
+      </OutsideClickHandler >,
+      document.body
     )
   }
 }

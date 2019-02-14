@@ -1,7 +1,6 @@
 import React, { Component, ReactNode } from "react"
 import ListMenuContent from './ListMenuContent'
-import { createPortal } from 'react-dom'
-import OutsideClickHandler from 'react-outside-click-handler'
+import BottomBar from './BottomBar'
 
 interface ListMenuProps {
   product: any
@@ -15,11 +14,10 @@ interface ListMenuState { }
 class ListMenu extends Component<ListMenuProps, ListMenuState> {
   public render(): ReactNode {
     const { onClose } = this.props
-    return createPortal(
-      <OutsideClickHandler onOutsideClick={onClose}>
-      <ListMenuContent {...this.props} />
-      </OutsideClickHandler >,
-      document.body
+    return (
+      <BottomBar onOutsideClick={onClose}>
+        <ListMenuContent {...this.props} />
+      </BottomBar>
     )
   }
 }
