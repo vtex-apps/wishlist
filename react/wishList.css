@@ -3,3 +3,7 @@
     padding-bottom: 0.5625em;
     padding-top: 0.5625em;
 }
+
+.contentContainer {
+    max-height: 45vh;
+}
