@@ -8,6 +8,7 @@ import classNames from 'classnames'
 import MenuOptions from './MenuOptions'
 import { translate } from '../utils/translate'
 import { injectIntl, intlShape } from 'react-intl'
+import Dialog from './Dialog'
 
 interface ListItemProps {
   id: number
@@ -20,11 +21,17 @@ interface ListItemProps {
   intl?: intlShape
 }
 
+interface ListItemState {
+  showDeleteDialog?: boolean
+}
+
 class ListItem extends Component<ListItemProps, {}> {
+  public state: ListItemState = {}
+
   private options: Option[] = [
     {
       title: translate('wishlist-option-delete', this.props.intl),
-      onClick: () => this.props.onDeleted(this.props.id)
+      onClick: () => this.setState({ showDeleteDialog: true })
     }
   ]
 
@@ -35,8 +42,11 @@ class ListItem extends Component<ListItemProps, {}> {
       isSelected,
       isDefault,
       onClick,
-      showMenuOptions
+      showMenuOptions,
+      intl,
+      onDeleted
     } = this.props
+    const { showDeleteDialog } = this.state
     const className = classNames('w-100 bt b--muted-4 flex flex-row pv3 ph4 c-muted-3', {
       'bg-muted-5': isDefault
     })
@@ -59,6 +69,13 @@ class ListItem extends Component<ListItemProps, {}> {
               {isSelected && <IconCheck />}
             </div>
           )}
+        {showDeleteDialog && (
+          <Dialog
+          message={`${translate("wishlist-delete-confirmation-message", intl)} "${name}"?`}
+          onClose={() => this.setState({ showDeleteDialog: false })}
+          onSuccess={() => onDeleted(id)}
+          />
+        )}
       </div>
     )
   }

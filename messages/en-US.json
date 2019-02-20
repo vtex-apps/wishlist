@@ -19,5 +19,8 @@
   "wishlist-product-added-to-list": "item adicionado à lista",
   "wishlist-no-list-created": "You have no list created",
   "wishlist-default-list-name": "all items",
-  "wishlist-option-delete": "Delete"
+  "wishlist-option-delete": "Delete",
+  "wishlist-dialog-confirm": "yes",
+  "wishlist-dialog-cancel": "no",
+  "wishlist-delete-confirmation-message": "Are you sure that you wish delete the list"
 }
