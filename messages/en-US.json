@@ -16,5 +16,7 @@
   "wishlist-add-product-fail": "Produto não foi adicionado",
   "wishlist-see": "VER",
   "wishlist-see-lists": "VER LISTAS",
-  "wishlist-product-added-to-list": "item adicionado à lista"
+  "wishlist-product-added-to-list": "item adicionado à lista",
+  "wishlist-no-list-created": "You have no list created",
+  "wishlist-default-list-name": "all items"
 }

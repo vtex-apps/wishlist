@@ -141,6 +141,7 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
 
   private renderSwitchLists = (): ReactNode => {
     const { lists } = this.state
+    const { intl } = this.props
     return (
       <div className="flex flex-column">
         {
@@ -157,7 +158,7 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
         }
         {lists && lists.length <= 1 && (
           <div className="pa6 flex items-center justify-center c-muted-1">
-            <span>You have no lists created</span>
+            <span>{translate("wishlist-no-list-created", intl)}</span>
           </div>
         )}
       </div>

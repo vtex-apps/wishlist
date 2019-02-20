@@ -56,7 +56,7 @@ export const createList = (client: ApolloClient<any>, list: any): Promise<any> =
     }
   })
 
-export const addProductToDefaultList = (client: ApolloClient<any>, product: any) => {
+export const addProductToDefaultList = (listName: string, client: ApolloClient<any>, product: any) => {
   const listsId = getListsIdFromCookies()
   if (listsId && listsId.length) {
     return getList(client, listsId[0]).then((response: any) => {
@@ -71,7 +71,7 @@ export const addProductToDefaultList = (client: ApolloClient<any>, product: any)
     })
   } else {
     return createList(client, {
-      name: 'todos os itens',
+      name: listName,
       items: [product]
     }).then((response: any) =>
       saveListIdInLocalStorage(path(['data', 'createList', 'id'], response) || '')
