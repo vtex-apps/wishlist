@@ -20,4 +20,9 @@ declare global {
     owner?: string
     items?: ListItem[]
   }
+
+  interface Option {
+    title: string
+    onClick: (params?: any) => void
+  }
 }

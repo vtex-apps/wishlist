@@ -18,5 +18,6 @@
   "wishlist-see-lists": "VER LISTAS",
   "wishlist-product-added-to-list": "Item adicionado à lista",
   "wishlist-no-list-created": "Você tem nenhuma lista criada",
-  "wishlist-default-list-name": "todos os items"
+  "wishlist-default-list-name": "todos os items",
+  "wishlist-option-delete": "Excluir"
 }

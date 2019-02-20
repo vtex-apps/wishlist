@@ -7,3 +7,7 @@
 .contentContainer {
     max-height: 45vh;
 }
+
+.popover {
+    top: 100%;
+}
