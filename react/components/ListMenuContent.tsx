@@ -168,7 +168,7 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
     const { intl } = this.props
     const { changedLists, isAdding } = this.state
     return (
-      <div className={wishlist.applyButton}>
+      <div className={`${wishlist.applyButton} overflow-y-auto`}>
         <Button
           vatiation="primary"
           disabled={!changedLists.length}
@@ -184,8 +184,7 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
 
   public render(): ReactNode {
     const { onClose, intl } = this.props
-    const { showCreateList, lists } = this.state
-    console.log('lists', lists)
+    const { showCreateList } = this.state
     return (
       <div className="w-100 bg-black fixed bottom-0 z-max bg-base">
         <Header
@@ -193,7 +192,9 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
           onClose={onClose}
           action={() => this.setState({ showCreateList: true })}
         />
-        {this.renderMainContent()}
+        <div className={wishlist.contentContainer}>
+          {this.renderMainContent()}
+        </div>
         {this.renderFooter()}
         {showCreateList && (
           <CreateList
