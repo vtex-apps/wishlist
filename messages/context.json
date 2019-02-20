@@ -19,5 +19,8 @@
   "wishlist-product-added-to-list": "wishlist-product-added-to-list",
   "wishlist-no-list-created": "wishlist-no-list-created",
   "wishlist-default-list-name": "wishlist-default-list-name",
-  "wishlist-option-delete": "wishlist-option-delete"
+  "wishlist-option-delete": "wishlist-option-delete",
+  "wishlist-dialog-confirm": "wishlist-dialog-confirm",
+  "wishlist-dialog-cancel": "wishlist-dialog-cancel",
+  "wishlist-delete-confirmation-message": "wishlist-delete-confirmation-message"
 }
