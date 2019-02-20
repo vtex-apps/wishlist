@@ -11,6 +11,7 @@ interface ListItemProps {
   list: List
   isDefault: boolean
   isSelected?: boolean
+  onClick?: (id: number, isSelected?: boolean) => void
   onSelectedClick: (id: number) => void
   onUnselectedClick: (id: number) => void
 }

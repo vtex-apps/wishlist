@@ -7,6 +7,7 @@ import { ApolloClient } from "apollo-client"
 import { addProductToDefaultList } from './GraphqlClient'
 import { injectIntl, intlShape } from 'react-intl'
 import { translate } from './utils/translate'
+import Lists from './components/Lists/index'
 
 interface AddProductBtnProps {
   product: Product
@@ -16,8 +17,9 @@ interface AddProductBtnProps {
 }
 
 interface AddProductBtnState {
-  showContent: boolean,
-  isLoading?: boolean,
+  showContent: boolean
+  showLists?: boolean
+  isLoading?: boolean
 }
 
 class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
@@ -62,7 +64,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     showToast({
       message: translate('wishlist-product-added-to-list', intl),
       action: {
-        onClick: () => console.log('redirect to my-lists'),
+        onClick: () => this.setState({ showLists: true }),
         label: translate('wishlist-see-lists', intl)
       }
     })
@@ -70,7 +72,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
 
   public render(): ReactNode {
     const { product } = this.props
-    const { showContent, isLoading } = this.state
+    const { showContent, showLists, isLoading } = this.state
     return (
       <Fragment>
         <div
@@ -86,6 +88,9 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
             product={product}
             onClose={() => this.setState({ showContent: false })}
           />
+        )}
+        {showLists && (
+          <Lists onClose={() => this.setState({ showLists: false })} />
         )}
       </Fragment>
     )

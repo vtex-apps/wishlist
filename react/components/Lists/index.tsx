@@ -1,25 +1,34 @@
 import React, { Component, ReactNode, Fragment } from 'react'
-import ListItem from './ListItem'
+import { createPortal } from 'react-dom'
 import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
 import { FormattedMessage } from 'react-intl'
-import { Spinner, IconClose } from 'vtex.styleguide'
+import { Spinner } from 'vtex.styleguide'
 import { withRuntimeContext } from 'vtex.render-runtime'
-import getList from '../../graphql/queries/getList.gql'
-import { WISHLIST_STORAKE_KEY } from '../../'
-import ReactDOM from 'react-dom'
+import { injectIntl, intlShape } from 'react-intl'
+import { getListsFromLocaleStorage, saveListIdInLocalStorage } from '../../GraphqlClient'
+import { map, append } from 'ramda'
+import { translate } from '../../utils/translate'
+
+import ListItem from '../ListItem'
+import Header from '../Header'
+import CreateList from '../CreateList'
+
+const DEFAULT_LIST_INDEX = 0
 
 interface ListsStates {
   listSelected: null
   lists: any[]
   loading: boolean
   show: boolean
+  showCreateList?: boolean
 }
 
 interface ListsProps {
   lists: any[]
   loadingLists: boolean
   client: ApolloClient<any>
+  intl?: intlShape
   onClose: () => void
 }
 
@@ -31,25 +40,14 @@ class Lists extends Component<ListsProps, ListsStates> {
     show: true,
   }
 
-  public async componentDidMount() {
-    const listsRefs = localStorage.getItem(WISHLIST_STORAKE_KEY)
-    if (!listsRefs) {
-      this.setState({ loading: false })
-    } else {
-      const { client } = this.props
-      const lists = await Promise.all(
-        listsRefs.split(',').map((id: string) => {
-          return client
-            .query({
-              query: getList,
-              variables: { id: id.replace("\"", "").replace("\"", "") },
-            })
-            .then(({ data: { list } }) => ({ ...list, id, loading: false }))
-            .catch(err => console.error('Error:', err))
-        })
-      )
-      this.setState({ lists, loading: false })
-    }
+  public componentDidMount(): void {
+    const { client } = this.props
+    client && getListsFromLocaleStorage(client)
+      .then(response => {
+        const lists = map(item => item.data.list, response)
+        this.setState({ loading: false, lists: lists })
+      })
+      .catch(() => this.setState({ loading: false }))
   }
 
   public goToListDetail = (id: string) => {
@@ -60,45 +58,83 @@ class Lists extends Component<ListsProps, ListsStates> {
     navigate({ to: `/list/${id}` })
   }
 
-  render = (): ReactNode => {
-    const { loading, lists = [], show } = this.state
-    const { onClose } = this.props
-    if (!show) return null
+  private onListCreated = (list: any): void => {
+    const { lists } = this.state
+    saveListIdInLocalStorage(list.id)
+    this.setState({ showCreateList: false, lists: append(list, lists) })
+  }
+
+  private renderLoading = (): ReactNode => {
     return (
-      <aside>
-        <div className="vw-100 vh-100 z-max fixed bg-white" style={{marginTop: "-56px"}}>
-          <div className="w-100 tc ttu f4 pv4 bb c-muted-1 b--muted-2">
-            <div className="pointer h3 absolute nt1 ml3" onClick={() => {this.setState({ show: false }); onClose()}}>
-              <IconClose size={17} />
+      <div className="flex justify-center pt4">
+        <span className="dib c-muted-1">
+          <Spinner color="currentColor" size={20} />
+        </span>
+      </div>
+    )
+  }
+
+  private renderLists = (): ReactNode => {
+    const { lists } = this.state
+    return (
+      <Fragment>
+        {lists.length ?
+          (
+            <div className="bb b--muted-4">
+              {lists.map((list, key) => (
+                <ListItem
+                  key={key}
+                  list={list}
+                  id={key}
+                  isDefault={key === DEFAULT_LIST_INDEX}
+                  onClick={() => {
+                    this.goToListDetail(list.id)
+                  }}
+                />
+              ))}
             </div>
-            <FormattedMessage id="wishlist-my-lists" />
-          </div>
-          {loading && (
-            <div className="flex justify-center pt4">
-              <span className="dib c-muted-1">
-                <Spinner color="currentColor" size={20} />
-              </span>
-            </div>
-          )}
-          {!loading &&
-            lists.map(({ name, id, isPublic }, key) => (
-              <ListItem
-                key={key}
-                name={name}
-                onClick={() => {
-                  this.goToListDetail(id)
-                }}
-                isPublic={isPublic}
-              />
-            ))}
-          {!loading && !lists.length && (
+          ) : (
             <div className="tc pv4 c-muted-2">
               <FormattedMessage id="wishlist-no-lists" />
             </div>
           )}
-        </div>
-      </aside>
+      </Fragment>
+    )
+  }
+
+  private renderContent = (): ReactNode => {
+    const { loading } = this.state
+    return loading ? this.renderLoading() : this.renderLists()
+  }
+
+  render = (): ReactNode => {
+    const { loading, lists = [], show, showCreateList } = this.state
+    const { onClose, intl } = this.props
+    if (!show) return null
+    return createPortal(
+      (
+        <Fragment>
+          <div className="vw-100 vh-100 z-max fixed bg-white top-0">
+            <Header
+              title={translate("wishlist-my-lists", intl)}
+              onClose={onClose}
+              action={() => this.setState({ showCreateList: true })}
+            />
+            {this.renderContent()}
+            {showCreateList && (
+              <div className="fixed vw-100 top-0 bg-base">
+                <CreateList
+                  onClose={() => this.setState({ showCreateList: false })}
+                  onFinishAdding={this.onListCreated}
+                />
+              </div>
+            )}
+          </div>
+
+        </Fragment>
+      ),
+      document.body
     )
   }
 }
-export default withRuntimeContext(withApollo<ListsProps, {}>(Lists))
+export default injectIntl(withRuntimeContext(withApollo<ListsProps, {}>(Lists)))
