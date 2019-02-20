@@ -12,8 +12,6 @@ interface ListItemProps {
   isDefault: boolean
   isSelected?: boolean
   onClick?: (id: number, isSelected?: boolean) => void
-  onSelectedClick: (id: number) => void
-  onUnselectedClick: (id: number) => void
 }
 
 class ListItem extends Component<ListItemProps, {}> {
@@ -23,8 +21,7 @@ class ListItem extends Component<ListItemProps, {}> {
       list: { name, isPublic },
       isSelected,
       isDefault,
-      onSelectedClick,
-      onUnselectedClick
+      onClick
     } = this.props
     const className = classNames('w-100 bt b--muted-4 flex flex-row pv3 ph4 c-muted-3', {
       'bg-muted-5': isDefault
@@ -32,7 +29,7 @@ class ListItem extends Component<ListItemProps, {}> {
     return (
       <div
         className={className}
-        onClick={() => !isDefault && isSelected ? onSelectedClick(id) : onUnselectedClick(id)}
+        onClick={() => onClick && onClick(id, isSelected)}
       >
         <div className="flex items-center ml2">{isPublic ?
           <IconVisibilityOn />
