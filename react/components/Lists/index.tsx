@@ -6,7 +6,11 @@ import { FormattedMessage } from 'react-intl'
 import { Spinner } from 'vtex.styleguide'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import { injectIntl, intlShape } from 'react-intl'
-import { getListsFromLocaleStorage, saveListIdInLocalStorage, deleteList } from '../../GraphqlClient'
+import {
+  getListsFromLocaleStorage,
+  saveListIdInLocalStorage,
+  deleteList
+} from '../../GraphqlClient'
 import { map, append, remove } from 'ramda'
 import { translate } from '../../utils/translate'
 

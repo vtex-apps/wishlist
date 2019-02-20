@@ -3,7 +3,7 @@ import getListQuery from './graphql/queries/getList.gql'
 import updateListMutation from './graphql/mutations/updateList.gql'
 import deleteListMutation from './graphql/mutations/deleteList.gql'
 import { ApolloClient } from 'apollo-client'
-import { append, map, path } from 'ramda'
+import { append, map, path, filter } from 'ramda'
 
 const WISHLIST_STORAKE_KEY = 'vtexwishlists'
 
@@ -16,13 +16,19 @@ interface Product {
 
 const getListsIdFromCookies = () => {
   const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
-  return lists && lists.split(',').map((id: string) => id.replace("\"", "").replace("\"", ""))
+  return (lists && lists.split(',').map((id: string) => id.replace("\"", "").replace("\"", ""))) || []
 }
 
 export const saveListIdInLocalStorage = (id: string): void => {
   const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
   let newLists = lists ? lists + ',' + id : id
   localStorage.setItem(WISHLIST_STORAKE_KEY, newLists)
+}
+
+export const removeListIdFromLocalStorage = (listId: string): void => {
+  const listsId = getListsIdFromCookies()
+  const listsIdWithoutRemoved = filter(id => id !== listId, listsId)
+  localStorage.setItem(WISHLIST_STORAKE_KEY, listsIdWithoutRemoved.toString())
 }
 
 export const ProductsToListItemInput = (items: any): any => (
@@ -93,5 +99,5 @@ export const deleteList = (client: ApolloClient<any>, listId: string): Promise<a
   return client.mutate({
     mutation: deleteListMutation,
     variables: { id: listId }
-  })
+  }).then(() => removeListIdFromLocalStorage(listId))
 }
