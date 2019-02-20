@@ -155,6 +155,11 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
               onSelectedClick={this.removeProductFromList} />
           ))
         }
+        {lists && lists.length <= 1 && (
+          <div className="pa6 flex items-center justify-center c-muted-1">
+            <span>You have no lists created</span>
+          </div>
+        )}
       </div>
     )
   }
@@ -168,7 +173,7 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
     const { intl } = this.props
     const { changedLists, isAdding } = this.state
     return (
-      <div className={`${wishlist.applyButton} overflow-y-auto`}>
+      <div className={wishlist.applyButton}>
         <Button
           vatiation="primary"
           disabled={!changedLists.length}
@@ -192,7 +197,7 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
           onClose={onClose}
           action={() => this.setState({ showCreateList: true })}
         />
-        <div className={wishlist.contentContainer}>
+        <div className={`${wishlist.contentContainer} overflow-y-auto`}>
           {this.renderMainContent()}
         </div>
         {this.renderFooter()}

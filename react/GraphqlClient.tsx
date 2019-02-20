@@ -71,7 +71,7 @@ export const addProductToDefaultList = (client: ApolloClient<any>, product: any)
     })
   } else {
     return createList(client, {
-      name: 'DefaultList',
+      name: 'todos os itens',
       items: [product]
     }).then((response: any) =>
       saveListIdInLocalStorage(path(['data', 'createList', 'id'], response) || '')
