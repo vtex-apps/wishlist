@@ -43,8 +43,8 @@ class Dialog extends Component<DialogProps, DialogState> {
                   <Button
                     variation="primary"
                     size="small"
-                    onClick={onSuccess}
-                    isLoadind={isLoading}
+                    onClick={() => { this.setState({ isLoading: true }); onSuccess() }}
+                    isLoading={isLoading}
                   >
                     {translate("wishlist-dialog-confirm", intl)}
                   </Button>
