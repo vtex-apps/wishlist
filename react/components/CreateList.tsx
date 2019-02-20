@@ -43,7 +43,7 @@ class CreateList extends Component<CreateListProps, CreateListState> {
         this.props.onFinishAdding(response.data.createList)
       })
       .catch(err => {
-        console.log('something went wrong', err)
+        console.error('something went wrong', err)
       })
   }
 
