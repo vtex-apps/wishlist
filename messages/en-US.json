@@ -22,5 +22,6 @@
   "wishlist-option-delete": "Delete",
   "wishlist-dialog-confirm": "yes",
   "wishlist-dialog-cancel": "no",
-  "wishlist-delete-confirmation-message": "Are you sure that you wish delete the list"
+  "wishlist-delete-confirmation-message": "Are you sure that you wish delete the list",
+  "wishlist-option-configuration": "Configuration"
 }

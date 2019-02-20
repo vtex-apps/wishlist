@@ -30,9 +30,13 @@ class ListItem extends Component<ListItemProps, {}> {
 
   private options: Option[] = [
     {
+      title: translate('wishlist-option-configuration', this.props.intl),
+      onClick: () => console.log('Go to configuration')
+    },
+    {
       title: translate('wishlist-option-delete', this.props.intl),
       onClick: () => this.setState({ showDeleteDialog: true })
-    }
+    },
   ]
 
   public render(): ReactNode {
