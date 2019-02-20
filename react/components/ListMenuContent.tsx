@@ -68,7 +68,7 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
   }
 
   private addProductTochangedLists = (): void => {
-    const { client, product, onClose, onAddToListsSuccess, onAddToListsFail } = this.props
+    const { client, onClose, onAddToListsSuccess, onAddToListsFail } = this.props
     const { lists, changedLists } = this.state
     if (client) {
       this.setState({ isAdding: true })
@@ -107,36 +107,37 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
       .length > 0
   }
 
-  private updateChangedLists = (listIndex: number): void => {
+  private updateChangedLists = (listIndex: number, isSelected?: boolean): void => {
     const { changedLists } = this.state
     if (listIndex !== DEFAULT_LIST_INDEX) {
       const index = indexOf(listIndex, changedLists)
+      const listsUpdated = !isSelected ?
+        this.addProductToList(listIndex) :
+        this.removeProductFromList(listIndex)
+      let changedListsUpdated: any = []
       if (index !== -1) {
-        this.setState({ changedLists: remove(index, 1, changedLists) })
+        changedListsUpdated = remove(index, 1, changedLists)
       } else {
-        this.setState({ changedLists: append(listIndex, changedLists) })
+        changedListsUpdated = append(listIndex, changedLists)
       }
+      this.setState({ changedLists: changedListsUpdated, lists: listsUpdated })
     }
   }
 
-  private addProductToList = (index: number): void => {
+  private addProductToList = (index: number): List[] => {
     const { product } = this.props
     const { lists } = this.state
     const list = lists[index]
     const listUpdated = { ...list, items: append(product, list.items) }
-    const listsUpdated = update(index, listUpdated, lists)
-    this.updateChangedLists(index)
-    this.setState({ lists: listsUpdated })
+    return update(index, listUpdated, lists)
   }
 
-  private removeProductFromList = (index: number): void => {
+  private removeProductFromList = (index: number): List[] => {
     const { product: { productId, skuId } } = this.props
     const { lists } = this.state
     const list = lists[index]
     const items = filter(item => item.productId !== productId || item.skuId !== skuId, list.items)
-    const listsUpdated = update(index, { ...list, items }, lists)
-    this.updateChangedLists(index)
-    this.setState({ lists: listsUpdated })
+    return update(index, { ...list, items }, lists)
   }
 
   private renderSwitchLists = (): ReactNode => {
@@ -152,8 +153,7 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
               list={list}
               isDefault={index === DEFAULT_LIST_INDEX}
               isSelected={index === DEFAULT_LIST_INDEX || this.containsProduct(list)}
-              onUnselectedClick={this.addProductToList}
-              onSelectedClick={this.removeProductFromList} />
+              onClick={this.updateChangedLists} />
           ))
         }
         {lists && lists.length <= 1 && (

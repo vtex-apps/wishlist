@@ -87,9 +87,7 @@ class Lists extends Component<ListsProps, ListsStates> {
                   list={list}
                   id={key}
                   isDefault={key === DEFAULT_LIST_INDEX}
-                  onClick={() => {
-                    this.goToListDetail(list.id)
-                  }}
+                  onClick={() => console.log('Go to list details')}
                 />
               ))}
             </div>
@@ -108,7 +106,7 @@ class Lists extends Component<ListsProps, ListsStates> {
   }
 
   render = (): ReactNode => {
-    const { loading, lists = [], show, showCreateList } = this.state
+    const { show, showCreateList } = this.state
     const { onClose, intl } = this.props
     if (!show) return null
     return createPortal(
