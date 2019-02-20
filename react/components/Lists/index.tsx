@@ -6,8 +6,8 @@ import { FormattedMessage } from 'react-intl'
 import { Spinner } from 'vtex.styleguide'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import { injectIntl, intlShape } from 'react-intl'
-import { getListsFromLocaleStorage, saveListIdInLocalStorage } from '../../GraphqlClient'
-import { map, append } from 'ramda'
+import { getListsFromLocaleStorage, saveListIdInLocalStorage, deleteList } from '../../GraphqlClient'
+import { map, append, remove } from 'ramda'
 import { translate } from '../../utils/translate'
 
 import ListItem from '../ListItem'
@@ -50,6 +50,17 @@ class Lists extends Component<ListsProps, ListsStates> {
       .catch(() => this.setState({ loading: false }))
   }
 
+  private handleDeleteList = (index: number): void => {
+    const { lists } = this.state
+    const { client } = this.props
+    const listToBeDeletedId = lists[index].id
+    deleteList(client, listToBeDeletedId)
+    .then(() => {
+      this.setState({ lists: remove(index, 1, lists) })
+    })
+    .catch(err => console.error('something went wrong', err))
+  }
+
   public goToListDetail = (id: string) => {
     this.setState({ show: false })
     const {
@@ -89,7 +100,7 @@ class Lists extends Component<ListsProps, ListsStates> {
                   isDefault={key === DEFAULT_LIST_INDEX}
                   onClick={() => console.log('Go to list details')}
                   showMenuOptions
-                  onDeleted={(index: number) => console.log('list deleted:', index)}
+                  onDeleted={this.handleDeleteList}
                 />
               ))}
             </div>

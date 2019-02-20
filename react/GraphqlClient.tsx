@@ -1,6 +1,7 @@
 import createListMutation from './graphql/mutations/createList.gql'
 import getListQuery from './graphql/queries/getList.gql'
 import updateListMutation from './graphql/mutations/updateList.gql'
+import deleteListMutation from './graphql/mutations/deleteList.gql'
 import { ApolloClient } from 'apollo-client'
 import { append, map, path } from 'ramda'
 
@@ -86,4 +87,11 @@ export const getListsFromLocaleStorage = (client: ApolloClient<any>): Promise<an
       return getList(client, id)
     }, listsId)
   )
+}
+
+export const deleteList = (client: ApolloClient<any>, listId: string): Promise<any> => {
+  return client.mutate({
+    mutation: deleteListMutation,
+    variables: { id: listId }
+  })
 }
