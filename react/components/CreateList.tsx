@@ -26,9 +26,11 @@ class CreateList extends Component<CreateListProps, CreateListState> {
 
   public onSubmit = (listData: List): void => {
     const { client } = this.props
+    this.setState({ isLoading: true })
     client && createList(client, { ...listData, items: [] })
       .then(response => {
         this.props.onFinishAdding(response.data.createList)
+        this.setState({ isLoading: false })
       })
       .catch(err => {
         console.error('something went wrong', err)
