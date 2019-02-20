@@ -45,9 +45,9 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   }
 
   private onAddProductClick = (): void => {
-    const { client, product } = this.props
+    const { client, product, intl } = this.props
     this.setState({ isLoading: true })
-    addProductToDefaultList(client, product)
+    addProductToDefaultList(translate("wishlist-default-list-name", intl), client, product)
       .then(this.handleAddProductSuccess)
       .catch(this.handleAddProductFailed)
   }
