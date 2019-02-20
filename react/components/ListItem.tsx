@@ -5,6 +5,9 @@ import {
   IconVisibilityOn
 } from "vtex.styleguide"
 import classNames from 'classnames'
+import MenuOptions from './MenuOptions'
+import { translate } from '../utils/translate'
+import { injectIntl, intlShape } from 'react-intl'
 
 interface ListItemProps {
   id: number
@@ -12,16 +15,27 @@ interface ListItemProps {
   isDefault: boolean
   isSelected?: boolean
   onClick?: (id: number, isSelected?: boolean) => void
+  showMenuOptions?: boolean,
+  onDeleted: (index: number) => void
+  intl?: intlShape
 }
 
 class ListItem extends Component<ListItemProps, {}> {
+  private options: Option[] = [
+    {
+      title: translate('wishlist-option-delete', this.props.intl),
+      onClick: () => this.props.onDeleted(this.props.id)
+    }
+  ]
+
   public render(): ReactNode {
     const {
       id,
       list: { name, isPublic },
       isSelected,
       isDefault,
-      onClick
+      onClick,
+      showMenuOptions
     } = this.props
     const className = classNames('w-100 bt b--muted-4 flex flex-row pv3 ph4 c-muted-3', {
       'bg-muted-5': isDefault
@@ -38,12 +52,16 @@ class ListItem extends Component<ListItemProps, {}> {
         }
         </div>
         <span className="w-100 mh4 mv1 c-muted-1">{name}</span>
-        <div className="flex items-center c-action-primary">
-          {isSelected && <IconCheck />}
-        </div>
+        {showMenuOptions ? (
+          <MenuOptions options={this.options} />
+        ) : (
+            <div className="flex items-center c-action-primary">
+              {isSelected && <IconCheck />}
+            </div>
+          )}
       </div>
     )
   }
 }
 
-export default ListItem
+export default injectIntl(ListItem)

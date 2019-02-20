@@ -88,6 +88,8 @@ class Lists extends Component<ListsProps, ListsStates> {
                   id={key}
                   isDefault={key === DEFAULT_LIST_INDEX}
                   onClick={() => console.log('Go to list details')}
+                  showMenuOptions
+                  onDeleted={(index: number) => console.log('list deleted:', index)}
                 />
               ))}
             </div>
