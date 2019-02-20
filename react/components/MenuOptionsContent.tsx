@@ -12,7 +12,7 @@ class MenuOptionsContent extends Component<MenuOptionsContentProps, {}> {
     const { onClose, options } = this.props
     return (
       <Popover onOutsideClick={onClose}>
-        <div className="bg-base shadow-3">
+        <div className="bg-base shadow-3" onClick={onClose}>
           {map(item => (
             <div
               key={item.title}
