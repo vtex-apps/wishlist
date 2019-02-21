@@ -31,15 +31,6 @@ export const removeListIdFromLocalStorage = (listId: string): void => {
   localStorage.setItem(WISHLIST_STORAKE_KEY, listsIdWithoutRemoved.toString())
 }
 
-export const ProductsToListItemInput = (items: any): any => (
-  map((product: Product) => ({
-    itemId: product.id,
-    skuId: product.skuId,
-    productId: product.productId,
-    quantity: product.quantity
-  }), items)
-)
-
 export const getList = (client: ApolloClient<any>, id: string): Promise<any> => {
   return client.query({
     query: getListQuery,
@@ -48,10 +39,17 @@ export const getList = (client: ApolloClient<any>, id: string): Promise<any> => 
   })
 }
 
-export const updateList = (client: ApolloClient<any>, id: string, list: any): Promise<any> => {
+export const updateList = (client: ApolloClient<any>, id: string, { name, isPublic, items }: List): Promise<any> => {
   return client.mutate({
     mutation: updateListMutation,
-    variables: { id: id, list: list }
+    variables: {
+      id,
+      list: {
+        name,
+        isPublic,
+        items
+      }
+    }
   })
 }
 
@@ -71,9 +69,10 @@ export const addProductToDefaultList = (listName: string, client: ApolloClient<a
       return updateList(
         client,
         listsId[0],
-        { 
+        {
           name: list.name,
-          items: append(product, ProductsToListItemInput(list.items)) }
+          items: append(product, list.items)
+        }
       )
     })
   } else {

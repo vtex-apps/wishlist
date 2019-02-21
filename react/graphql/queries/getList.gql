@@ -9,9 +9,6 @@ query getList($id: ID){
       productId
       skuId
       quantity
-      product {
-        productName
-      }
     }
   }
 }

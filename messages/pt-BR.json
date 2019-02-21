@@ -23,5 +23,6 @@
   "wishlist-dialog-confirm": "sim",
   "wishlist-dialog-cancel": "não",
   "wishlist-delete-confirmation-message": "Você tem certeza que deseja excluir a lista",
-  "wishlist-option-configuration": "Configuração"
+  "wishlist-option-configuration": "Configuração",
+  "wishlist-save": "Salvar"
 }

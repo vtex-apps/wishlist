@@ -11,21 +11,23 @@ import {
   saveListIdInLocalStorage,
   deleteList
 } from '../../GraphqlClient'
-import { map, append, remove } from 'ramda'
+import { map, append, remove, update } from 'ramda'
 import { translate } from '../../utils/translate'
 
 import ListItem from '../ListItem'
 import Header from '../Header'
 import CreateList from '../CreateList'
+import UpdateList from '../UpdateList'
 
 const DEFAULT_LIST_INDEX = 0
 
 interface ListsStates {
-  listSelected: null
+  listSelected: number
   lists: any[]
   loading: boolean
   show: boolean
   showCreateList?: boolean
+  showUpdateList?: boolean
 }
 
 interface ListsProps {
@@ -40,8 +42,8 @@ class Lists extends Component<ListsProps, ListsStates> {
   state: ListsStates = {
     lists: [],
     loading: true,
-    listSelected: null,
     show: true,
+    listSelected: -1
   }
 
   public componentDidMount(): void {
@@ -59,10 +61,14 @@ class Lists extends Component<ListsProps, ListsStates> {
     const { client } = this.props
     const listToBeDeletedId = lists[index].id
     deleteList(client, listToBeDeletedId)
-    .then(() => {
-      this.setState({ lists: remove(index, 1, lists) })
-    })
-    .catch(err => console.error('something went wrong', err))
+      .then(() => {
+        this.setState({ lists: remove(index, 1, lists) })
+      })
+      .catch(err => console.error('something went wrong', err))
+  }
+
+  private handleUpdateList = (index: number): void => {
+    this.setState({ listSelected: index, showUpdateList: true })
   }
 
   public goToListDetail = (id: string) => {
@@ -77,6 +83,11 @@ class Lists extends Component<ListsProps, ListsStates> {
     const { lists } = this.state
     saveListIdInLocalStorage(list.id)
     this.setState({ showCreateList: false, lists: append(list, lists) })
+  }
+
+  private onListUpdated = (list: any): void => {
+    const { lists, listSelected } = this.state
+    this.setState({ lists: update(listSelected, list, lists), showUpdateList: false })
   }
 
   private renderLoading = (): ReactNode => {
@@ -105,6 +116,7 @@ class Lists extends Component<ListsProps, ListsStates> {
                   onClick={() => console.log('Go to list details')}
                   showMenuOptions
                   onDeleted={this.handleDeleteList}
+                  onUpdated={this.handleUpdateList}
                 />
               ))}
             </div>
@@ -123,7 +135,7 @@ class Lists extends Component<ListsProps, ListsStates> {
   }
 
   render = (): ReactNode => {
-    const { show, showCreateList } = this.state
+    const { show, showCreateList, showUpdateList, listSelected, lists } = this.state
     const { onClose, intl } = this.props
     if (!show) return null
     return createPortal(
@@ -141,6 +153,15 @@ class Lists extends Component<ListsProps, ListsStates> {
                 <CreateList
                   onClose={() => this.setState({ showCreateList: false })}
                   onFinishAdding={this.onListCreated}
+                />
+              </div>
+            )}
+            {showUpdateList && (
+              <div className="fixed vw-100 top-0 left-0 bg-base">
+                <UpdateList
+                  onClose={() => this.setState({ showUpdateList: false })}
+                  list={lists[listSelected]}
+                  onFinishUpdate={this.onListUpdated}
                 />
               </div>
             )}
