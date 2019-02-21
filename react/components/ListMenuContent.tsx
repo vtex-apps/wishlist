@@ -7,8 +7,7 @@ import { ApolloClient } from 'apollo-client'
 import {
   getListsFromLocaleStorage,
   saveListIdInLocalStorage,
-  updateList,
-  ProductsToListItemInput
+  updateList
 } from '../GraphqlClient'
 import { map, append, filter, remove, indexOf, update } from 'ramda'
 import CreateList from './CreateList'
@@ -73,11 +72,8 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
     if (client) {
       this.setState({ isAdding: true })
       Promise.all(map(index => {
-        const { id, name, isPublic, owner, items } = lists[index]
-        return updateList(client, id, {
-          name, isPublic, owner,
-          items: ProductsToListItemInput(items)
-        })
+        const { id } = lists[index]
+        return updateList(client, id, { ...lists[index] })
       }, changedLists))
         .then(() => {
           onClose()

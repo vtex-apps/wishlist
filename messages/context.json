@@ -23,5 +23,6 @@
   "wishlist-dialog-confirm": "wishlist-dialog-confirm",
   "wishlist-dialog-cancel": "wishlist-dialog-cancel",
   "wishlist-delete-confirmation-message": "wishlist-delete-confirmation-message",
-  "wishlist-option-configuration": "wishlist-option-configuration"
+  "wishlist-option-configuration": "wishlist-option-configuration",
+  "wishlist-save": "wishlist-save"
 }

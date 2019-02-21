@@ -18,6 +18,7 @@ interface ListItemProps {
   onClick?: (id: number, isSelected?: boolean) => void
   showMenuOptions?: boolean,
   onDeleted: (index: number) => void
+  onUpdated: (index: number) => void
   intl?: intlShape
 }
 
@@ -31,7 +32,7 @@ class ListItem extends Component<ListItemProps, {}> {
   private options: Option[] = [
     {
       title: translate('wishlist-option-configuration', this.props.intl),
-      onClick: () => console.log('Go to configuration')
+      onClick: () => this.props.onUpdated(this.props.id)
     },
     {
       title: translate('wishlist-option-delete', this.props.intl),

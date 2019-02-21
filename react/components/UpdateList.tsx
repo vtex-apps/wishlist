@@ -2,34 +2,35 @@ import React, { Component } from 'react'
 import { injectIntl } from 'react-intl'
 import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
-import { createList } from '../GraphqlClient'
+import { updateList } from '../GraphqlClient'
 import Header from './Header'
 import { translate } from '../utils/translate'
 import ListForm from './ListForm'
 
-interface CreateListProps {
-  onFinishAdding: (list: List) => void
+interface UpdateListProps {
+  list: List
+  onFinishUpdate: (list: any) => void
   onClose: () => void
   intl?: any
   client?: ApolloClient<any>
 }
 
-interface CreateListState {
+interface UpdateListState {
   isLoading?: boolean
 }
 
 /**
  * Wishlist element to add product to a list
  */
-class CreateList extends Component<CreateListProps, CreateListState> {
-  public state: CreateListState = {}
+class UpdateList extends Component<UpdateListProps, UpdateListState> {
+  public state: UpdateListState = {}
 
-  public onSubmit = (listData: List): void => {
-    const { client } = this.props
+  public onSubmit = ({ name, isPublic }: List): void => {
+    const { client, list: { id }, list } = this.props
     this.setState({ isLoading: true })
-    client && createList(client, { ...listData, items: [] })
+    client && updateList(client, id, { ...list, name, isPublic })
       .then(response => {
-        this.props.onFinishAdding(response.data.createList)
+        this.props.onFinishUpdate(response.data.updateList)
         this.setState({ isLoading: false })
       })
       .catch(err => {
@@ -38,13 +39,14 @@ class CreateList extends Component<CreateListProps, CreateListState> {
   }
 
   public render() {
-    const { onClose, intl } = this.props
+    const { onClose, intl, list } = this.props
     const { isLoading } = this.state
     return (
       <div className="vh-100">
-        <Header title={translate("wishlist-new", intl)} onClose={onClose} />
+        <Header title={translate("wishlist-option-configuration", intl)} onClose={onClose} />
         <ListForm
-          buttonLabel={translate("wishlist-add-button", intl)}
+          list={list}
+          buttonLabel={translate("wishlist-save", intl)}
           onSubmit={this.onSubmit}
           isLoading={isLoading}
         />
@@ -53,4 +55,4 @@ class CreateList extends Component<CreateListProps, CreateListState> {
   }
 }
 
-export default withApollo<CreateListProps, {}>(injectIntl(CreateList))
+export default withApollo<UpdateListProps, {}>(injectIntl(UpdateList))

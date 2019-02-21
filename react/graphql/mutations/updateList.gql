@@ -9,9 +9,6 @@ mutation updateList($id: ID!, $list: ListInput) {
       productId
       skuId
       quantity
-      product {
-        productName
-      }
     }
   }
 }
