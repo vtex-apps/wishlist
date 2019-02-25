@@ -10,7 +10,7 @@ import {
   saveListIdInLocalStorage,
   deleteList
 } from '../../GraphqlClient'
-import { map, append, remove, update } from 'ramda'
+import { map, append, filter, update } from 'ramda'
 import { translate } from '../../utils/translate'
 
 import ListItem from '../ListItem'
@@ -58,13 +58,12 @@ class Lists extends Component<ListsProps, ListsStates> {
       .catch(() => this.setState({ loading: false }))
   }
 
-  private handleDeleteList = (index: number): void => {
+  private handleDeleteList = (listId: string): Promise<any> => {
     const { lists } = this.state
     const { client } = this.props
-    const listToBeDeletedId = lists[index].id
-    deleteList(client, listToBeDeletedId)
-      .then(() => {
-        this.setState({ lists: remove(index, 1, lists) })
+    return deleteList(client, listId)
+      .then(response => {
+        this.setState({ lists: filter(list => list.id !== listId, lists) })
       })
       .catch(err => console.error('something went wrong', err))
   }

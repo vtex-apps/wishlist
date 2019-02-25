@@ -17,7 +17,7 @@ interface ListItemProps {
   isSelected?: boolean
   onClick?: (id: number, isSelected?: boolean) => void
   showMenuOptions?: boolean,
-  onDeleted: (index: number) => void
+  onDeleted: (listId: string) => Promise<any>
   onUpdated: (index: number) => void
   intl?: intlShape
 }
@@ -43,7 +43,7 @@ class ListItem extends Component<ListItemProps, {}> {
   public render(): ReactNode {
     const {
       id,
-      list: { name, isPublic },
+      list: { name, isPublic, id: listId },
       isSelected,
       isDefault,
       onClick,
@@ -80,7 +80,10 @@ class ListItem extends Component<ListItemProps, {}> {
           <Dialog
             message={`${translate("wishlist-delete-confirmation-message", intl)} "${name}"?`}
             onClose={() => this.setState({ showDeleteDialog: false })}
-            onSuccess={() => onDeleted(id)}
+            onSuccess={() => onDeleted(listId)
+              .then(() => this.setState({ showDeleteDialog: false }))
+              .catch(() => this.setState({ showDeleteDialog: false }))
+            }
           />
         )}
       </div>

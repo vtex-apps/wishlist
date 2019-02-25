@@ -9,6 +9,8 @@ import { map, path } from 'ramda'
 import { orderFormConsumer } from 'vtex.store-resources/OrderFormContext'
 import Header from '../Header'
 import renderLoading from '../Loading'
+import MenuOptions from '../MenuOptions'
+import { translate } from '../../utils/translate'
 
 import { getListDetailed } from '../../GraphqlClient'
 
@@ -31,11 +33,21 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
     isLoading: true
   }
 
+  private options: Option[] = [
+    {
+      title: translate('wishlist-option-configuration', this.props.intl),
+      onClick: () => console.log('configuration')
+    },
+    {
+      title: translate('wishlist-option-delete', this.props.intl),
+      onClick: () => console.log('delete')
+    },
+  ]
+
   public componentDidMount(): void {
     const { listId, client } = this.props
     client && getListDetailed(client, listId)
       .then(response => {
-        console.log('list with details', response)
         this.setState({ list: response.data.list, isLoading: false })
       })
       .catch(err => console.error('Something went wrong', err))
@@ -91,20 +103,50 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
       })
   }
 
-  private renderContent = (): ReactNode => {
+  private renderItems = (): ReactNode => {
     const { list: { items } } = this.state
-    console.log(items)
+    return (items && items.length > 0) ? (
+      <div>
+        {map(item => (
+          <div>
+            {/* TODO: Use the product-summary as Extension point */}
+            {item.product.productName}
+          </div>
+        ), items)}
+      </div>
+    ) : (
+        <div>
+          There is no product added to this list
+      </div>
+      )
+  }
+
+  private renderFooter = (): ReactNode => {
     return (
-      <div>oi</div>
+      <div>
+        This is the footer
+      </div>
+    )
+  }
+
+  private renderContent = (): ReactNode => {
+    const { list: { name } } = this.state
+    const { onClose } = this.props
+    return (
+      <Fragment>
+        <Header title={name} onClose={onClose}>
+          <MenuOptions options={this.options} />
+        </Header>
+        {this.renderItems()}
+        {this.renderFooter()}
+      </Fragment>
     )
   }
 
   public render(): ReactNode {
-    const { isLoading, list } = this.state
-    const { onClose } = this.props
+    const { isLoading } = this.state
     return (
       <div className="vh-100">
-        <Header title={list ? list.name : 'List details'} onClose={onClose} />
         {isLoading ? renderLoading() : this.renderContent()}
       </div>
     )
