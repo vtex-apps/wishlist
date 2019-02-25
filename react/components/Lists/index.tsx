@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom'
 import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
 import { FormattedMessage } from 'react-intl'
-import { Spinner } from 'vtex.styleguide'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import { injectIntl, intlShape } from 'react-intl'
 import {
@@ -18,6 +17,8 @@ import ListItem from '../ListItem'
 import Header from '../Header'
 import CreateList from '../CreateList'
 import UpdateList from '../UpdateList'
+import renderLoading from '../Loading'
+import ListDetails from '../ListDetails/index'
 
 const DEFAULT_LIST_INDEX = 0
 
@@ -28,6 +29,7 @@ interface ListsStates {
   show: boolean
   showCreateList?: boolean
   showUpdateList?: boolean
+  showListDetails?: boolean
 }
 
 interface ListsProps {
@@ -90,16 +92,6 @@ class Lists extends Component<ListsProps, ListsStates> {
     this.setState({ lists: update(listSelected, list, lists), showUpdateList: false })
   }
 
-  private renderLoading = (): ReactNode => {
-    return (
-      <div className="flex justify-center pt4">
-        <span className="dib c-muted-1">
-          <Spinner color="currentColor" size={20} />
-        </span>
-      </div>
-    )
-  }
-
   private renderLists = (): ReactNode => {
     const { lists } = this.state
     return (
@@ -113,7 +105,7 @@ class Lists extends Component<ListsProps, ListsStates> {
                   list={list}
                   id={key}
                   isDefault={key === DEFAULT_LIST_INDEX}
-                  onClick={() => console.log('Go to list details')}
+                  onClick={() => this.setState({ showListDetails: true })}
                   showMenuOptions
                   onDeleted={this.handleDeleteList}
                   onUpdated={this.handleUpdateList}
@@ -131,11 +123,18 @@ class Lists extends Component<ListsProps, ListsStates> {
 
   private renderContent = (): ReactNode => {
     const { loading } = this.state
-    return loading ? this.renderLoading() : this.renderLists()
+    return loading ? renderLoading() : this.renderLists()
   }
 
   render = (): ReactNode => {
-    const { show, showCreateList, showUpdateList, listSelected, lists } = this.state
+    const {
+      show,
+      showCreateList,
+      showUpdateList,
+      showListDetails,
+      listSelected,
+      lists
+    } = this.state
     const { onClose, intl } = this.props
     if (!show) return null
     return createPortal(
@@ -156,12 +155,20 @@ class Lists extends Component<ListsProps, ListsStates> {
                 />
               </div>
             )}
-            {showUpdateList && (
+            {false && (
               <div className="fixed vw-100 top-0 left-0 bg-base">
                 <UpdateList
                   onClose={() => this.setState({ showUpdateList: false })}
                   list={lists[listSelected]}
                   onFinishUpdate={this.onListUpdated}
+                />
+              </div>
+            )}
+            {showListDetails && (
+              <div className="fixed vw-100 top-0 left-0 bg-base">
+                <ListDetails
+                  onClose={() => this.setState({ showListDetails: false })}
+                  listId={lists[listSelected].id}
                 />
               </div>
             )}
