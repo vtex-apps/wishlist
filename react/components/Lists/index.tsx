@@ -73,14 +73,6 @@ class Lists extends Component<ListsProps, ListsStates> {
     this.setState({ listSelected: index, showUpdateList: true })
   }
 
-  public goToListDetail = (id: string) => {
-    this.setState({ show: false })
-    const {
-      runtime: { navigate },
-    } = this.props
-    navigate({ to: `/list/${id}` })
-  }
-
   private onListCreated = (list: any): void => {
     const { lists } = this.state
     saveListIdInLocalStorage(list.id)
@@ -155,7 +147,7 @@ class Lists extends Component<ListsProps, ListsStates> {
                 />
               </div>
             )}
-            {false && (
+            {showUpdateList && (
               <div className="fixed vw-100 top-0 left-0 bg-base">
                 <UpdateList
                   onClose={() => this.setState({ showUpdateList: false })}
