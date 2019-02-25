@@ -103,22 +103,30 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
       })
   }
 
+  private renderListEmpty = (): ReactNode => {
+    return (
+      <div className="flex-column">
+        {"There is no product added to this list"}
+      </div>
+    )
+  }
+
   private renderItems = (): ReactNode => {
     const { list: { items } } = this.state
-    return (items && items.length > 0) ? (
-      <div>
-        {map(item => (
-          <div>
-            {/* TODO: Use the product-summary as Extension point */}
-            {item.product.productName}
-          </div>
-        ), items)}
+    return (
+      <div className="h-100 overflow-y">
+        {(items && items.length > 0) ? (
+          <Fragment>
+            {map(item => (
+              <div>
+                {/* TODO: Use the product-summary as Extension point */}
+                {item.product.productName}
+              </div>
+            ), items)}
+          </Fragment>
+        ) : this.renderListEmpty()}
       </div>
-    ) : (
-        <div>
-          There is no product added to this list
-      </div>
-      )
+    )
   }
 
   private renderFooter = (): ReactNode => {
@@ -146,7 +154,7 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
   public render(): ReactNode {
     const { isLoading } = this.state
     return (
-      <div className="vh-100">
+      <div className="vh-100 flex flex-column">
         {isLoading ? renderLoading() : this.renderContent()}
       </div>
     )
