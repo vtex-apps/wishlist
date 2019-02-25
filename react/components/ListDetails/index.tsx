@@ -1,55 +1,44 @@
 import React, { Component, ReactNode, Fragment } from 'react'
-import { withRuntimeContext, ExtensionPoint } from 'vtex.render-runtime'
+// import { ExtensionPoint } from 'vtex.render-runtime'
 import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
-import { FormattedMessage } from 'react-intl'
-import { head, map, path, pick, prop } from 'ramda'
-import { Button, Spinner } from 'vtex.styleguide'
-import ProductPrice from 'vtex.store-components/ProductPrice'
-import {
-  orderFormConsumer,
-  contextPropTypes,
-} from 'vtex.store-resources/OrderFormContext'
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl'
+import { map, path } from 'ramda'
+// import { Button, Spinner } from 'vtex.styleguide'
+// import ProductPrice from 'vtex.store-components/ProductPrice'
+import { orderFormConsumer } from 'vtex.store-resources/OrderFormContext'
+import Header from '../Header'
+import renderLoading from '../Loading'
 
-import getListDetails from '../../graphql/queries/getListDetails.gql'
+import { getListDetailed } from '../../GraphqlClient'
 
 interface ListDetailState {
-  list: any
-  loading: boolean
-  isAddingToCart: boolean
+  list?: any
+  isLoading: boolean
+  isAddingToCart?: boolean
 }
 
 interface ListDetailProps {
-  client: ApolloClient<any>
-  runtime: any
-  orderFormContext: any
+  listId: string
+  onClose: () => void
+  client?: ApolloClient<any>
+  orderFormContext?: any
+  intl?: intlShape
 }
 
 class ListDetail extends Component<ListDetailProps, ListDetailState> {
   state: ListDetailState = {
-    loading: true,
-    list: null,
-    isAddingToCart: false,
+    isLoading: true
   }
 
-  public async componentDidMount() {
-    const {
-      runtime: {
-        route: {
-          params: { listId },
-        },
-      },
-      client,
-    } = this.props
-    const list = await client
-      .query({
-        query: getListDetails,
-        variables: {
-          id: listId,
-        },
+  public componentDidMount(): void {
+    const { listId, client } = this.props
+    client && getListDetailed(client, listId)
+      .then(response => {
+        console.log('list with details', response)
+        this.setState({ list: response.data.list, isLoading: false })
       })
-      .then(({ data: { list } }) => list)
-    this.setState({ list, loading: false })
+      .catch(err => console.error('Something went wrong', err))
   }
 
   public createProductShapeFromItem = ({
@@ -102,86 +91,89 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
       })
   }
 
-  render = (): ReactNode => {
-    const { loading, list, isAddingToCart } = this.state
-
-    if (loading) {
-      return (
-        <div className="flex justify-center pt4">
-          <span className="dib c-muted-1">
-            <Spinner color="currentColor" size={20} />
-          </span>
-        </div>
-      )
-    }
-
-    const { name, items } = list
-
-    const totalPrice = items
-      .map(({ product: { items: [item] } }) => {
-        const {
-          sellers: [
-            {
-              commertialOffer: { Price },
-            },
-          ],
-        } = item
-        return Price
-      })
-      .reduce((a, b) => a + b, 0)
-
+  private renderContent = (): ReactNode => {
+    const { list: { items } } = this.state
+    console.log(items)
     return (
-      <div className="w-100">
-        <div className="w-100 tc ttu f4 pv4 bb c-muted-1 b--muted-2">
-          {name}
-        </div>
-        {items
-          .map(this.createProductShapeFromItem)
-          .map((product: any, i: any) => (
-            <Fragment key={i}>
-              <ExtensionPoint
-                id="product-sumary"
-                product={product}
-                name={product.productName}
-                showBorders
-                displayMode="inline"
-                showListPrice={false}
-                showBadge={false}
-                showInstallments={false}
-                showLabels={false}
-              />
-            </Fragment>
-          ))}
-        <div>
-          <div className="flex justify-between items-center ph3">
-            <div className="c-muted-1">
-              Total:{' '}
-              {
-                <ProductPrice
-                  sellingPrice={totalPrice}
-                  listPrice={totalPrice}
-                  showLabels={false}
-                  showListPrice={false}
-                />
-              }
-            </div>
-            <div>
-              <Button
-                variation="primary"
-                size="small"
-                onClick={this.addItensToCart}
-                disabled={isAddingToCart}
-              >
-                <FormattedMessage id="wishlist-buy-all" />
-              </Button>
-            </div>
-          </div>
-        </div>
+      <div>oi</div>
+    )
+  }
+
+  public render(): ReactNode {
+    const { isLoading, list } = this.state
+    const { onClose } = this.props
+    return (
+      <div className="vh-100">
+        <Header title={list ? list.name : 'List details'} onClose={onClose} />
+        {isLoading ? renderLoading() : this.renderContent()}
       </div>
     )
+
+    // const { name, items } = list
+
+    // const totalPrice = items
+    //   .map(({ product: { items: [item] } }) => {
+    //     const {
+    //       sellers: [
+    //         {
+    //           commertialOffer: { Price },
+    //         },
+    //       ],
+    //     } = item
+    //     return Price
+    //   })
+    //   .reduce((a, b) => a + b, 0)
+
+    // return (
+    //   <div className="w-100">
+    //     <div className="w-100 tc ttu f4 pv4 bb c-muted-1 b--muted-2">
+    //       {name}
+    //     </div>
+    //     {items
+    //       .map(this.createProductShapeFromItem)
+    //       .map((product: any, i: any) => (
+    //         <Fragment key={i}>
+    //           <ExtensionPoint
+    //             id="product-sumary"
+    //             product={product}
+    //             name={product.productName}
+    //             showBorders
+    //             displayMode="inline"
+    //             showListPrice={false}
+    //             showBadge={false}
+    //             showInstallments={false}
+    //             showLabels={false}
+    //           />
+    //         </Fragment>
+    //       ))}
+    //     <div>
+    //       <div className="flex justify-between items-center ph3">
+    //         <div className="c-muted-1">
+    //           Total:{' '}
+    //           {
+    //             <ProductPrice
+    //               sellingPrice={totalPrice}
+    //               listPrice={totalPrice}
+    //               showLabels={false}
+    //               showListPrice={false}
+    //             />
+    //           }
+    //         </div>
+    //         <div>
+    //           <Button
+    //             variation="primary"
+    //             size="small"
+    //             onClick={this.addItensToCart}
+    //             disabled={isAddingToCart}
+    //           >
+    //             <FormattedMessage id="wishlist-buy-all" />
+    //           </Button>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </div>
+    // )
   }
 }
 
-export default orderFormConsumer(
-  withRuntimeContext(withApollo<ListDetailProps, {}>(ListDetail))
-)
+export default withApollo<ListDetailProps, {}>(orderFormConsumer(injectIntl(ListDetail)))

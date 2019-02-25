@@ -2,6 +2,7 @@ query getListDetails($id: ID) {
   list(id: $id) {
     name
     items {
+      id
       product {
         linkText
         productName
