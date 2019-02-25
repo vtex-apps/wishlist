@@ -56,17 +56,19 @@ class ListItem extends Component<ListItemProps, {}> {
       'bg-muted-5': isDefault
     })
     return (
-      <div
-        className={className}
+      <div className={className}>
+        <div
+        className="w-100 flex"
         onClick={() => onClick && onClick(id, isSelected)}
-      >
-        <div className="flex items-center ml2">{isPublic ?
-          <IconVisibilityOn />
-          :
-          <IconVisibilityOff />
-        }
+        >
+          <div className="flex items-center ml2">{isPublic ?
+            <IconVisibilityOn />
+            :
+            <IconVisibilityOff />
+          }
+          </div>
+          <span className="w-100 mh4 mv1 c-muted-1">{name}</span>
         </div>
-        <span className="w-100 mh4 mv1 c-muted-1">{name}</span>
         {showMenuOptions ? (
           <MenuOptions options={this.options} />
         ) : (
@@ -76,9 +78,9 @@ class ListItem extends Component<ListItemProps, {}> {
           )}
         {showDeleteDialog && (
           <Dialog
-          message={`${translate("wishlist-delete-confirmation-message", intl)} "${name}"?`}
-          onClose={() => this.setState({ showDeleteDialog: false })}
-          onSuccess={() => onDeleted(id)}
+            message={`${translate("wishlist-delete-confirmation-message", intl)} "${name}"?`}
+            onClose={() => this.setState({ showDeleteDialog: false })}
+            onSuccess={() => onDeleted(id)}
           />
         )}
       </div>
