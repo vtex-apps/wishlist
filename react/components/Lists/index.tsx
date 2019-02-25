@@ -97,7 +97,7 @@ class Lists extends Component<ListsProps, ListsStates> {
                   list={list}
                   id={key}
                   isDefault={key === DEFAULT_LIST_INDEX}
-                  onClick={() => this.setState({ showListDetails: true })}
+                  onClick={() => this.setState({ showListDetails: true, listSelected: key })}
                   showMenuOptions
                   onDeleted={this.handleDeleteList}
                   onUpdated={this.handleUpdateList}
