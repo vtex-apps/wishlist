@@ -24,5 +24,9 @@
   "wishlist-dialog-cancel": "no",
   "wishlist-delete-confirmation-message": "Are you sure that you wish delete the list",
   "wishlist-option-configuration": "Configuration",
-  "wishlist-save": "Save"
+  "wishlist-save": "Save",
+  "wishlist-buy-items": "Buy selected items",
+  "wishlist-quantity-selected-items": "selected items",
+  "wishlist-total": "Total",
+  "wishlist-list-empty": "There is no items in this list"
 }

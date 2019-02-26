@@ -2,15 +2,15 @@ import React, { Component, ReactNode, Fragment } from 'react'
 // import { ExtensionPoint } from 'vtex.render-runtime'
 import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl'
+import { injectIntl, intlShape } from 'react-intl'
 import { map, path } from 'ramda'
-// import { Button, Spinner } from 'vtex.styleguide'
-// import ProductPrice from 'vtex.store-components/ProductPrice'
 import { orderFormConsumer } from 'vtex.store-resources/OrderFormContext'
 import Header from '../Header'
 import renderLoading from '../Loading'
 import MenuOptions from '../MenuOptions'
 import { translate } from '../../utils/translate'
+import Footer from './Footer'
+import Content from './Content'
 
 import { getListDetailed } from '../../GraphqlClient'
 
@@ -18,6 +18,7 @@ interface ListDetailState {
   list?: any
   isLoading: boolean
   isAddingToCart?: boolean
+  selectedItems: any
 }
 
 interface ListDetailProps {
@@ -30,7 +31,8 @@ interface ListDetailProps {
 
 class ListDetail extends Component<ListDetailProps, ListDetailState> {
   state: ListDetailState = {
-    isLoading: true
+    isLoading: true,
+    selectedItems: []
   }
 
   private options: Option[] = [
@@ -53,100 +55,16 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
       .catch(err => console.error('Something went wrong', err))
   }
 
-  public createProductShapeFromItem = ({
-    product: { productName, linkText, items },
-  }: any) => {
-    const sku = items[0]
-    return {
-      linkText,
-      productName,
-      sku: {
-        image: sku.images[0],
-        itemId: sku.itemId,
-        name: sku.name,
-        seller: sku.sellers[0],
-      },
-    }
-  }
-
-  createItemShapeFromItem = ({ product: { items } }: any) => {
-    const sku = items[0]
-    return {
-      quantity: 1,
-      seller: Number(sku.sellers[0].sellerId),
-      id: Number(sku.itemId),
-    }
-  }
-
-  public addItensToCart = () => {
-    const { orderFormContext } = this.props
-
-    const {
-      list: { items },
-    } = this.state
-
-    const minicartButton = document.querySelector('.vtex-minicart .vtex-button')
-
-    this.setState({ isAddingToCart: true })
-    orderFormContext
-      .addItem({
-        variables: {
-          orderFormId: path(['orderForm', 'orderFormId'], orderFormContext),
-          items: map(this.createItemShapeFromItem, items),
-        },
-      })
-      .then(() => {
-        this.setState({ isAddingToCart: false })
-        orderFormContext
-          .refetch()
-          .then(() => minicartButton && (minicartButton as any).click())
-      })
-  }
-
-  private renderListEmpty = (): ReactNode => {
-    return (
-      <div className="flex-column">
-        {"There is no product added to this list"}
-      </div>
-    )
-  }
-
-  private renderItems = (): ReactNode => {
-    const { list: { items } } = this.state
-    return (
-      <div className="h-100 overflow-y">
-        {(items && items.length > 0) ? (
-          <Fragment>
-            {map(item => (
-              <div>
-                {/* TODO: Use the product-summary as Extension point */}
-                {item.product.productName}
-              </div>
-            ), items)}
-          </Fragment>
-        ) : this.renderListEmpty()}
-      </div>
-    )
-  }
-
-  private renderFooter = (): ReactNode => {
-    return (
-      <div>
-        This is the footer
-      </div>
-    )
-  }
-
   private renderContent = (): ReactNode => {
-    const { list: { name } } = this.state
+    const { list: { name, items }, selectedItems } = this.state
     const { onClose } = this.props
     return (
       <Fragment>
         <Header title={name} onClose={onClose}>
           <MenuOptions options={this.options} />
         </Header>
-        {this.renderItems()}
-        {this.renderFooter()}
+        <Content items={items} />
+        <Footer items={selectedItems} />
       </Fragment>
     )
   }
@@ -158,71 +76,6 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
         {isLoading ? renderLoading() : this.renderContent()}
       </div>
     )
-
-    // const { name, items } = list
-
-    // const totalPrice = items
-    //   .map(({ product: { items: [item] } }) => {
-    //     const {
-    //       sellers: [
-    //         {
-    //           commertialOffer: { Price },
-    //         },
-    //       ],
-    //     } = item
-    //     return Price
-    //   })
-    //   .reduce((a, b) => a + b, 0)
-
-    // return (
-    //   <div className="w-100">
-    //     <div className="w-100 tc ttu f4 pv4 bb c-muted-1 b--muted-2">
-    //       {name}
-    //     </div>
-    //     {items
-    //       .map(this.createProductShapeFromItem)
-    //       .map((product: any, i: any) => (
-    //         <Fragment key={i}>
-    //           <ExtensionPoint
-    //             id="product-sumary"
-    //             product={product}
-    //             name={product.productName}
-    //             showBorders
-    //             displayMode="inline"
-    //             showListPrice={false}
-    //             showBadge={false}
-    //             showInstallments={false}
-    //             showLabels={false}
-    //           />
-    //         </Fragment>
-    //       ))}
-    //     <div>
-    //       <div className="flex justify-between items-center ph3">
-    //         <div className="c-muted-1">
-    //           Total:{' '}
-    //           {
-    //             <ProductPrice
-    //               sellingPrice={totalPrice}
-    //               listPrice={totalPrice}
-    //               showLabels={false}
-    //               showListPrice={false}
-    //             />
-    //           }
-    //         </div>
-    //         <div>
-    //           <Button
-    //             variation="primary"
-    //             size="small"
-    //             onClick={this.addItensToCart}
-    //             disabled={isAddingToCart}
-    //           >
-    //             <FormattedMessage id="wishlist-buy-all" />
-    //           </Button>
-    //         </div>
-    //       </div>
-    //     </div>
-    //   </div>
-    // )
   }
 }
 
