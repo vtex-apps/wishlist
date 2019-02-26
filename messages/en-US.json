@@ -28,5 +28,6 @@
   "wishlist-buy-items": "Buy selected items",
   "wishlist-quantity-selected-items": "selected items",
   "wishlist-total": "Total",
-  "wishlist-list-empty": "There is no items in this list"
+  "wishlist-list-empty": "There is no items in this list",
+  "wishlist-add-itens": "Add items"
 }
