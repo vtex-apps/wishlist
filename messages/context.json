@@ -24,5 +24,9 @@
   "wishlist-dialog-cancel": "wishlist-dialog-cancel",
   "wishlist-delete-confirmation-message": "wishlist-delete-confirmation-message",
   "wishlist-option-configuration": "wishlist-option-configuration",
-  "wishlist-save": "wishlist-save"
+  "wishlist-save": "wishlist-save",
+  "wishlist-buy-items": "wishlist-buy-items",
+  "wishlist-quantity-selected-items": "wishlist-quantity-selected-items",
+  "wishlist-total": "wishlist-total",
+  "wishlist-list-empty": "wishlist-list-empty"
 }
