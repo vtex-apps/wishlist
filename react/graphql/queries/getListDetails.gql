@@ -3,6 +3,8 @@ query getListDetails($id: ID) {
     name
     items {
       id
+      productId
+      skuId
       product {
         linkText
         productName

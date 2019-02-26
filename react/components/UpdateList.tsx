@@ -6,11 +6,14 @@ import { updateList } from '../GraphqlClient'
 import Header from './Header'
 import { translate } from '../utils/translate'
 import ListForm from './ListForm'
+import { map } from 'ramda'
+import { withToast } from 'vtex.styleguide'
 
 interface UpdateListProps {
   list: List
   onFinishUpdate: (list: any) => void
   onClose: () => void
+  showToast?: ({ }) => void
   intl?: any
   client?: ApolloClient<any>
 }
@@ -25,13 +28,30 @@ interface UpdateListState {
 class UpdateList extends Component<UpdateListProps, UpdateListState> {
   public state: UpdateListState = {}
 
+  private itemsToItemsInput = (items: any): [Items] => map(
+    ({ id, productId, skuId, quantity }) => ({ id, productId, skuId, quantity }),
+    items)
+
   public onSubmit = ({ name, isPublic }: List): void => {
-    const { client, list: { id }, list } = this.props
+    const { client, list: { id, items }, list, showToast, intl } = this.props
     this.setState({ isLoading: true })
-    client && updateList(client, id, { ...list, name, isPublic })
+    client && updateList(
+      client,
+      id,
+      {
+        ...list,
+        name,
+        isPublic,
+        items: this.itemsToItemsInput(items)
+      }
+    )
       .then(response => {
-        this.props.onFinishUpdate(response.data.updateList)
         this.setState({ isLoading: false })
+        showToast && showToast({ message: translate('wishlist-list-updated', intl) })
+        setTimeout(
+          () => this.props.onFinishUpdate({ ...response.data.updateList, items }),
+          500
+        )
       })
       .catch(err => {
         console.error('something went wrong', err)
@@ -55,4 +75,4 @@ class UpdateList extends Component<UpdateListProps, UpdateListState> {
   }
 }
 
-export default withApollo<UpdateListProps, {}>(injectIntl(UpdateList))
+export default withToast(withApollo<UpdateListProps, {}>(injectIntl(UpdateList)))

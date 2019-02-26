@@ -5,7 +5,7 @@ interface HeaderProps {
   title: string
   onClose: () => void
   action?: () => void
-  children: ReactNode
+  children?: ReactNode
 }
 
 class Header extends Component<HeaderProps, {}> {

@@ -29,5 +29,6 @@
   "wishlist-quantity-selected-items": "selected items",
   "wishlist-total": "Total",
   "wishlist-list-empty": "There is no items in this list",
-  "wishlist-add-itens": "Add items"
+  "wishlist-add-itens": "Add items",
+  "wishlist-list-updated": "Your list was updated"
 }

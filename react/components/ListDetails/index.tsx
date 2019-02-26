@@ -11,19 +11,24 @@ import MenuOptions from '../MenuOptions'
 import { translate } from '../../utils/translate'
 import Footer from './Footer'
 import Content from './Content'
+import Dialog from '../Dialog'
+import UpdateList from '../UpdateList'
 
 import { getListDetailed } from '../../GraphqlClient'
 
 interface ListDetailState {
-  list?: any
+  list?: List
   isLoading: boolean
   isAddingToCart?: boolean
   selectedItems: any
+  showDeleteConfirmation?: boolean
+  showUpdateList?: boolean
 }
 
 interface ListDetailProps {
   listId: string
   onClose: () => void
+  onDeleted: (id: string) => Promise<any>
   client?: ApolloClient<any>
   orderFormContext?: any
   intl?: intlShape
@@ -38,13 +43,18 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
   private options: Option[] = [
     {
       title: translate('wishlist-option-configuration', this.props.intl),
-      onClick: () => console.log('configuration')
+      onClick: () => this.setState({ showUpdateList: true })
     },
     {
       title: translate('wishlist-option-delete', this.props.intl),
-      onClick: () => console.log('delete')
+      onClick: () => this.setState({ showDeleteConfirmation: true })
     },
   ]
+
+  private onFinishUpdate = (list: List): void => {
+    console.log('new List', list)
+    this.setState({ list: list, showUpdateList: false })
+  }
 
   public componentDidMount(): void {
     const { listId, client } = this.props
@@ -70,10 +80,27 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
   }
 
   public render(): ReactNode {
-    const { isLoading } = this.state
+    const { list, isLoading, showDeleteConfirmation, showUpdateList } = this.state
+    const { intl, onDeleted, listId } = this.props
     return (
       <div className="vh-100 flex flex-column">
         {isLoading ? renderLoading() : this.renderContent()}
+        {showDeleteConfirmation && (
+          <Dialog
+            message={`${translate("wishlist-delete-confirmation-message", intl)} "${list.name}"?`}
+            onClose={() => this.setState({ showDeleteConfirmation: false })}
+            onSuccess={() => onDeleted(listId)}
+          />
+        )}
+        {showUpdateList && (
+          <div className="fixed top-0 left-0 w-100 bg-base">
+            <UpdateList
+              onClose={() => this.setState({ showUpdateList: false })}
+              list={{ ...list, id: listId }}
+              onFinishUpdate={this.onFinishUpdate}
+            />
+          </div>
+        )}
       </div>
     )
   }
