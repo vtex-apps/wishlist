@@ -62,8 +62,11 @@ class Lists extends Component<ListsProps, ListsStates> {
     const { lists } = this.state
     const { client } = this.props
     return deleteList(client, listId)
-      .then(response => {
-        this.setState({ lists: filter(list => list.id !== listId, lists) })
+      .then(() => {
+        this.setState({
+          lists: filter(list => list.id !== listId, lists),
+          showListDetails: false
+        })
       })
       .catch(err => console.error('something went wrong', err))
   }
@@ -160,6 +163,7 @@ class Lists extends Component<ListsProps, ListsStates> {
                 <ListDetails
                   onClose={() => this.setState({ showListDetails: false })}
                   listId={lists[listSelected].id}
+                  onDeleted={this.handleDeleteList}
                 />
               </div>
             )}
