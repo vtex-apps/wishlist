@@ -5,7 +5,7 @@ import {
   IconVisibilityOn
 } from "vtex.styleguide"
 import classNames from 'classnames'
-import MenuOptions from './MenuOptions'
+import MenuOptions from './MenuOptions/MenuOptions'
 import { translate } from '../utils/translate'
 import { injectIntl, intlShape } from 'react-intl'
 import Dialog from './Dialog'

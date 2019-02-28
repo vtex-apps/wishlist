@@ -1,20 +1,17 @@
-import React, { Component, ReactNode } from "react"
-import { injectIntl, intlShape } from 'react-intl'
-import { translate } from '../utils/translate'
-import { Button, Spinner } from 'vtex.styleguide'
-import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
-import {
-  getListsFromLocaleStorage,
-  saveListIdInLocalStorage,
-  updateList
-} from '../GraphqlClient'
-import { map, append, filter, remove, indexOf, update } from 'ramda'
-import CreateList from './CreateList'
-import Header from './Header'
-import ListItem from './ListItem'
+import { append, filter, indexOf, map, remove, update } from 'ramda'
+import React, { Component, ReactNode } from "react"
+import { withApollo } from 'react-apollo'
+import { injectIntl, intlShape } from 'react-intl'
+import { Button } from 'vtex.styleguide'
+import { getListsFromLocaleStorage, saveListIdInLocalStorage, updateList } from '../../GraphqlClient'
+import { translate } from '../../utils/translate'
+import wishlist from '../../wishList.css'
+import CreateList from '../CreateList'
+import Header from '../Header'
+import ListItem from '../ListItem'
+import renderLoading from '../Loading'
 
-import wishlist from '../wishList.css'
 
 const DEFAULT_LIST_INDEX = 0
 
@@ -26,7 +23,7 @@ interface List {
   items: any
 }
 
-interface ListMenuContentProps {
+interface AddToListContentProps {
   product: any
   onClose: () => void
   onAddToListsSuccess: () => void
@@ -35,7 +32,7 @@ interface ListMenuContentProps {
   client?: ApolloClient<any>
 }
 
-interface ListMenuContentState {
+interface AddToListContentState {
   isLoading: boolean
   isAdding?: boolean
   showCreateList?: boolean
@@ -43,8 +40,8 @@ interface ListMenuContentState {
   changedLists: number[]
 }
 
-class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentState> {
-  public state: ListMenuContentState = {
+class AddToListContent extends Component<AddToListContentProps, AddToListContentState> {
+  public state: AddToListContentState = {
     isLoading: true,
     lists: [],
     changedLists: []
@@ -53,7 +50,7 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
   public componentDidMount(): void {
     const { client } = this.props
     client && getListsFromLocaleStorage(client)
-      .then(response => {
+      .then((response: any) => {
         const lists = map(item => item.data.list, response)
         this.setState({ isLoading: false, lists: lists })
       })
@@ -87,17 +84,9 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
     }
   }
 
-  private renderLoading = (): ReactNode => {
-    return (
-      <div className="w-100 h3 flex justify-center items-center">
-        <Spinner />
-      </div>
-    )
-  }
-
   private containsProduct = (list: List): boolean => {
     const { product } = this.props
-    return filter(item =>
+    return filter((item: Item) =>
       item.productId === product.productId &&
       item.skuId === product.skuId, list.items)
       .length > 0
@@ -163,7 +152,7 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
 
   private renderMainContent = (): ReactNode => {
     const { isLoading } = this.state
-    return isLoading ? this.renderLoading() : this.renderSwitchLists()
+    return isLoading ? renderLoading() : this.renderSwitchLists()
   }
 
   private renderFooter = (): ReactNode => {
@@ -209,4 +198,4 @@ class ListMenuContent extends Component<ListMenuContentProps, ListMenuContentSta
   }
 }
 
-export default withApollo<ListMenuContentProps, {}>(injectIntl(ListMenuContent))
+export default withApollo<AddToListContentProps, {}>(injectIntl(AddToListContent))

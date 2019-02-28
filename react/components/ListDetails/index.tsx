@@ -7,7 +7,7 @@ import { map, path } from 'ramda'
 import { orderFormConsumer } from 'vtex.store-resources/OrderFormContext'
 import Header from '../Header'
 import renderLoading from '../Loading'
-import MenuOptions from '../MenuOptions'
+import MenuOptions from '../MenuOptions/MenuOptions'
 import { translate } from '../../utils/translate'
 import Footer from './Footer'
 import Content from './Content'
@@ -74,7 +74,7 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
           <MenuOptions options={this.options} />
         </Header>
         <Content items={items} />
-        <Footer items={selectedItems} />
+        {items.length && <Footer items={selectedItems} />}
       </Fragment>
     )
   }

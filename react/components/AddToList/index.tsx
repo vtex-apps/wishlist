@@ -1,17 +1,15 @@
 import React, { Component, ReactNode } from "react"
-import ListMenuContent from './ListMenuContent'
-import BottomBar from './BottomBar'
+import ListMenuContent from './AddToListContent'
+import BottomBar from '../BottomBar'
 
-interface ListMenuProps {
+interface AddToListProps {
   product: any
   onClose: () => void
   onAddToListsSuccess: () => void
   onAddToListsFail: () => void
 }
 
-interface ListMenuState { }
-
-class ListMenu extends Component<ListMenuProps, ListMenuState> {
+class AddToList extends Component<AddToListProps, {}> {
   public render(): ReactNode {
     const { onClose } = this.props
     return (
@@ -22,4 +20,4 @@ class ListMenu extends Component<ListMenuProps, ListMenuState> {
   }
 }
 
-export default ListMenu
+export default AddToList
