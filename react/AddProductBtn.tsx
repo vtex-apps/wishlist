@@ -1,13 +1,13 @@
-import React, { Component, ReactNode, Fragment } from 'react'
-import ListMenu from './components/ListMenu'
-import Icon from 'vtex.use-svg/Icon'
-import { withToast, Spinner } from 'vtex.styleguide'
-import { withApollo } from "react-apollo"
 import { ApolloClient } from "apollo-client"
-import { addProductToDefaultList } from './GraphqlClient'
+import React, { Component, Fragment, ReactNode } from 'react'
+import { withApollo } from "react-apollo"
 import { injectIntl, intlShape } from 'react-intl'
-import { translate } from './utils/translate'
+import { Spinner, withToast } from 'vtex.styleguide'
+import Icon from 'vtex.use-svg/Icon'
+import AddToList from './components/AddToList/index'
 import Lists from './components/Lists/index'
+import { addProductToDefaultList } from './GraphqlClient'
+import { translate } from './utils/translate'
 
 interface AddProductBtnProps {
   product: Product
@@ -82,7 +82,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
           {isLoading ? <Spinner size={17} /> : <Icon id="mpa-heart" />}
         </div>
         {showContent && (
-          <ListMenu
+          <AddToList
             onAddToListsFail={this.onAddToListsFail}
             onAddToListsSuccess={this.onAddToListsSuccess}
             product={product}

@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from "react"
-import Popover from './Popover'
+import Popover from '../Popover'
 import { map } from 'ramda'
 
 interface MenuOptionsContentProps {
