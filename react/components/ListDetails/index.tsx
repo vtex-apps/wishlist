@@ -3,7 +3,7 @@ import React, { Component, ReactNode, Fragment } from 'react'
 import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
 import { injectIntl, intlShape } from 'react-intl'
-import { map, path } from 'ramda'
+import { append, filter } from 'ramda'
 import { orderFormConsumer } from 'vtex.store-resources/OrderFormContext'
 import Header from '../Header'
 import renderLoading from '../Loading'
@@ -40,6 +40,15 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
     selectedItems: []
   }
 
+  private onItemSelectedChange = (itemId: string, product: any, isSelected: boolean) => {
+    const { selectedItems } = this.state
+    if (isSelected) {
+      this.setState({ selectedItems: append({ itemId, product }, selectedItems) })
+    } else {
+      this.setState({ selectedItems: filter(item => item.itemId !== itemId, selectedItems) })
+    }
+  }
+
   private options: Option[] = [
     {
       title: translate('wishlist-option-configuration', this.props.intl),
@@ -72,7 +81,11 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
         <Header title={name} onClose={onClose}>
           <MenuOptions options={this.options} />
         </Header>
-        <Content items={items} />
+        <Content
+        items={items}
+        onItemSelect={this.onItemSelectedChange}
+        onItemRemove={(id: string) => console.log('item removed', id)}
+        />
         {items.length && <Footer items={selectedItems} />}
       </Fragment>
     )
