@@ -6,22 +6,43 @@ query getListDetails($id: ID) {
       productId
       skuId
       product {
-        linkText
-        productName
-        items {
-          images {
-            imageUrl
+        productId
+    productName
+    description
+    categories
+    link
+    linkText
+    brand
+    items {
+      name
+      itemId
+      referenceId {
+        Value
+      }
+      images {
+        imageUrl
+        imageTag
+      }
+      sellers {
+        sellerId
+        commertialOffer {
+          Installments {
+            Value
+            InterestRate
+            TotalValuePlusInterestRate
+            NumberOfInstallments
+            Name
           }
-          name
-          itemId
-          sellers {
-            commertialOffer {
-              ListPrice
-              Price
-            }
-            sellerId
-          }
+          AvailableQuantity
+          Price
+          ListPrice
         }
+      }
+    }
+    productClusters {
+      id
+      name
+    }
       }
     }
   }

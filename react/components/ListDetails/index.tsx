@@ -52,7 +52,6 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
   ]
 
   private onFinishUpdate = (list: List): void => {
-    console.log('new List', list)
     this.setState({ list: list, showUpdateList: false })
   }
 
