@@ -12,7 +12,7 @@ class Header extends Component<HeaderProps, {}> {
   public render(): ReactNode {
     const { title, onClose, action, children } = this.props
     return (
-      <div className="flex flex-row pa4 items-center bb bt b--muted-4">
+      <div className="flex flex-row pa4 items-center bb bt b--muted-4 h3">
         <div className="flex items-center pointer" onClick={onClose}>
           <IconClose size={23} />
         </div>

@@ -1,9 +1,8 @@
 import React, { Component, ReactNode, Fragment } from 'react'
-// import { ExtensionPoint } from 'vtex.render-runtime'
 import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
 import { injectIntl, intlShape } from 'react-intl'
-import { append, filter } from 'ramda'
+import { append, filter, map, path } from 'ramda'
 import { orderFormConsumer } from 'vtex.store-resources/OrderFormContext'
 import Header from '../Header'
 import renderLoading from '../Loading'
@@ -14,7 +13,7 @@ import Content from './Content'
 import Dialog from '../Dialog'
 import UpdateList from '../UpdateList'
 
-import { getListDetailed } from '../../GraphqlClient'
+import { getListDetailed, updateList } from '../../GraphqlClient'
 
 interface ListDetailState {
   list?: List
@@ -40,13 +39,57 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
     selectedItems: []
   }
 
+  createItemShapeFromItem = ({ product: { items } }: any) => {
+    const sku = items[0]
+    return {
+      quantity: 1,
+      seller: Number(sku.sellers[0].sellerId),
+      id: Number(sku.itemId),
+    }
+  }
+
+  public addItensToCart = (): Promise<any> => {
+    const { orderFormContext } = this.props
+    const { selectedItems } = this.state
+
+    this.setState({ isAddingToCart: true })
+    return orderFormContext
+      .addItem({
+        variables: {
+          orderFormId: path(['orderForm', 'orderFormId'], orderFormContext),
+          items: map(this.createItemShapeFromItem, selectedItems),
+        },
+      })
+      .then(() => {
+        this.setState({ isAddingToCart: false })
+        orderFormContext.refetch()
+      })
+  }
+
   private onItemSelectedChange = (itemId: string, product: any, isSelected: boolean) => {
     const { selectedItems } = this.state
     if (isSelected) {
       this.setState({ selectedItems: append({ itemId, product }, selectedItems) })
     } else {
-      this.setState({ selectedItems: filter(item => item.itemId !== itemId, selectedItems) })
+      this.setState({ selectedItems: filter(({ itemId: id }) => id !== itemId, selectedItems) })
     }
+  }
+
+  private itemWithoutProduct =
+    ({ id, productId, skuId, quantity }: any): any => ({ id, productId, skuId, quantity })
+
+  private onItemRemove = (itemId: string): void => {
+    const { client, listId } = this.props
+    const { list, list: { items }, selectedItems } = this.state
+    const listUpdated = { ...list, items: filter(({ id }) => id !== itemId, items) }
+    const itemsUpdated = map(item => this.itemWithoutProduct(item), listUpdated.items)
+    client && updateList(client, listId, { ...list, items: itemsUpdated })
+      .then(() => {
+        this.setState({
+          list: listUpdated,
+          selectedItems: filter(({ itemId: id }) => id !== itemId, selectedItems)
+        })
+      })
   }
 
   private options: Option[] = [
@@ -82,11 +125,16 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
           <MenuOptions options={this.options} />
         </Header>
         <Content
-        items={items}
-        onItemSelect={this.onItemSelectedChange}
-        onItemRemove={(id: string) => console.log('item removed', id)}
+          items={items}
+          onItemSelect={this.onItemSelectedChange}
+          onItemRemove={this.onItemRemove}
         />
-        {items.length && <Footer items={selectedItems} />}
+        {items.length > 0 && (
+          <Footer
+            items={selectedItems}
+            onAddToCart={this.addItensToCart}
+          />
+        )}
       </Fragment>
     )
   }

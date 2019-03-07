@@ -177,7 +177,7 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
     const { onClose, intl } = this.props
     const { showCreateList } = this.state
     return (
-      <div className="w-100 bg-black fixed bottom-0 z-max bg-base">
+      <div className="w-100 bg-black fixed bottom-0 z-4 bg-base">
         <Header
           title={translate('wishlist-add-to-list', intl)}
           onClose={onClose}

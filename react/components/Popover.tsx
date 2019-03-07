@@ -12,7 +12,7 @@ class Popover extends Component<PopoverProps, {}> {
     const { children, onOutsideClick } = this.props
     return (
       <OutsideClickHandler onOutsideClick={onOutsideClick}>
-        <div className={`${wishList.popover} absolute z-max right-0`}>
+        <div className={`${wishList.popover} absolute z-4 right-0`}>
             {children}
         </div>
       </OutsideClickHandler>

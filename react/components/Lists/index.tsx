@@ -134,7 +134,7 @@ class Lists extends Component<ListsProps, ListsStates> {
     return createPortal(
       (
         <Fragment>
-          <div className="vw-100 vh-100 z-max fixed bg-white top-0">
+          <div className="vw-100 vh-100 z-4 fixed bg-white top-0">
             <Header
               title={translate("wishlist-my-lists", intl)}
               onClose={onClose}
