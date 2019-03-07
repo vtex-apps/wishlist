@@ -2,6 +2,7 @@ import React, { Component, ReactNode } from "react"
 import { Checkbox, ButtonWithIcon, IconDelete } from 'vtex.styleguide'
 import { ExtensionPoint } from 'vtex.render-runtime'
 import { path } from 'ramda'
+import renderLoading from '../Loading'
 
 interface ItemDetailsProps {
   item: any
@@ -11,6 +12,7 @@ interface ItemDetailsProps {
 
 interface ItemDetailsState {
   isSelected?: boolean
+  isLoading?: boolean
 }
 
 class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
@@ -37,12 +39,15 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
     onItemSelect(id, product, !isSelected)
   }
 
+  private onItemRemove = (): void => {
+    const { onItemRemove, item } = this.props
+    this.setState({ isLoading: true })
+    onItemRemove(item.id)
+  }
+
   public render(): ReactNode {
-    const {
-      onItemRemove,
-      item: { id, product }
-    } = this.props
-    const { isSelected } = this.state
+    const { item: { product } } = this.props
+    const { isSelected, isLoading } = this.state
     const deleteIcon = <IconDelete />
 
     return (
@@ -53,12 +58,18 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
             onChange={this.onItemSelectedChange}
           />
         </div>
-        <div className="absolute top-0 right-0 mt4">
-          <ButtonWithIcon
-            icon={deleteIcon}
-            variation="tertiary"
-            onClick={() => onItemRemove(id)}
-          />
+        <div className="absolute top-0 right-0">
+          {isLoading ? (
+            <div className="mr4">
+              {renderLoading()}
+            </div>
+          ) : (
+              <ButtonWithIcon
+                icon={deleteIcon}
+                variation="tertiary"
+                onClick={this.onItemRemove}
+              />
+            )}
         </div>
         <ExtensionPoint
           id="product-summary"

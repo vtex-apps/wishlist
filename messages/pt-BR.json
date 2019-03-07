@@ -31,5 +31,7 @@
   "wishlist-list-empty": "Esta lista tem nenhum items adicionado",
   "wishlist-add-itens": "Adicionar itens",
   "wishlist-list-updated": "Sua lista foi editada",
-  "wishlist-quantity-of-items": "items nesta lsita"
+  "wishlist-quantity-of-items": "items nesta lsita",
+  "wishlist-add-to-cart-success": "Itens adicionados ao carrinho",
+  "wishlist-add-to-cart-fail": "Itens não foram adicionados ao carrinho"
 }
