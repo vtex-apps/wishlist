@@ -1,13 +1,13 @@
 .applyButton > button {
-    border-radius: 0px;
-    padding-bottom: 0.5625em;
-    padding-top: 0.5625em;
+  border-radius: 0px;
+  padding-bottom: 0.5625em;
+  padding-top: 0.5625em;
 }
 
 .contentContainer {
-    max-height: 45vh;
+  max-height: 45vh;
 }
 
 .popover {
-    top: 100%;
+  top: 100%;
 }

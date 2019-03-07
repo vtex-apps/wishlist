@@ -30,5 +30,6 @@
   "wishlist-total": "Total",
   "wishlist-list-empty": "Esta lista tem nenhum items adicionado",
   "wishlist-add-itens": "Adicionar itens",
-  "wishlist-list-updated": "Sua lista foi editada"
+  "wishlist-list-updated": "Sua lista foi editada",
+  "wishlist-quantity-of-items": "items nesta lsita"
 }
