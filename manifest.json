@@ -5,7 +5,7 @@
   "version": "0.0.0",
   "defaultLocale": "pt-BR",
   "builders": {
-    "store": "0.x",
+    "pages": "1.x",
     "react": "3.x",
     "messages": "1.x"
   },
