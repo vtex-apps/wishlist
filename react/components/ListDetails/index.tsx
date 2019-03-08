@@ -78,12 +78,12 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
   private itemWithoutProduct =
     ({ id, productId, skuId, quantity }: any): any => ({ id, productId, skuId, quantity })
 
-  private onItemRemove = (itemId: string): void => {
+  private onItemRemove = (itemId: string): Promise<any> => {
     const { client, listId } = this.props
     const { list, list: { items }, selectedItems } = this.state
     const listUpdated = { ...list, items: filter(({ id }) => id !== itemId, items) }
     const itemsUpdated = map(item => this.itemWithoutProduct(item), listUpdated.items)
-    client && updateList(client, listId, { ...list, items: itemsUpdated })
+    return updateList(client, listId, { ...list, items: itemsUpdated })
       .then(() => {
         this.setState({
           list: listUpdated,

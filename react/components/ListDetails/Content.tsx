@@ -9,7 +9,7 @@ import ItemDetails from './ItemDetails'
 interface ContentProps {
   items: any
   onItemSelect: (itemId: string, product: any, isSelected: boolean) => void
-  onItemRemove: (id: string) => void
+  onItemRemove: (id: string) => Promise<any>
   intl?: intlShape
   runtime?: any
 }

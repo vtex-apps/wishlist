@@ -7,7 +7,7 @@ import renderLoading from '../Loading'
 interface ItemDetailsProps {
   item: any
   onItemSelect: (itemId: string, product: any, isSelected: boolean) => void
-  onItemRemove: (id: string) => void
+  onItemRemove: (id: string) => Promise<any>
 }
 
 interface ItemDetailsState {
@@ -43,6 +43,8 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
     const { onItemRemove, item } = this.props
     this.setState({ isLoading: true })
     onItemRemove(item.id)
+      .then(() => this.setState({ isLoading: false }))
+      .catch(() => this.setState({ isLoading: false }))
   }
 
   public render(): ReactNode {

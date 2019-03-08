@@ -5,6 +5,7 @@ query getListDetails($id: ID) {
       id
       productId
       skuId
+      quantity
       product {
         productId
     productName
