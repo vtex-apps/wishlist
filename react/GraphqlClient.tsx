@@ -8,13 +8,6 @@ import { append, map, path, filter } from 'ramda'
 
 const WISHLIST_STORAKE_KEY = 'vtexwishlists'
 
-interface Product {
-  id: string
-  productId: string
-  skuId: string
-  quantity: number
-}
-
 const getListsIdFromCookies = () => {
   const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
   return (lists && lists.split(',').map((id: string) => id.replace("\"", "").replace("\"", ""))) || []
@@ -105,6 +98,7 @@ export const deleteList = (client: ApolloClient<any>, listId: string): Promise<a
 export const getListDetailed = (client: ApolloClient<any>, listId: string): Promise<any> => (
   client.query({
     query: getListDetailedQuery,
-    variables: { id: listId }
+    variables: { id: listId },
+    fetchPolicy: 'network-only'
   })
 )
