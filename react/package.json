@@ -12,7 +12,7 @@
     "query-string": "^6.1.0",
     "ramda": "^0.25.0",
     "react-collapse": "^4.0.3",
-    "react-device-detect": "^1.6.1",
+    "react-device-detect": "^1.6.2",
     "react-infinite-scroll-component": "^4.1.0",
     "react-intl": "^2.7.2",
     "react-motion": "^0.5.2",
