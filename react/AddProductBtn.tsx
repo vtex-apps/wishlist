@@ -29,14 +29,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
 
   private handleAddProductSuccess = (): void => {
     const { intl } = this.props
-    this.setState({ isLoading: false })
-    this.props.showToast({
-      message: translate('wishlist-add-to-list', intl),
-      action: {
-        label: translate('wishlist-see', intl),
-        onClick: () => this.setState({ showContent: true })
-      }
-    })
+    this.setState({ showContent: true, isLoading: false })
   }
 
   private handleAddProductFailed = (error: string): void => {
@@ -74,7 +67,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     const { product } = this.props
     const { showContent, showLists, isLoading } = this.state
     return (
-      <Fragment>
+      <div className="relative">
         <div
           className="pa4 pointer hover-bg-light-gray flex items-center"
           onClick={!isLoading ? this.onAddProductClick : () => { }}
@@ -92,7 +85,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
         {showLists && (
           <Lists onClose={() => this.setState({ showLists: false })} />
         )}
-      </Fragment>
+      </div>
     )
   }
 }
