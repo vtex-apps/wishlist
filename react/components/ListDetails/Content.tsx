@@ -25,11 +25,11 @@ class Content extends Component<ContentProps, {}> {
   private renderListEmpty = (): ReactNode => {
     const { intl } = this.props
     return (
-      <div className="flex flex-column w-100 h-100 justify-center items-center">
+      <div className="flex flex-column w-100 h-100 items-center mt8 c-muted-2">
         <div>
           <span>{translate('wishlist-list-empty', intl)}</span>
         </div>
-        <div className="mt4">
+        <div className="mt8">
           <Button variation="primary" onClick={this.redirectToGallery}>
             {translate("wishlist-add-itens", intl)}
           </Button>

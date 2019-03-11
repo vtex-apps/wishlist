@@ -1,7 +1,7 @@
 import React, { Component, ReactNode, Fragment, FormEvent } from "react"
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl'
 import { Input, Button, Toggle } from 'vtex.styleguide'
-import { translate } from '../utils/translate'
+import { translate } from '../../utils/translate'
 
 const LIST_NAME_MINIMUM_LENGTH = 1
 

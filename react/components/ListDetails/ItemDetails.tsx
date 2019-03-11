@@ -82,6 +82,7 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
           showBadge={false}
           showInstallments={false}
           showLabels={false}
+          showQuantitySelector={false}
         />
       </div>
     )

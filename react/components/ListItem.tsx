@@ -1,8 +1,8 @@
 import React, { Component, ReactNode } from "react"
 import {
-  IconCheck,
   IconVisibilityOff,
-  IconVisibilityOn
+  IconVisibilityOn,
+  Checkbox
 } from "vtex.styleguide"
 import classNames from 'classnames'
 import MenuOptions from './MenuOptions/MenuOptions'
@@ -15,8 +15,9 @@ interface ListItemProps {
   list: List
   isDefault: boolean
   isSelected?: boolean
-  onClick?: (id: number, isSelected?: boolean) => void
   showMenuOptions?: boolean,
+  onClick?: (id: number) => void
+  onSelected?: (id: number, isSelected?: boolean) => void
   onDeleted: (listId: string) => Promise<any>
   onUpdated: (index: number) => void
   intl?: intlShape
@@ -46,10 +47,11 @@ class ListItem extends Component<ListItemProps, {}> {
       list: { name, isPublic, id: listId },
       isSelected,
       isDefault,
-      onClick,
       showMenuOptions,
       intl,
-      onDeleted
+      onClick,
+      onDeleted,
+      onSelected,
     } = this.props
     const { showDeleteDialog } = this.state
     const className = classNames('w-100 bt b--muted-4 flex flex-row pv3 ph4 c-muted-3', {
@@ -58,8 +60,8 @@ class ListItem extends Component<ListItemProps, {}> {
     return (
       <div className={className}>
         <div
-        className="w-100 flex"
-        onClick={() => onClick && onClick(id, isSelected)}
+          className="w-100 flex"
+          onClick={() => onClick && onClick(id)}
         >
           <div className="flex items-center ml2">{isPublic ?
             <IconVisibilityOn />
@@ -73,7 +75,10 @@ class ListItem extends Component<ListItemProps, {}> {
           <MenuOptions options={this.options} />
         ) : (
             <div className="flex items-center c-action-primary">
-              {isSelected && <IconCheck />}
+              <Checkbox
+              checked={isSelected}
+              onChange={() => onSelected && onSelected(id, isSelected)}
+              />
             </div>
           )}
         {showDeleteDialog && (

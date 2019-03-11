@@ -11,9 +11,9 @@ import { translate } from '../../utils/translate'
 import Footer from './Footer'
 import Content from './Content'
 import Dialog from '../Dialog'
-import UpdateList from '../UpdateList'
+import UpdateList from '../Form/UpdateList'
 
-import { getListDetailed, updateList } from '../../GraphqlClient'
+import { getListDetailed, updateList, deleteList } from '../../GraphqlClient'
 
 interface ListDetailState {
   list?: List
@@ -26,8 +26,8 @@ interface ListDetailState {
 
 interface ListDetailProps {
   listId: string
-  onClose: () => void
-  onDeleted: (id: string) => Promise<any>
+  onClose: (lists?: any) => void
+  onDeleted?: (id: string) => void
   client?: ApolloClient<any>
   orderFormContext?: any
   intl?: intlShape
@@ -38,6 +38,17 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
     isLoading: true,
     selectedItems: []
   }
+
+  private options: Option[] = [
+    {
+      title: translate('wishlist-option-configuration', this.props.intl),
+      onClick: () => this.setState({ showUpdateList: true })
+    },
+    {
+      title: translate('wishlist-option-delete', this.props.intl),
+      onClick: () => this.setState({ showDeleteConfirmation: true })
+    },
+  ]
 
   createItemShapeFromItem = ({ product: { items } }: any) => {
     const sku = items[0]
@@ -92,17 +103,6 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
       })
   }
 
-  private options: Option[] = [
-    {
-      title: translate('wishlist-option-configuration', this.props.intl),
-      onClick: () => this.setState({ showUpdateList: true })
-    },
-    {
-      title: translate('wishlist-option-delete', this.props.intl),
-      onClick: () => this.setState({ showDeleteConfirmation: true })
-    },
-  ]
-
   private onFinishUpdate = (list: List): void => {
     this.setState({ list: list, showUpdateList: false })
   }
@@ -116,12 +116,31 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
       .catch(err => console.error('Something went wrong', err))
   }
 
+  private handleOnClose = (): void => {
+    const { list } = this.state
+    const { onClose } = this.props
+    const currentList = {
+      ...list,
+      items: map(item => this.itemWithoutProduct(item), list.items)
+    }
+    onClose(currentList)
+  }
+
+  private handleDeleteList = (): void => {
+    const { client, listId, onDeleted, onClose } = this.props
+    client && deleteList(client, listId)
+    .then(() => {
+      onDeleted && onDeleted(listId)
+      onClose()
+    })
+    .catch(error => console.error('Something went wrong', error))
+  }
+
   private renderContent = (): ReactNode => {
     const { list: { name, items }, selectedItems } = this.state
-    const { onClose } = this.props
     return (
       <Fragment>
-        <Header title={name} onClose={onClose}>
+        <Header title={name} onClose={this.handleOnClose}>
           <MenuOptions options={this.options} />
         </Header>
         <Content
@@ -141,7 +160,7 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
 
   public render(): ReactNode {
     const { list, isLoading, showDeleteConfirmation, showUpdateList } = this.state
-    const { intl, onDeleted, listId } = this.props
+    const { intl, listId } = this.props
     return (
       <div className="vh-100 flex flex-column">
         {isLoading ? renderLoading() : this.renderContent()}
@@ -149,7 +168,7 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
           <Dialog
             message={`${translate("wishlist-delete-confirmation-message", intl)} "${list.name}"?`}
             onClose={() => this.setState({ showDeleteConfirmation: false })}
-            onSuccess={() => onDeleted(listId)}
+            onSuccess={this.handleDeleteList}
           />
         )}
         {showUpdateList && (
