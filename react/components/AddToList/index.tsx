@@ -1,6 +1,7 @@
 import React, { Component, ReactNode } from "react"
-import ListMenuContent from './AddToListContent'
+import ListMenuContent from './Content'
 import BottomBar from '../BottomBar'
+import { isMobile } from 'react-device-detect'
 
 interface AddToListProps {
   product: any
@@ -12,11 +13,12 @@ interface AddToListProps {
 class AddToList extends Component<AddToListProps, {}> {
   public render(): ReactNode {
     const { onClose } = this.props
-    return (
+    const content = <ListMenuContent {...this.props} />
+    return isMobile ? (
       <BottomBar onOutsideClick={onClose}>
-        <ListMenuContent {...this.props} />
+        {content}
       </BottomBar>
-    )
+    ) : null
   }
 }
 

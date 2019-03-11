@@ -15,8 +15,8 @@ import { translate } from '../../utils/translate'
 
 import ListItem from '../ListItem'
 import Header from '../Header'
-import CreateList from '../CreateList'
-import UpdateList from '../UpdateList'
+import CreateList from '../Form/CreateList'
+import UpdateList from '../Form/UpdateList'
 import renderLoading from '../Loading'
 import ListDetails from '../ListDetails/index'
 
@@ -33,8 +33,6 @@ interface ListsStates {
 }
 
 interface ListsProps {
-  lists: any[]
-  loadingLists: boolean
   client: ApolloClient<any>
   intl?: intlShape
   onClose: () => void

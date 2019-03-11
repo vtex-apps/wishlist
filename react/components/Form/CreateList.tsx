@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { injectIntl } from 'react-intl'
 import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
-import { createList } from '../GraphqlClient'
-import Header from './Header'
-import { translate } from '../utils/translate'
+import { createList } from '../../GraphqlClient'
+import Header from '../Header'
+import { translate } from '../../utils/translate'
 import ListForm from './ListForm'
 
 interface CreateListProps {

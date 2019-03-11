@@ -55,19 +55,19 @@ class Footer extends Component<FooterProps, FooterState> {
     return (
       <div className="flex-column pa4 bt b--muted-4">
         <div className="tr">
-          <span>{items.length}</span>
+          <span className="b">{items.length}</span>
           <span className="ml2">{translate('wishlist-quantity-selected-items', intl)}</span>
         </div>
-        <div className="pv4 flex flex-row justify-end">
+        <div className="pv4 flex flex-row justify-end b">
           <span className="mr2">
             {translate('wishlist-total', intl)}
           </span>
-          <ProductPrice
-            sellingPrice={totalPrice}
-            listPrice={totalPrice}
-            showLabels={false}
-            showListPrice={false}
-          />
+            <ProductPrice
+              sellingPrice={totalPrice}
+              listPrice={totalPrice}
+              showLabels={false}
+              showListPrice={false}
+            />
         </div>
         <div>
           <Button

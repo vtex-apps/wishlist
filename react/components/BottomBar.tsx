@@ -2,15 +2,15 @@ import React, { Component, ReactNode, MouseEvent } from 'react'
 import { createPortal } from 'react-dom'
 import OutsideClickHandler from 'react-outside-click-handler'
 
-interface PopupProps {
+interface BottomBarProps {
   children: ReactNode,
   onOutsideClick: (e: MouseEvent<HTMLElement>) => void
 }
 
 /**
- * Pop-up component.
+ * Bottom bar component.
  */
-export default class Popup extends Component<PopupProps> {
+export default class BottomBar extends Component<BottomBarProps> {
   public render(): ReactNode {
     const {
       children,
@@ -19,7 +19,9 @@ export default class Popup extends Component<PopupProps> {
 
     return createPortal(
       <OutsideClickHandler onOutsideClick={onOutsideClick}>
-        {children}
+        <div className="w-100 fixed bottom-0">
+          {children}
+        </div>
       </OutsideClickHandler >,
       document.body
     )
