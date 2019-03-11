@@ -10,9 +10,7 @@
   "wishlist-my-lists": "Minhas Listas",
   "wishlist-buy-all": "Comprar Tudo",
   "wishlist-apply": "aplicar",
-  "wishlist-add-product-success": "Salvo em todos os itens",
   "wishlist-add-product-fail": "Produto não foi adicionado",
-  "wishlist-see": "VER",
   "wishlist-see-lists": "VER LISTAS",
   "wishlist-product-added-to-list": "Item adicionado à lista",
   "wishlist-no-list-created": "Você tem nenhuma lista criada",
@@ -29,7 +27,7 @@
   "wishlist-list-empty": "Esta lista não possui itens",
   "wishlist-add-itens": "Adicionar produtos",
   "wishlist-list-updated": "Sua lista foi editada",
-  "wishlist-quantity-of-items": "items nesta lsita",
+  "wishlist-quantity-of-items": "items nesta lista",
   "wishlist-add-to-cart-success": "Itens adicionados ao carrinho",
   "wishlist-add-to-cart-fail": "Itens não foram adicionados ao carrinho"
 }
