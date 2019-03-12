@@ -1,6 +1,5 @@
 import React, { Component, ReactNode, MouseEvent } from 'react'
 import { createPortal } from 'react-dom'
-import OutsideClickHandler from 'react-outside-click-handler'
 
 interface BottomBarProps {
   children: ReactNode,
@@ -18,11 +17,15 @@ export default class BottomBar extends Component<BottomBarProps> {
     } = this.props
 
     return createPortal(
-      <OutsideClickHandler onOutsideClick={onOutsideClick}>
-        <div className="w-100 fixed bottom-0">
+      <div className="fixed top-0 left-0 z-max vh-100 vw-100 flex flex-column">
+        <div
+          onClick={onOutsideClick}
+          className="h-100 w-100 bg-base--inverted z-4 o-40"
+        />
+        <div className="w-100">
           {children}
         </div>
-      </OutsideClickHandler >,
+      </ div>,
       document.body
     )
   }

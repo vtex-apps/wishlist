@@ -63,7 +63,11 @@ class UpdateList extends Component<UpdateListProps, UpdateListState> {
     const { isLoading } = this.state
     return (
       <div className="vh-100">
-        <Header title={translate("wishlist-option-configuration", intl)} onClose={onClose} />
+        <Header
+        title={translate("wishlist-option-configuration", intl)}
+        onClose={onClose}
+        showIconBack
+        />
         <ListForm
           list={list}
           buttonLabel={translate("wishlist-save", intl)}

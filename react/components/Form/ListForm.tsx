@@ -43,14 +43,14 @@ class ListForm extends Component<ListFormProps, ListFormState> {
     this.setState(
       {
         listData: { ...this.state.listData, isPublic: !isPublic },
-        isChanged: !list || (list && list.isPublic !== !isPublic),
-        isValid: !list || (list && list.isPublic !== !isPublic && name.length >= LIST_NAME_MINIMUM_LENGTH),
+        isChanged: !list || (list.isPublic !== !isPublic),
+        isValid: this.isNameValid(name)
       }
     )
   }
 
-  public isNameValid = (name: string): boolean => {
-    return (name !== 'undefined' && name.length >= LIST_NAME_MINIMUM_LENGTH)
+  public isNameValid = (name: string): any => {
+    return (name && name.length >= LIST_NAME_MINIMUM_LENGTH)
   }
 
   public componentDidMount(): void {

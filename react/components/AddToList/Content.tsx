@@ -18,6 +18,7 @@ import ListDetails from '../ListDetails'
 import Footer from './Footer'
 
 const DEFAULT_LIST_INDEX = 0
+const QUANTITY_WITH_ONLY_DEFAULT_LIST = 1
 
 interface AddToListContentProps {
   product: any
@@ -152,7 +153,6 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
 
   private renderSwitchLists = (): ReactNode => {
     const { lists } = this.state
-    const { intl } = this.props
     return (
       <div className="flex flex-column">
         {
@@ -167,11 +167,6 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
               onSelected={this.updateChangedLists} />
           ))
         }
-        {lists && lists.length <= 1 && (
-          <div className="pa6 flex items-center justify-center c-muted-1">
-            <span>{translate("wishlist-no-list-created", intl)}</span>
-          </div>
-        )}
       </div>
     )
   }
@@ -189,6 +184,7 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
       selectedListId,
       changedLists,
       isAdding,
+      lists,
     } = this.state
     return (
       <div className="z-4 bg-base">
@@ -200,11 +196,13 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
         <div className={`${wishlist.contentContainer} overflow-y-auto`}>
           {this.renderMainContent()}
         </div>
-        <Footer
-          changedLists={changedLists}
-          isLoading={isAdding}
-          onClick={this.addProductTochangedLists}
-        />
+        {lists && lists.length > QUANTITY_WITH_ONLY_DEFAULT_LIST && (
+          <Footer
+            changedLists={changedLists}
+            isLoading={isAdding}
+            onClick={this.addProductTochangedLists}
+          />
+        )}
         {showCreateList && (
           <CreateList
             onFinishAdding={this.onListCreated}

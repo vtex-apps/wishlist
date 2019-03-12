@@ -41,8 +41,12 @@ class CreateList extends Component<CreateListProps, CreateListState> {
     const { onClose, intl } = this.props
     const { isLoading } = this.state
     return (
-      <div className="vh-100">
-        <Header title={translate("wishlist-new", intl)} onClose={onClose} />
+      <div className="vh-100 fixed top-0 left-0 w-100 bg-base z-4">
+        <Header
+          title={translate("wishlist-new", intl)}
+          onClose={onClose}
+          showIconBack
+        />
         <ListForm
           buttonLabel={translate("wishlist-add-button", intl)}
           onSubmit={this.onSubmit}

@@ -74,12 +74,14 @@ class ListItem extends Component<ListItemProps, {}> {
         {showMenuOptions ? (
           <MenuOptions options={this.options} />
         ) : (
-            <div className="flex items-center c-action-primary">
-              <Checkbox
-              checked={isSelected}
-              onChange={() => onSelected && onSelected(id, isSelected)}
-              />
-            </div>
+            !isDefault && (
+              <div className="flex items-center c-action-primary">
+                <Checkbox
+                  checked={isSelected}
+                  onChange={() => onSelected && onSelected(id, isSelected)}
+                />
+              </div>
+            )
           )}
         {showDeleteDialog && (
           <Dialog

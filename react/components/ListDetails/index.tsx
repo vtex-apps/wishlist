@@ -15,6 +15,10 @@ import UpdateList from '../Form/UpdateList'
 
 import { getListDetailed, updateList, deleteList } from '../../GraphqlClient'
 
+enum Size {
+  large, small
+}
+
 interface ListDetailState {
   list?: List
   isLoading: boolean
@@ -129,19 +133,23 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
   private handleDeleteList = (): void => {
     const { client, listId, onDeleted, onClose } = this.props
     client && deleteList(client, listId)
-    .then(() => {
-      onDeleted && onDeleted(listId)
-      onClose()
-    })
-    .catch(error => console.error('Something went wrong', error))
+      .then(() => {
+        onDeleted && onDeleted(listId)
+        onClose()
+      })
+      .catch(error => console.error('Something went wrong', error))
   }
 
   private renderContent = (): ReactNode => {
     const { list: { name, items }, selectedItems } = this.state
     return (
       <Fragment>
-        <Header title={name} onClose={this.handleOnClose}>
-          <MenuOptions options={this.options} />
+        <Header
+          title={name}
+          onClose={this.handleOnClose}
+          showIconBack
+        >
+          <MenuOptions options={this.options} size={Size.large} />
         </Header>
         <Content
           items={items}
@@ -162,7 +170,7 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
     const { list, isLoading, showDeleteConfirmation, showUpdateList } = this.state
     const { intl, listId } = this.props
     return (
-      <div className="vh-100 flex flex-column">
+      <div className="fixed top-0 left-0 vw-100 vh-100 flex flex-column z-4 bg-base">
         {isLoading ? renderLoading() : this.renderContent()}
         {showDeleteConfirmation && (
           <Dialog
