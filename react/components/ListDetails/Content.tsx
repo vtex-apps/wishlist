@@ -22,6 +22,7 @@ class Content extends Component<ContentProps, {}> {
       fallbackToWindowLocation: false
     })
   }
+  
   private renderListEmpty = (): ReactNode => {
     const { intl } = this.props
     return (
@@ -43,7 +44,7 @@ class Content extends Component<ContentProps, {}> {
     return (
       <Fragment>
         {map(item => (
-          <ItemDetails {...this.props} item={item} />
+          <ItemDetails {...this.props} item={item} key={item.id} />
         ), items)}
       </Fragment>
     )
