@@ -1,7 +1,7 @@
-import React, { Component, ReactNode } from "react"
-import ListMenuContent from './Content'
-import BottomBar from '../BottomBar'
+import React, { Component, ReactNode } from 'react'
 import { isMobile } from 'react-device-detect'
+import BottomBar from '../BottomBar'
+import ListMenuContent from './Content'
 
 interface AddToListProps {
   product: any

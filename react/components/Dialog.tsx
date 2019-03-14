@@ -1,21 +1,21 @@
-import React, { Component, ReactNode, Fragment } from "react"
+import React, { Component, Fragment, ReactNode } from 'react'
+import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
 import OutsideClickHandler from 'react-outside-click-handler'
 import { Button } from 'vtex.styleguide'
 import { translate } from '../utils/translate'
-import { injectIntl, intlShape } from 'react-intl'
 
 interface DialogProps {
   message: string
   onClose: () => void
   onSuccess: () => void
-  intl?: intlShape
+  intl?: IntlShape
 }
 
 interface DialogState {
   isLoading?: boolean
 }
 
-class Dialog extends Component<DialogProps, DialogState> {
+class Dialog extends Component<DialogProps & InjectedIntlProps, DialogState> {
   public state: DialogState = {}
 
   public render(): ReactNode {
@@ -37,7 +37,7 @@ class Dialog extends Component<DialogProps, DialogState> {
                   onClick={onClose}
                   disabled={isLoading}
                 >
-                  {translate("wishlist-dialog-cancel", intl)}
+                  {translate('wishlist-dialog-cancel', intl)}
                 </Button>
                 <div className="ml3">
                   <Button
@@ -46,7 +46,7 @@ class Dialog extends Component<DialogProps, DialogState> {
                     onClick={() => { this.setState({ isLoading: true }); onSuccess() }}
                     isLoading={isLoading}
                   >
-                    {translate("wishlist-dialog-confirm", intl)}
+                    {translate('wishlist-dialog-confirm', intl)}
                   </Button>
                 </div>
               </div>

@@ -1,5 +1,5 @@
 {
-  "wish-list-btn": {
+  "add-to-list-btn": {
     "component": "AddProductBtn",
     "required": ["product-summary"]
   }

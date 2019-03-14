@@ -1,24 +1,24 @@
-import React, { Component, ReactNode, Fragment } from 'react'
-import { createPortal } from 'react-dom'
-import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
-import { FormattedMessage } from 'react-intl'
+import { append, filter, map, update } from 'ramda'
+import React, { Component, Fragment, ReactNode } from 'react'
+import { withApollo, WithApolloClient } from 'react-apollo'
+import { createPortal } from 'react-dom'
+import { FormattedMessage, InjectedIntlProps } from 'react-intl'
+import { injectIntl, IntlShape } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
-import { injectIntl, intlShape } from 'react-intl'
 import {
+  deleteList,
   getListsFromLocaleStorage,
-  saveListIdInLocalStorage,
-  deleteList
+  saveListIdInLocalStorage
 } from '../../GraphqlClient'
-import { map, append, filter, update } from 'ramda'
 import { translate } from '../../utils/translate'
 
-import ListItem from '../ListItem'
-import Header from '../Header'
 import CreateList from '../Form/CreateList'
 import UpdateList from '../Form/UpdateList'
-import renderLoading from '../Loading'
+import Header from '../Header'
 import ListDetails from '../ListDetails/index'
+import ListItem from '../ListItem'
+import renderLoading from '../Loading'
 
 const DEFAULT_LIST_INDEX = 0
 
@@ -33,108 +33,46 @@ interface ListsStates {
 }
 
 interface ListsProps {
-  client: ApolloClient<any>
-  intl?: intlShape
-  onClose: () => void
+  onClose: () => void,
+  intl?: IntlShape,
+  client?: ApolloClient<any>
 }
 
-class Lists extends Component<ListsProps, ListsStates> {
-  state: ListsStates = {
+class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<{}>, ListsStates> {
+  public state: ListsStates = {
+    listSelected: -1,
     lists: [],
     loading: true,
     show: true,
-    listSelected: -1
   }
 
   public componentDidMount(): void {
     const { client } = this.props
-    client && getListsFromLocaleStorage(client)
+    getListsFromLocaleStorage(client)
       .then(response => {
         const lists = map(item => item.data.list, response)
-        this.setState({ loading: false, lists: lists })
+        this.setState({ loading: false, lists })
       })
       .catch(() => this.setState({ loading: false }))
   }
 
-  private handleDeleteList = (listId: string): Promise<any> => {
-    const { lists } = this.state
-    const { client } = this.props
-    return deleteList(client, listId)
-      .then(() => {
-        this.setState({
-          lists: filter(list => list.id !== listId, lists),
-          showListDetails: false
-        })
-      })
-      .catch(err => console.error('something went wrong', err))
-  }
-
-  private handleUpdateList = (index: number): void => {
-    this.setState({ listSelected: index, showUpdateList: true })
-  }
-
-  private onListCreated = (list: any): void => {
-    const { lists } = this.state
-    saveListIdInLocalStorage(list.id)
-    this.setState({ showCreateList: false, lists: append(list, lists) })
-  }
-
-  private onListUpdated = (list: any): void => {
-    const { lists, listSelected } = this.state
-    this.setState({ lists: update(listSelected, list, lists), showUpdateList: false })
-  }
-
-  private renderLists = (): ReactNode => {
-    const { lists } = this.state
-    return (
-      <Fragment>
-        {lists.length ?
-          (
-            <div className="bb b--muted-4">
-              {lists.map((list, key) => (
-                <ListItem
-                  key={key}
-                  list={list}
-                  id={key}
-                  isDefault={key === DEFAULT_LIST_INDEX}
-                  onClick={() => this.setState({ showListDetails: true, listSelected: key })}
-                  showMenuOptions
-                  onDeleted={this.handleDeleteList}
-                  onUpdated={this.handleUpdateList}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="tc pv4 c-muted-2">
-              <FormattedMessage id="wishlist-no-lists" />
-            </div>
-          )}
-      </Fragment>
-    )
-  }
-
-  private renderContent = (): ReactNode => {
-    const { loading } = this.state
-    return loading ? renderLoading() : this.renderLists()
-  }
-
-  render = (): ReactNode => {
+  public render = (): ReactNode => {
     const {
       show,
       showCreateList,
       showUpdateList,
       showListDetails,
       listSelected,
-      lists
+      lists,
     } = this.state
     const { onClose, intl } = this.props
-    if (!show) return null
+    if (!show) { return null }
     return createPortal(
       (
         <Fragment>
           <div className="vw-100 vh-100 z-4 fixed bg-white top-0">
             <Header
-              title={translate("wishlist-my-lists", intl)}
+              title={translate('wishlist-my-lists', intl)}
               onClose={onClose}
               action={() => this.setState({ showCreateList: true })}
             />
@@ -172,5 +110,68 @@ class Lists extends Component<ListsProps, ListsStates> {
       document.body
     )
   }
+
+  private renderLists = (): ReactNode => {
+    const { lists } = this.state
+    return (
+      <Fragment>
+        {lists.length ?
+          (
+            <div className="bb b--muted-4">
+              {lists.map((list, key) => (
+                <ListItem
+                  key={key}
+                  list={list}
+                  id={key}
+                  isDefault={key === DEFAULT_LIST_INDEX}
+                  onClick={() => this.setState({ showListDetails: true, listSelected: key })}
+                  showMenuOptions
+                  onDeleted={this.handleDeleteList}
+                  onUpdated={this.handleUpdateList}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="tc pv4 c-muted-2">
+              <FormattedMessage id="wishlist-no-lists" />
+            </div>
+          )}
+      </Fragment>
+    )
+  }
+
+  private handleDeleteList = (listId: string): Promise<any> => {
+    const { lists } = this.state
+    const { client } = this.props
+    return deleteList(client, listId)
+      .then(() => {
+        this.setState({
+          lists: filter(list => list.id !== listId, lists),
+          showListDetails: false,
+        })
+      })
+      .catch(err => console.error('something went wrong', err))
+  }
+
+  private handleUpdateList = (index: number): void => {
+    this.setState({ listSelected: index, showUpdateList: true })
+  }
+
+  private onListCreated = (list: any): void => {
+    const { lists } = this.state
+    saveListIdInLocalStorage(list.id)
+    this.setState({ showCreateList: false, lists: append(list, lists) })
+  }
+
+  private onListUpdated = (list: any): void => {
+    const { lists, listSelected } = this.state
+    this.setState({ lists: update(listSelected, list, lists), showUpdateList: false })
+  }
+
+  private renderContent = (): ReactNode => {
+    const { loading } = this.state
+    return loading ? renderLoading() : this.renderLists()
+  }
+
 }
-export default injectIntl(withRuntimeContext(withApollo<ListsProps, {}>(Lists)))
+export default withRuntimeContext(withApollo<ListsProps, {}>(injectIntl(Lists)))

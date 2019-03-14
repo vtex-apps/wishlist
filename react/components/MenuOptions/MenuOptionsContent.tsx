@@ -1,6 +1,6 @@
-import React, { Component, ReactNode } from "react"
-import Popover from '../Popover'
 import { map } from 'ramda'
+import React, { Component, ReactNode } from 'react'
+import Popover from '../Popover'
 
 interface MenuOptionsContentProps {
   options: Option[]

@@ -1,20 +1,16 @@
 import { ApolloClient } from 'apollo-client'
-import { append, filter, indexOf, map, remove, update, path } from 'ramda'
+import { append, filter, indexOf, map, path, remove, update } from 'ramda'
 import React, { Component, ReactNode } from "react"
-import { withApollo } from 'react-apollo'
-import { injectIntl, intlShape } from 'react-intl'
-import {
-  getListsFromLocaleStorage,
-  saveListIdInLocalStorage,
-  updateList
-} from '../../GraphqlClient'
+import { withApollo, WithApolloClient } from 'react-apollo'
+import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import { getListsFromLocaleStorage, saveListIdInLocalStorage, updateList } from '../../GraphqlClient'
 import { translate } from '../../utils/translate'
 import wishlist from '../../wishList.css'
 import CreateList from '../Form/CreateList'
 import Header from '../Header'
+import ListDetails from '../ListDetails'
 import ListItem from '../ListItem'
 import renderLoading from '../Loading'
-import ListDetails from '../ListDetails'
 import Footer from './Footer'
 
 const DEFAULT_LIST_INDEX = 0
@@ -25,7 +21,7 @@ interface AddToListContentProps {
   onClose: () => void
   onAddToListsSuccess: () => void
   onAddToListsFail: () => void
-  intl?: intlShape
+  intl?: IntlShape
   client?: ApolloClient<any>
 }
 
@@ -39,22 +35,68 @@ interface AddToListContentState {
   selectedListId: string
 }
 
-class AddToListContent extends Component<AddToListContentProps, AddToListContentState> {
+class AddToListContent extends Component<AddToListContentProps & InjectedIntlProps & WithApolloClient<{}>, AddToListContentState> {
   public state: AddToListContentState = {
+    changedLists: [],
     isLoading: true,
     lists: [],
-    changedLists: [],
     selectedListId: '',
   }
 
   public componentDidMount(): void {
     const { client } = this.props
-    client && getListsFromLocaleStorage(client)
-      .then((response: any) => {
-        const lists = map(item => item.data.list, response)
-        this.setState({ isLoading: false, lists: lists })
-      })
-      .catch(() => this.setState({ isLoading: false }))
+    if (client) {
+      getListsFromLocaleStorage(client)
+        .then((response: any) => {
+          const lists = map(item => item.data.list, response)
+          this.setState({ isLoading: false, lists })
+        })
+        .catch(() => this.setState({ isLoading: false }))
+    }
+  }
+
+  public render(): ReactNode {
+    const { onClose, intl } = this.props
+    const {
+      showCreateList,
+      showListDetails,
+      selectedListId,
+      changedLists,
+      isAdding,
+      lists,
+    } = this.state
+    return (
+      <div className="z-4 bg-base">
+        <Header
+          title={translate('wishlist-add-to-list', intl)}
+          onClose={onClose}
+          action={() => this.setState({ showCreateList: true })}
+        />
+        <div className={`${wishlist.contentContainer} overflow-y-auto`}>
+          {this.renderMainContent()}
+        </div>
+        {lists && lists.length > QUANTITY_WITH_ONLY_DEFAULT_LIST && (
+          <Footer
+            changedLists={changedLists}
+            isLoading={isAdding}
+            onClick={this.addProductTochangedLists}
+          />
+        )}
+        {showCreateList && (
+          <CreateList
+            onFinishAdding={this.onListCreated}
+            onClose={() => this.setState({ showCreateList: false })}
+          />
+        )}
+        {showListDetails && (
+          <ListDetails
+            listId={selectedListId}
+            onClose={this.handleOnCloseListDetails}
+            onDeleted={this.handleOnDeleted}
+          />
+        )}
+      </div>
+    )
   }
 
   private onListCreated = (list: any): void => {
@@ -113,8 +155,8 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
     const { lists } = this.state
     const listId: string = path(['id'], lists[index]) || ''
     this.setState({
-      showListDetails: true,
       selectedListId: listId,
+      showListDetails: true,
     })
   }
 
@@ -136,7 +178,7 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
     const { product: { productId, skuId } } = this.props
     const { lists } = this.state
     const list = lists[index]
-    const items = filter(item => item.productId !== productId || item.skuId !== skuId, list.items)
+    const items = filter((item: Item) => item.productId !== productId || item.skuId !== skuId, list.items)
     return update(index, { ...list, items }, lists)
   }
 
@@ -176,49 +218,6 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
     return isLoading ? renderLoading() : this.renderSwitchLists()
   }
 
-  public render(): ReactNode {
-    const { onClose, intl } = this.props
-    const {
-      showCreateList,
-      showListDetails,
-      selectedListId,
-      changedLists,
-      isAdding,
-      lists,
-    } = this.state
-    return (
-      <div className="z-4 bg-base">
-        <Header
-          title={translate('wishlist-add-to-list', intl)}
-          onClose={onClose}
-          action={() => this.setState({ showCreateList: true })}
-        />
-        <div className={`${wishlist.contentContainer} overflow-y-auto`}>
-          {this.renderMainContent()}
-        </div>
-        {lists && lists.length > QUANTITY_WITH_ONLY_DEFAULT_LIST && (
-          <Footer
-            changedLists={changedLists}
-            isLoading={isAdding}
-            onClick={this.addProductTochangedLists}
-          />
-        )}
-        {showCreateList && (
-          <CreateList
-            onFinishAdding={this.onListCreated}
-            onClose={() => this.setState({ showCreateList: false })}
-          />
-        )}
-        {showListDetails && (
-          <ListDetails
-            listId={selectedListId}
-            onClose={this.handleOnCloseListDetails}
-            onDeleted={this.handleOnDeleted}
-          />
-        )}
-      </div>
-    )
-  }
 }
 
 export default withApollo<AddToListContentProps, {}>(injectIntl(AddToListContent))

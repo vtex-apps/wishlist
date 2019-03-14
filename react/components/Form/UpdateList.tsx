@@ -1,13 +1,13 @@
-import React, { Component } from 'react'
-import { injectIntl } from 'react-intl'
-import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
-import { updateList } from '../../GraphqlClient'
-import Header from '../Header'
-import { translate } from '../../utils/translate'
-import ListForm from './ListForm'
 import { map } from 'ramda'
+import React, { Component } from 'react'
+import { withApollo, WithApolloClient } from 'react-apollo'
+import { InjectedIntlProps, injectIntl } from 'react-intl'
 import { withToast } from 'vtex.styleguide'
+import { updateList } from '../../GraphqlClient'
+import { translate } from '../../utils/translate'
+import Header from '../Header'
+import ListForm from './ListForm'
 
 interface UpdateListProps {
   list: List
@@ -25,38 +25,8 @@ interface UpdateListState {
 /**
  * Wishlist element to add product to a list
  */
-class UpdateList extends Component<UpdateListProps, UpdateListState> {
+class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApolloClient<{}>, UpdateListState> {
   public state: UpdateListState = {}
-
-  private itemsToItemsInput = (items: any): [Items] => map(
-    ({ id, productId, skuId, quantity }) => ({ id, productId, skuId, quantity }),
-    items)
-
-  public onSubmit = ({ name, isPublic }: List): void => {
-    const { client, list: { id, items }, list, showToast, intl } = this.props
-    this.setState({ isLoading: true })
-    client && updateList(
-      client,
-      id,
-      {
-        ...list,
-        name,
-        isPublic,
-        items: this.itemsToItemsInput(items)
-      }
-    )
-      .then(response => {
-        this.setState({ isLoading: false })
-        showToast && showToast({ message: translate('wishlist-list-updated', intl) })
-        setTimeout(
-          () => this.props.onFinishUpdate({ ...response.data.updateList, items }),
-          500
-        )
-      })
-      .catch(err => {
-        console.error('something went wrong', err)
-      })
-  }
 
   public render() {
     const { onClose, intl, list } = this.props
@@ -64,19 +34,54 @@ class UpdateList extends Component<UpdateListProps, UpdateListState> {
     return (
       <div className="vh-100">
         <Header
-        title={translate("wishlist-option-configuration", intl)}
-        onClose={onClose}
-        showIconBack
+          title={translate('wishlist-option-configuration', intl)}
+          onClose={onClose}
+          showIconBack
         />
         <ListForm
           list={list}
-          buttonLabel={translate("wishlist-save", intl)}
+          buttonLabel={translate('wishlist-save', intl)}
           onSubmit={this.onSubmit}
           isLoading={isLoading}
         />
       </div>
     )
   }
+
+  private itemsToItemsInput = (items: any): [Items] => map(
+    ({ id, productId, skuId, quantity }) => ({ id, productId, skuId, quantity }),
+    items)
+
+  private onSubmit = ({ name, isPublic }: List): void => {
+    const { client, list: { id, items }, list, showToast, intl } = this.props
+    this.setState({ isLoading: true })
+    if (client) {
+      updateList(
+        client,
+        id,
+        {
+          ...list,
+          isPublic,
+          items: this.itemsToItemsInput(items),
+          name,
+        }
+      )
+        .then(response => {
+          this.setState({ isLoading: false })
+          if (showToast) {
+            showToast({ message: translate('wishlist-list-updated', intl) })
+          }
+          setTimeout(
+            () => this.props.onFinishUpdate({ ...response.data.updateList, items }),
+            500
+          )
+        })
+        .catch(err => {
+          console.error('something went wrong', err)
+        })
+    }
+  }
+
 }
 
 export default withToast(withApollo<UpdateListProps, {}>(injectIntl(UpdateList)))

@@ -1,17 +1,17 @@
 import React, { Component, ReactNode } from "react"
-import { translate } from '../../utils/translate'
+import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
 import { Button } from 'vtex.styleguide'
-import { injectIntl, intlShape } from 'react-intl'
+import { translate } from '../../utils/translate'
 import wishlist from '../../wishList.css'
 
 interface FooterProps {
-  intl?: intlShape
+  intl: IntlShape
   isLoading: boolean
   changedLists: any[]
   onClick: () => void
 }
 
-class Footer extends Component<FooterProps, {}> {
+class Footer extends Component<FooterProps & InjectedIntlProps, {}> {
   public render(): ReactNode {
     const { intl, isLoading, changedLists, onClick } = this.props
     return (
@@ -23,7 +23,7 @@ class Footer extends Component<FooterProps, {}> {
           onClick={onClick}
           isLoading={isLoading}
         >
-          {translate("wishlist-apply", intl)}
+          {translate('wishlist-apply', intl)}
         </Button>
       </div>
     )

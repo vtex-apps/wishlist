@@ -1,7 +1,7 @@
-import React, { Component, ReactNode } from "react"
-import { Checkbox, ButtonWithIcon, IconDelete } from 'vtex.styleguide'
-import { ExtensionPoint } from 'vtex.render-runtime'
 import { path } from 'ramda'
+import React, { Component, ReactNode } from "react"
+import { ExtensionPoint } from 'vtex.render-runtime'
+import { ButtonWithIcon, Checkbox, IconDelete } from 'vtex.styleguide'
 import renderLoading from '../Loading'
 
 interface ItemDetailsProps {
@@ -17,35 +17,6 @@ interface ItemDetailsState {
 
 class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
   public state: ItemDetailsState = {}
-
-  private normalizeProduct = (product: any): any => {
-    if (!product) return null
-    const normalizedProduct = { ...product }
-    const [sku] = normalizedProduct.items
-    if (sku) {
-      const [seller = { commertialOffer: { Price: 0, ListPrice: 0 } }] = path(['sellers'], sku) || []
-      const [referenceId = { Value: '' }] = path(['referenceId'], sku) || []
-      const [image = { imageUrl: '' }] = path(['images'], sku) || []
-      const unmixedImage = { ...image, imageUrl: image.imageUrl.replace(/^https?:/, '') }
-      normalizedProduct.sku = { ...sku, seller, referenceId, image: unmixedImage }
-    }
-    return normalizedProduct
-  }
-
-  private onItemSelectedChange = (): void => {
-    const { item: { id, product }, onItemSelect } = this.props
-    const { isSelected } = this.state
-    this.setState({ isSelected: !isSelected })
-    onItemSelect(id, product, !isSelected)
-  }
-
-  private onItemRemove = (): void => {
-    const { onItemRemove, item } = this.props
-    this.setState({ isLoading: true })
-    onItemRemove(item.id)
-      .then(() => this.setState({ isLoading: false }))
-      .catch(() => this.setState({ isLoading: false }))
-  }
 
   public render(): ReactNode {
     const { item: { product } } = this.props
@@ -77,7 +48,7 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
           id="product-summary"
           showBorders
           product={this.normalizeProduct(product)}
-          displayMode="inline"
+          displayMode="inlinePrice"
           showListPrice={false}
           showBadge={false}
           showInstallments={false}
@@ -87,6 +58,38 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
       </div>
     )
   }
+
+  private normalizeProduct = (product: any): any => {
+    if (!product) {
+      return null
+    }
+    const normalizedProduct = { ...product }
+    const [sku] = normalizedProduct.items
+    if (sku) {
+      const [seller = { commertialOffer: { Price: 0, ListPrice: 0 } }] = path(['sellers'], sku) || []
+      const [referenceId = { Value: '' }] = path(['referenceId'], sku) || []
+      const [image = { imageUrl: '' }] = path(['images'], sku) || []
+      const unmixedImage = { ...image, imageUrl: image.imageUrl.replace(/^https?:/, '') }
+      normalizedProduct.sku = { ...sku, seller, referenceId, image: unmixedImage }
+    }
+    return normalizedProduct
+  }
+
+  private onItemSelectedChange = (): void => {
+    const { item: { id, product }, onItemSelect } = this.props
+    const { isSelected } = this.state
+    this.setState({ isSelected: !isSelected })
+    onItemSelect(id, product, !isSelected)
+  }
+
+  private onItemRemove = (): void => {
+    const { onItemRemove, item } = this.props
+    this.setState({ isLoading: true })
+    onItemRemove(item.id)
+      .then(() => this.setState({ isLoading: false }))
+      .catch(() => this.setState({ isLoading: false }))
+  }
+
 }
 
 export default ItemDetails

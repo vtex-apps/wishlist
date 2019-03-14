@@ -1,23 +1,60 @@
-import React, { Component, ReactNode } from "react"
-import { injectIntl, intlShape } from 'react-intl'
-import { translate } from '../../utils/translate'
-import { Button, withToast } from 'vtex.styleguide'
-import ProductPrice from 'vtex.store-components/ProductPrice'
 import { map } from 'ramda'
+import React, { Component, ReactNode } from 'react'
+import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import ProductPrice from 'vtex.store-components/ProductPrice'
+import { Button, withToast } from 'vtex.styleguide'
+import { translate } from '../../utils/translate'
 
 interface FooterProps {
   items: any
   onAddToCart: () => Promise<any>
   showToast: any
-  intl?: intlShape
+  intl: IntlShape
 }
 
 interface FooterState {
   isLoading?: boolean
 }
 
-class Footer extends Component<FooterProps, FooterState> {
+class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
   public state: FooterState = {}
+
+  public render(): ReactNode {
+    const { intl, items } = this.props
+    const { isLoading } = this.state
+    const totalPrice = this.calculateTotal()
+
+    return (
+      <div className="flex-column pa4 bt b--muted-4">
+        <div className="tr">
+          <span className="b">{items.length}</span>
+          <span className="ml2">{translate('wishlist-quantity-selected-items', intl)}</span>
+        </div>
+        <div className="pv4 flex flex-row justify-end b">
+          <span className="mr2">
+            {translate('wishlist-total', intl)}
+          </span>
+          <ProductPrice
+            sellingPrice={totalPrice}
+            listPrice={totalPrice}
+            showLabels={false}
+            showListPrice={false}
+          />
+        </div>
+        <div>
+          <Button
+            variation="primary"
+            block
+            disabled={items.length <= 0}
+            onClick={this.onAddToCart}
+            isLoading={isLoading}
+          >
+            {translate('wishlist-buy-items', intl)}
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   private calculateTotal = (): number => {
     const { items } = this.props
@@ -47,42 +84,6 @@ class Footer extends Component<FooterProps, FooterState> {
     })
   }
 
-  public render(): ReactNode {
-    const { intl, items } = this.props
-    const { isLoading } = this.state
-    const totalPrice = this.calculateTotal()
-
-    return (
-      <div className="flex-column pa4 bt b--muted-4">
-        <div className="tr">
-          <span className="b">{items.length}</span>
-          <span className="ml2">{translate('wishlist-quantity-selected-items', intl)}</span>
-        </div>
-        <div className="pv4 flex flex-row justify-end b">
-          <span className="mr2">
-            {translate('wishlist-total', intl)}
-          </span>
-            <ProductPrice
-              sellingPrice={totalPrice}
-              listPrice={totalPrice}
-              showLabels={false}
-              showListPrice={false}
-            />
-        </div>
-        <div>
-          <Button
-            variation="primary"
-            block
-            disabled={items.length <= 0}
-            onClick={this.onAddToCart}
-            isLoading={isLoading}
-          >
-            {translate('wishlist-buy-items', intl)}
-          </Button>
-        </div>
-      </div>
-    )
-  }
 }
 
 export default withToast(injectIntl(Footer))

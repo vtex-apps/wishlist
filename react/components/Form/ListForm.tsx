@@ -1,6 +1,6 @@
-import React, { Component, ReactNode, Fragment, FormEvent } from "react"
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl'
-import { Input, Button, Toggle } from 'vtex.styleguide'
+import React, { Component, FormEvent, Fragment, ReactNode } from 'react'
+import { FormattedMessage, InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import { Button, Input, Toggle } from 'vtex.styleguide'
 import { translate } from '../../utils/translate'
 
 const LIST_NAME_MINIMUM_LENGTH = 1
@@ -10,7 +10,7 @@ interface ListFormProps {
   onSubmit: (listData: List) => void
   list?: List
   isLoading?: boolean
-  intl?: intlShape
+  intl?: IntlShape
 }
 
 interface ListFormState {
@@ -20,42 +20,16 @@ interface ListFormState {
   isChanged?: boolean
 }
 
-class ListForm extends Component<ListFormProps, ListFormState> {
+class ListForm extends Component<ListFormProps & InjectedIntlProps, ListFormState> {
   public state: ListFormState = {
-    listData: {}
-  }
-
-  public onChangeName = (event: FormEvent<HTMLInputElement>): void => {
-    const { listData } = this.state
-    const { list } = this.props
-    const target = event.target as HTMLInputElement
-    const name = target.value
-    this.setState({
-      listData: { isPublic: listData.isPublic, name },
-      isValid: this.isNameValid(name),
-      isChanged: !list || (list.name !== name)
-    })
-  }
-
-  public onChangePublic = (): void => {
-    const { isPublic, name } = this.state.listData
-    const { list } = this.props
-    this.setState(
-      {
-        listData: { ...this.state.listData, isPublic: !isPublic },
-        isChanged: !list || (list.isPublic !== !isPublic),
-        isValid: this.isNameValid(name)
-      }
-    )
-  }
-
-  public isNameValid = (name: string): any => {
-    return (name && name.length >= LIST_NAME_MINIMUM_LENGTH)
+    listData: {},
   }
 
   public componentDidMount(): void {
     const { list } = this.props
-    list && this.setState({ listData: list })
+    if (list) {
+      this.setState({ listData: list })
+    }
   }
 
   public render(): ReactNode {
@@ -102,6 +76,35 @@ class ListForm extends Component<ListFormProps, ListFormState> {
       </Fragment>
     )
   }
+
+  private onChangeName = (event: FormEvent<HTMLInputElement>): void => {
+    const { listData } = this.state
+    const { list } = this.props
+    const target = event.target as HTMLInputElement
+    const name = target.value
+    this.setState({
+      isChanged: !list || (list.name !== name),
+      isValid: this.isNameValid(name),
+      listData: { isPublic: listData.isPublic, name },
+    })
+  }
+
+  private onChangePublic = (): void => {
+    const { isPublic, name } = this.state.listData
+    const { list } = this.props
+    this.setState(
+      {
+        isChanged: !list || (list.isPublic !== !isPublic),
+        isValid: this.isNameValid(name),
+        listData: { ...this.state.listData, isPublic: !isPublic },
+      }
+    )
+  }
+
+  private isNameValid = (name: string): any => {
+    return (name && name.length >= LIST_NAME_MINIMUM_LENGTH)
+  }
+
 }
 
 export default injectIntl(ListForm)

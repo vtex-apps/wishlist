@@ -1,10 +1,6 @@
-import React, { Component, ReactNode } from "react"
+import React, { Component, ReactNode } from 'react'
 import { IconOptionsDots } from 'vtex.styleguide'
 import MenuOptionsContent from './MenuOptionsContent'
-
-enum Size {
-  large, small
-}
 
 interface MenuOptionsState {
   showContent?: boolean
@@ -12,20 +8,15 @@ interface MenuOptionsState {
 
 interface MenuOptionsProps {
   options: Option[]
-  size: Size
-}
-
-const ICON_SIZE: any = {
-  'large': 20,
-  'small': 16
+  size?: number
 }
 
 class MenuOptions extends Component<MenuOptionsProps, MenuOptionsState> {
   public state: MenuOptionsState = {}
 
   public defaultProps: MenuOptionsProps = {
-    size: Size.small,
-    options: []
+    options: [],
+    size: 16,
   }
 
   public render(): ReactNode {
@@ -35,7 +26,7 @@ class MenuOptions extends Component<MenuOptionsProps, MenuOptionsState> {
       <div className="flex items-center c-action-primary pointer relative">
         <div
           onClick={() => this.setState({ showContent: true })}>
-          <IconOptionsDots size={ICON_SIZE[size]} />
+          <IconOptionsDots size={size} />
         </div>
         {showContent && (
           <MenuOptionsContent

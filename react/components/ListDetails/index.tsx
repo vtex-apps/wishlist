@@ -1,22 +1,22 @@
-import React, { Component, ReactNode, Fragment } from 'react'
-import { withApollo } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
-import { injectIntl, intlShape } from 'react-intl'
 import { append, filter, map, path } from 'ramda'
+import React, { Component, Fragment, ReactNode } from 'react'
+import { withApollo, WithApolloClient } from 'react-apollo'
+import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
 import { orderFormConsumer } from 'vtex.store-resources/OrderFormContext'
+import { deleteList, getListDetailed, updateList } from '../../GraphqlClient'
+import { translate } from '../../utils/translate'
+import Dialog from '../Dialog'
+import UpdateList from '../Form/UpdateList'
 import Header from '../Header'
 import renderLoading from '../Loading'
 import MenuOptions from '../MenuOptions/MenuOptions'
-import { translate } from '../../utils/translate'
-import Footer from './Footer'
 import Content from './Content'
-import Dialog from '../Dialog'
-import UpdateList from '../Form/UpdateList'
+import Footer from './Footer'
 
-import { getListDetailed, updateList, deleteList } from '../../GraphqlClient'
 
 enum Size {
-  large, small
+  large, small,
 }
 
 interface ListDetailState {
@@ -34,36 +34,99 @@ interface ListDetailProps {
   onDeleted?: (id: string) => void
   client?: ApolloClient<any>
   orderFormContext?: any
-  intl?: intlShape
+  intl?: IntlShape
 }
 
-class ListDetail extends Component<ListDetailProps, ListDetailState> {
-  state: ListDetailState = {
+class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApolloClient<{}>, ListDetailState> {
+  public state: ListDetailState = {
     isLoading: true,
-    selectedItems: []
+    selectedItems: [],
   }
 
   private options: Option[] = [
     {
+      onClick: () => this.setState({ showUpdateList: true }),
       title: translate('wishlist-option-configuration', this.props.intl),
-      onClick: () => this.setState({ showUpdateList: true })
     },
     {
+      onClick: () => this.setState({ showDeleteConfirmation: true }),
       title: translate('wishlist-option-delete', this.props.intl),
-      onClick: () => this.setState({ showDeleteConfirmation: true })
     },
   ]
 
-  createItemShapeFromItem = ({ product: { items } }: any) => {
-    const sku = items[0]
-    return {
-      quantity: 1,
-      seller: Number(sku.sellers[0].sellerId),
-      id: Number(sku.itemId),
+  public componentDidMount(): void {
+    const { listId, client } = this.props
+    if (client) {
+      getListDetailed(client, listId)
+        .then(response => {
+          this.setState({ list: response.data.list, isLoading: false })
+        })
+        .catch(err => console.error('Something went wrong', err))
     }
   }
 
-  public addItensToCart = (): Promise<any> => {
+  public render(): ReactNode {
+    const { list, isLoading, showDeleteConfirmation, showUpdateList } = this.state
+    const { intl, listId } = this.props
+    return (
+      <div className="fixed top-0 left-0 vw-100 vh-100 flex flex-column z-4 bg-base">
+        {isLoading ? renderLoading() : this.renderContent()}
+        {showDeleteConfirmation && (
+          <Dialog
+            message={`${translate('wishlist-delete-confirmation-message', intl)} "${list.name}"?`}
+            onClose={() => this.setState({ showDeleteConfirmation: false })}
+            onSuccess={this.handleDeleteList}
+          />
+        )}
+        {showUpdateList && (
+          <div className="fixed top-0 left-0 w-100 bg-base">
+            <UpdateList
+              onClose={() => this.setState({ showUpdateList: false })}
+              list={{ ...list, id: listId }}
+              onFinishUpdate={this.onFinishUpdate}
+            />
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  private renderContent = (): ReactNode => {
+    const { list: { name, items }, selectedItems } = this.state
+    return (
+      <Fragment>
+        <Header
+          title={name}
+          onClose={this.handleOnClose}
+          showIconBack
+        >
+          <MenuOptions options={this.options} size={Size.large} />
+        </Header>
+        <Content
+          items={items}
+          onItemSelect={this.onItemSelectedChange}
+          onItemRemove={this.onItemRemove}
+        />
+        {items.length > 0 && (
+          <Footer
+            items={selectedItems}
+            onAddToCart={this.addItensToCart}
+          />
+        )}
+      </Fragment>
+    )
+  }
+
+  private createItemShapeFromItem = ({ product: { items } }: any) => {
+    const sku = items[0]
+    return {
+      id: Number(sku.itemId),
+      quantity: 1,
+      seller: Number(sku.sellers[0].sellerId),
+    }
+  }
+
+  private addItensToCart = (): Promise<any> => {
     const { orderFormContext } = this.props
     const { selectedItems } = this.state
 
@@ -71,8 +134,8 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
     return orderFormContext
       .addItem({
         variables: {
-          orderFormId: path(['orderForm', 'orderFormId'], orderFormContext),
           items: map(this.createItemShapeFromItem, selectedItems),
+          orderFormId: path(['orderForm', 'orderFormId'], orderFormContext),
         },
       })
       .then(() => {
@@ -108,16 +171,7 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
   }
 
   private onFinishUpdate = (list: List): void => {
-    this.setState({ list: list, showUpdateList: false })
-  }
-
-  public componentDidMount(): void {
-    const { listId, client } = this.props
-    client && getListDetailed(client, listId)
-      .then(response => {
-        this.setState({ list: response.data.list, isLoading: false })
-      })
-      .catch(err => console.error('Something went wrong', err))
+    this.setState({ list, showUpdateList: false })
   }
 
   private handleOnClose = (): void => {
@@ -132,65 +186,16 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
 
   private handleDeleteList = (): void => {
     const { client, listId, onDeleted, onClose } = this.props
-    client && deleteList(client, listId)
+    deleteList(client, listId)
       .then(() => {
-        onDeleted && onDeleted(listId)
+        if (onDeleted) {
+          onDeleted(listId)
+        }
         onClose()
       })
       .catch(error => console.error('Something went wrong', error))
   }
 
-  private renderContent = (): ReactNode => {
-    const { list: { name, items }, selectedItems } = this.state
-    return (
-      <Fragment>
-        <Header
-          title={name}
-          onClose={this.handleOnClose}
-          showIconBack
-        >
-          <MenuOptions options={this.options} size={Size.large} />
-        </Header>
-        <Content
-          items={items}
-          onItemSelect={this.onItemSelectedChange}
-          onItemRemove={this.onItemRemove}
-        />
-        {items.length > 0 && (
-          <Footer
-            items={selectedItems}
-            onAddToCart={this.addItensToCart}
-          />
-        )}
-      </Fragment>
-    )
-  }
-
-  public render(): ReactNode {
-    const { list, isLoading, showDeleteConfirmation, showUpdateList } = this.state
-    const { intl, listId } = this.props
-    return (
-      <div className="fixed top-0 left-0 vw-100 vh-100 flex flex-column z-4 bg-base">
-        {isLoading ? renderLoading() : this.renderContent()}
-        {showDeleteConfirmation && (
-          <Dialog
-            message={`${translate("wishlist-delete-confirmation-message", intl)} "${list.name}"?`}
-            onClose={() => this.setState({ showDeleteConfirmation: false })}
-            onSuccess={this.handleDeleteList}
-          />
-        )}
-        {showUpdateList && (
-          <div className="fixed top-0 left-0 w-100 bg-base">
-            <UpdateList
-              onClose={() => this.setState({ showUpdateList: false })}
-              list={{ ...list, id: listId }}
-              onFinishUpdate={this.onFinishUpdate}
-            />
-          </div>
-        )}
-      </div>
-    )
-  }
 }
 
 export default withApollo<ListDetailProps, {}>(orderFormConsumer(injectIntl(ListDetail)))

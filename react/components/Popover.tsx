@@ -1,6 +1,6 @@
-import React, { Component, ReactNode } from "react"
-import wishList from '../wishList.css'
+import React, { Component, ReactNode } from 'react'
 import OutsideClickHandler from 'react-outside-click-handler'
+import wishList from '../wishList.css'
 
 interface PopoverProps {
   onOutsideClick: () => void
