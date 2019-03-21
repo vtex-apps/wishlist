@@ -5,7 +5,7 @@ import { withApollo, WithApolloClient } from 'react-apollo'
 import { createPortal } from 'react-dom'
 import { FormattedMessage, InjectedIntlProps } from 'react-intl'
 import { injectIntl, IntlShape } from 'react-intl'
-import { withRuntimeContext } from 'vtex.render-runtime'
+import { ExtensionPoint, withRuntimeContext } from 'vtex.render-runtime'
 import {
   deleteList,
   getListsFromLocaleStorage,
@@ -96,7 +96,8 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
             )}
             {showListDetails && (
               <div className="fixed vw-100 top-0 left-0 bg-base">
-                <ListDetails
+                <ExtensionPoint
+                  id="list-details"
                   onClose={() => this.setState({ showListDetails: false })}
                   listId={lists[listSelected].id}
                   onDeleted={this.handleDeleteList}
@@ -150,7 +151,7 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
           showListDetails: false,
         })
       })
-      .catch(err => console.error('something went wrong', err))
+      .catch(err => console.error(err))
   }
 
   private handleUpdateList = (index: number): void => {

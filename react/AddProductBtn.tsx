@@ -2,10 +2,10 @@ import { ApolloClient } from "apollo-client"
 import React, { Component } from 'react'
 import { withApollo } from "react-apollo"
 import { injectIntl, IntlShape } from 'react-intl'
+import { ExtensionPoint } from 'vtex.render-runtime'
 import { IconHeart } from 'vtex.store-icons'
 import { Spinner, withToast } from 'vtex.styleguide'
 import AddToList from './components/AddToList/index'
-import Lists from './components/Lists/index'
 import { addProductToDefaultList } from './GraphqlClient'
 import { translate } from './utils/translate'
 
@@ -56,7 +56,10 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
           />
         )}
         {showLists && (
-          <Lists onClose={() => this.setState({ showLists: false })} />
+          <ExtensionPoint
+            id="my-lists"
+            onClose={() => this.setState({ showLists: false })}
+          />
         )}
       </div>
     )
@@ -69,7 +72,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   private handleAddProductFailed = (error: string): void => {
     const { intl } = this.props
     this.setState({ isLoading: false })
-    console.error('Add product error', error)
+    console.error(error)
     this.props.showToast({ message: translate('wishlist-add-product-fail', intl) })
   }
 

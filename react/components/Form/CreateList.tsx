@@ -53,7 +53,7 @@ class CreateList extends Component<CreateListProps & InjectedIntlProps & WithApo
         this.setState({ isLoading: false })
       })
       .catch(err => {
-        console.error('something went wrong', err)
+        console.error(err)
       })
     }
 

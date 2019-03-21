@@ -1,35 +1,35 @@
-import createListMutation from './graphql/mutations/createList.gql'
-import getListQuery from './graphql/queries/getList.gql'
-import updateListMutation from './graphql/mutations/updateList.gql'
-import deleteListMutation from './graphql/mutations/deleteList.gql'
-import getListDetailedQuery from './graphql/queries/getListDetails.gql'
 import { ApolloClient } from 'apollo-client'
-import { append, map, path, filter } from 'ramda'
+import { append, filter, map, path } from 'ramda'
+import createListMutation from './graphql/mutations/createList.gql'
+import deleteListMutation from './graphql/mutations/deleteList.gql'
+import updateListMutation from './graphql/mutations/updateList.gql'
+import getListQuery from './graphql/queries/getList.gql'
+import getListDetailedQuery from './graphql/queries/getListDetails.gql'
 
 const WISHLIST_STORAKE_KEY = 'vtexwishlists'
 
 const getListsIdFromCookies = () => {
   const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
-  return (lists && lists.split(',').map((id: string) => id.replace("\"", "").replace("\"", ""))) || []
+  return (lists && lists.split(',').map((id: string) => id.replace('\"', '').replace('\"', ''))) || []
 }
 
 export const saveListIdInLocalStorage = (id: string): void => {
   const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
-  let newLists = lists ? lists + ',' + id : id
+  const newLists = lists ? lists + ',' + id : id
   localStorage.setItem(WISHLIST_STORAKE_KEY, newLists)
 }
 
 export const removeListIdFromLocalStorage = (listId: string): void => {
   const listsId = getListsIdFromCookies()
-  const listsIdWithoutRemoved = filter(id => id !== listId, listsId)
+  const listsIdWithoutRemoved = filter((id: string) => id !== listId, listsId)
   localStorage.setItem(WISHLIST_STORAKE_KEY, listsIdWithoutRemoved.toString())
 }
 
 export const getList = (client: ApolloClient<any>, id: string): Promise<any> => {
   return client.query({
+    fetchPolicy: 'network-only',
     query: getListQuery,
-    variables: { id: id },
-    fetchPolicy: 'network-only'
+    variables: { id },
   })
 }
 
@@ -39,11 +39,11 @@ export const updateList = (client: ApolloClient<any>, id: string, { name, isPubl
     variables: {
       id,
       list: {
-        name,
         isPublic,
-        items
-      }
-    }
+        items,
+        name,
+      },
+    },
   })
 }
 
@@ -51,11 +51,11 @@ export const createList = (client: ApolloClient<any>, list: any): Promise<any> =
   client.mutate({
     mutation: createListMutation,
     variables: {
-      ...list
-    }
+      ...list,
+    },
   })
 
-export const addProductToDefaultList = (listName: string, client: ApolloClient<any>, product: any) => {
+export const addProductToDefaultList = (listName: any, client: ApolloClient<any>, product: any) => {
   const listsId = getListsIdFromCookies()
   if (listsId && listsId.length) {
     return getList(client, listsId[0]).then((response: any) => {
@@ -64,15 +64,15 @@ export const addProductToDefaultList = (listName: string, client: ApolloClient<a
         client,
         listsId[0],
         {
+          items: append(product, list.items),
           name: list.name,
-          items: append(product, list.items)
         }
       )
     })
   } else {
     return createList(client, {
+      items: [product],
       name: listName,
-      items: [product]
     }).then((response: any) =>
       saveListIdInLocalStorage(path(['data', 'createList', 'id'], response) || '')
     )
@@ -91,14 +91,16 @@ export const getListsFromLocaleStorage = (client: ApolloClient<any>): Promise<an
 export const deleteList = (client: ApolloClient<any>, listId: string): Promise<any> => {
   return client.mutate({
     mutation: deleteListMutation,
-    variables: { id: listId }
+    variables: {
+      id: listId,
+    },
   }).then(() => removeListIdFromLocalStorage(listId))
 }
 
 export const getListDetailed = (client: ApolloClient<any>, listId: string): Promise<any> => (
   client.query({
+    fetchPolicy: 'network-only',
     query: getListDetailedQuery,
     variables: { id: listId },
-    fetchPolicy: 'network-only'
   })
 )

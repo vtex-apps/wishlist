@@ -78,7 +78,7 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
       showToast({ message: translate('wishlist-add-to-cart-success', intl) })
       this.setState({ isLoading: false })
     }).catch(err => {
-      console.error('Something went wrong', err)
+      console.error(err)
       showToast({ message: translate('wishlist-add-to-cart-fail', intl) })
       this.setState({ isLoading: false })
     })

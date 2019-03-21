@@ -33,7 +33,7 @@ class ListForm extends Component<ListFormProps & InjectedIntlProps, ListFormStat
   }
 
   public render(): ReactNode {
-    const { intl, onSubmit, isLoading, buttonLabel, list } = this.props
+    const { intl, onSubmit, isLoading, buttonLabel } = this.props
     const { isValid, isChanged, listData: { name, isPublic }, listData } = this.state
     return (
       <Fragment>
@@ -101,7 +101,7 @@ class ListForm extends Component<ListFormProps & InjectedIntlProps, ListFormStat
     )
   }
 
-  private isNameValid = (name: string): any => {
+  private isNameValid = (name: string | undefined): any => {
     return (name && name.length >= LIST_NAME_MINIMUM_LENGTH)
   }
 

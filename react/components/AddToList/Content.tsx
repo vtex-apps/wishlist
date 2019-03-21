@@ -119,7 +119,7 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
           setTimeout(onAddToListsSuccess, 500)
         })
         .catch(err => {
-          console.error('something went wrong', err)
+          console.error(err)
           onClose()
           setTimeout(onAddToListsFail, 500)
         })

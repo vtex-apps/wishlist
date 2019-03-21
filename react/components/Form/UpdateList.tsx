@@ -77,7 +77,7 @@ class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApo
           )
         })
         .catch(err => {
-          console.error('something went wrong', err)
+          console.error(err)
         })
     }
   }

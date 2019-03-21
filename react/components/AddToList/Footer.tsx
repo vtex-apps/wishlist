@@ -6,7 +6,7 @@ import wishlist from '../../wishList.css'
 
 interface FooterProps {
   intl: IntlShape
-  isLoading: boolean
+  isLoading?: boolean
   changedLists: any[]
   onClick: () => void
 }

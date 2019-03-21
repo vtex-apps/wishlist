@@ -61,7 +61,7 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
         .then(response => {
           this.setState({ list: response.data.list, isLoading: false })
         })
-        .catch(err => console.error('Something went wrong', err))
+        .catch(err => console.error(err))
     }
   }
 
@@ -92,7 +92,7 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
   }
 
   private renderContent = (): ReactNode => {
-    const { list: { name, items }, selectedItems } = this.state
+    const { list: { items, name }, selectedItems } = this.state
     return (
       <Fragment>
         <Header
@@ -193,7 +193,7 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
         }
         onClose()
       })
-      .catch(error => console.error('Something went wrong', error))
+      .catch(error => console.error(error))
   }
 
 }
