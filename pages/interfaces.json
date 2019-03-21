@@ -5,10 +5,6 @@
   },
   "my-lists": {
     "component": "MyLists",
-    "required": ["list-details"]
-  },
-  "list-details": {
-    "component": "ListDetails",
     "required": ["product-summary"]
   }
 }
