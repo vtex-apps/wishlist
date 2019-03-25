@@ -41,6 +41,16 @@ class ListItem extends Component<ListItemProps & InjectedIntlProps, {}> {
     },
   ]
 
+  private __isMounted: boolean = false
+
+  public componentDidMount() {
+    this.__isMounted = true
+  }
+
+  public componentWillUnmount() {
+    this.__isMounted = false
+  }
+
   public render(): ReactNode {
     const {
       id,
@@ -86,10 +96,10 @@ class ListItem extends Component<ListItemProps & InjectedIntlProps, {}> {
         {showDeleteDialog && (
           <Dialog
             message={`${translate('wishlist-delete-confirmation-message', intl)} "${name}"?`}
-            onClose={() => this.setState({ showDeleteDialog: false })}
+            onClose={() => this.__isMounted && this.setState({ showDeleteDialog: false })}
             onSuccess={() => onDeleted(listId)
-              .then(() => this.setState({ showDeleteDialog: false }))
-              .catch(() => this.setState({ showDeleteDialog: false }))
+              .then(() => this.__isMounted && this.setState({ showDeleteDialog: false }))
+              .catch(() => this.__isMounted && this.setState({ showDeleteDialog: false }))
             }
           />
         )}

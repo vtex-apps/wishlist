@@ -23,6 +23,16 @@ interface CreateListState {
  */
 class CreateList extends Component<CreateListProps & InjectedIntlProps & WithApolloClient<{}>, CreateListState> {
   public state: CreateListState = {}
+  private __isMounted: boolean = false
+
+  public componentDidMount() {
+    this.__isMounted = true
+  }
+
+  public componentWillUnmount() {
+    this.__isMounted = false
+  }
+
 
   public render() {
     const { onClose, intl } = this.props
@@ -45,12 +55,12 @@ class CreateList extends Component<CreateListProps & InjectedIntlProps & WithApo
 
   private onSubmit = (listData: List): void => {
     const { client } = this.props
-    this.setState({ isLoading: true })
+    this.__isMounted && this.setState({ isLoading: true })
     if (client) {
       createList(client, { ...listData, items: [] })
       .then(response => {
         this.props.onFinishAdding(response.data.createList)
-        this.setState({ isLoading: false })
+        this.__isMounted && this.setState({ isLoading: false })
       })
       .catch(err => {
         console.error(err)

@@ -42,9 +42,11 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
     lists: [],
     selectedListId: '',
   }
+  private __isMounted: boolean = false
 
   public componentDidMount(): void {
     const { client } = this.props
+    this.__isMounted = true
     if (client) {
       getListsFromLocaleStorage(client)
         .then((response: any) => {
@@ -53,6 +55,10 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
         })
         .catch(() => this.setState({ isLoading: false }))
     }
+  }
+
+  public componentWillUnmounte() {
+    this.__isMounted = false
   }
 
   public render(): ReactNode {
@@ -102,14 +108,14 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
   private onListCreated = (list: any): void => {
     const { lists } = this.state
     saveListIdInLocalStorage(list.id)
-    this.setState({ showCreateList: false, lists: append(list, lists) })
+    this.__isMounted && this.setState({ showCreateList: false, lists: append(list, lists) })
   }
 
   private addProductTochangedLists = (): void => {
     const { client, onClose, onAddToListsSuccess, onAddToListsFail } = this.props
     const { lists, changedLists } = this.state
     if (client) {
-      this.setState({ isAdding: true })
+      this.__isMounted && this.setState({ isAdding: true })
       Promise.all(map(index => {
         const { id } = lists[index]
         return updateList(client, id, { ...lists[index] })
@@ -154,7 +160,7 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
   private handleShowListDetails = (index: number): void => {
     const { lists } = this.state
     const listId: string = path(['id'], lists[index]) || ''
-    this.setState({
+    this.__isMounted && this.setState({
       selectedListId: listId,
       showListDetails: true,
     })
@@ -163,7 +169,7 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
   private handleOnDeleted = (listId: string): void => {
     const { lists } = this.state
     const listsWithDeletedList = filter(list => path(['id'], list) !== listId, lists)
-    this.setState({ lists: listsWithDeletedList })
+    this.__isMounted && this.setState({ lists: listsWithDeletedList })
   }
 
   private addProductToList = (index: number): List[] => {
@@ -190,7 +196,7 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
       }
       return list
     }, lists) : lists
-    this.setState({ showListDetails: false, lists: listsUpdated })
+    this.__isMounted && this.setState({ showListDetails: false, lists: listsUpdated })
   }
 
   private renderSwitchLists = (): ReactNode => {

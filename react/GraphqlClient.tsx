@@ -69,14 +69,13 @@ export const addProductToDefaultList = (listName: any, client: ApolloClient<any>
         }
       )
     })
-  } else {
-    return createList(client, {
-      items: [product],
-      name: listName,
-    }).then((response: any) =>
-      saveListIdInLocalStorage(path(['data', 'createList', 'id'], response) || '')
-    )
   }
+  return createList(client, {
+    items: [product],
+    name: listName,
+  }).then((response: any) =>
+    saveListIdInLocalStorage(path(['data', 'createList', 'id'], response) || '')
+  )
 }
 
 export const getListsFromLocaleStorage = (client: ApolloClient<any>): Promise<any> => {

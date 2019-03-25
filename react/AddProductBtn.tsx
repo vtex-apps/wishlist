@@ -28,6 +28,15 @@ const ICON_SIZE_LARGE = 32
 
 class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   public state: AddProductBtnState = {}
+  private __isMounted: boolean = false
+
+  public componentDidMount() {
+    this.__isMounted = true
+  }
+
+  public componentWillUnmount() {
+    this.__isMounted = false
+  }
 
   public render() {
     const { product, large } = this.props
@@ -66,12 +75,12 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   }
 
   private handleAddProductSuccess = (): void => {
-    this.setState({ showContent: true, isLoading: false })
+    this.__isMounted && this.setState({ showContent: true, isLoading: false })
   }
 
   private handleAddProductFailed = (error: string): void => {
     const { intl } = this.props
-    this.setState({ isLoading: false })
+    this.__isMounted && this.setState({ isLoading: false })
     console.error(error)
     this.props.showToast({ message: translate('wishlist-add-product-fail', intl) })
   }

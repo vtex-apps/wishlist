@@ -42,29 +42,35 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
     isLoading: true,
     selectedItems: [],
   }
-
+  private __isMounted: boolean = false
+  
   private options: Option[] = [
     {
-      onClick: () => this.setState({ showUpdateList: true }),
+      onClick: () => this.__isMounted && this.setState({ showUpdateList: true }),
       title: translate('wishlist-option-configuration', this.props.intl),
     },
     {
-      onClick: () => this.setState({ showDeleteConfirmation: true }),
+      onClick: () => this.__isMounted && this.setState({ showDeleteConfirmation: true }),
       title: translate('wishlist-option-delete', this.props.intl),
     },
   ]
-
+  
   public componentDidMount(): void {
     const { listId, client } = this.props
+    this.__isMounted = true
     if (client) {
       getListDetailed(client, listId)
-        .then(response => {
-          this.setState({ list: response.data.list, isLoading: false })
-        })
-        .catch(err => console.error(err))
+      .then(response => {
+        this.setState({ list: response.data.list, isLoading: false })
+      })
+      .catch(err => console.error(err))
     }
   }
-
+  
+    public componentWillUnmount() {
+      this.__isMounted = false
+    }
+  
   public render(): ReactNode {
     const { list, isLoading, showDeleteConfirmation, showUpdateList } = this.state
     const { intl, listId } = this.props
@@ -130,7 +136,7 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
     const { orderFormContext } = this.props
     const { selectedItems } = this.state
 
-    this.setState({ isAddingToCart: true })
+    this.__isMounted && this.setState({ isAddingToCart: true })
     return orderFormContext
       .addItem({
         variables: {
@@ -147,9 +153,9 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
   private onItemSelectedChange = (itemId: string, product: any, isSelected: boolean) => {
     const { selectedItems } = this.state
     if (isSelected) {
-      this.setState({ selectedItems: append({ itemId, product }, selectedItems) })
+      this.__isMounted && this.setState({ selectedItems: append({ itemId, product }, selectedItems) })
     } else {
-      this.setState({ selectedItems: filter(({ itemId: id }) => id !== itemId, selectedItems) })
+      this.__isMounted && this.setState({ selectedItems: filter(({ itemId: id }) => id !== itemId, selectedItems) })
     }
   }
 
@@ -163,7 +169,7 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
     const itemsUpdated = map(item => this.itemWithoutProduct(item), listUpdated.items)
     return updateList(client, listId, { ...list, items: itemsUpdated })
       .then(() => {
-        this.setState({
+        this.__isMounted && this.setState({
           list: listUpdated,
           selectedItems: filter(({ itemId: id }) => id !== itemId, selectedItems)
         })
@@ -171,7 +177,7 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
   }
 
   private onFinishUpdate = (list: List): void => {
-    this.setState({ list, showUpdateList: false })
+    this.__isMounted && this.setState({ list, showUpdateList: false })
   }
 
   private handleOnClose = (): void => {

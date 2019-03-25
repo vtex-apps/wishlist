@@ -27,6 +27,16 @@ interface UpdateListState {
  */
 class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApolloClient<{}>, UpdateListState> {
   public state: UpdateListState = {}
+  private __isMounted: boolean = false
+
+  public componentDidMount() {
+    this.__isMounted = true
+  }
+
+  public componentWillUnmount() {
+    this.__isMounted = false
+  }
+
 
   public render() {
     const { onClose, intl, list } = this.props
@@ -54,7 +64,7 @@ class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApo
 
   private onSubmit = ({ name, isPublic }: List): void => {
     const { client, list: { id, items }, list, showToast, intl } = this.props
-    this.setState({ isLoading: true })
+    this.__isMounted && this.setState({ isLoading: true })
     if (client) {
       updateList(
         client,
@@ -67,7 +77,7 @@ class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApo
         }
       )
         .then(response => {
-          this.setState({ isLoading: false })
+          this.__isMounted && this.setState({ isLoading: false })
           if (showToast) {
             showToast({ message: translate('wishlist-list-updated', intl) })
           }

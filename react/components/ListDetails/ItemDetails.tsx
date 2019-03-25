@@ -17,6 +17,15 @@ interface ItemDetailsState {
 
 class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
   public state: ItemDetailsState = {}
+  private __isMounted: boolean = false
+
+  public componentDidMount() {
+    this.__isMounted = true
+  }
+
+  public componentWillUnmount() {
+    this.__isMounted = false
+  }
 
   public render(): ReactNode {
     const { item: { product } } = this.props
@@ -78,16 +87,16 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
   private onItemSelectedChange = (): void => {
     const { item: { id, product }, onItemSelect } = this.props
     const { isSelected } = this.state
-    this.setState({ isSelected: !isSelected })
+    this.__isMounted && this.setState({ isSelected: !isSelected })
     onItemSelect(id, product, !isSelected)
   }
 
   private onItemRemove = (): void => {
     const { onItemRemove, item } = this.props
-    this.setState({ isLoading: true })
+    this.__isMounted && this.setState({ isLoading: true })
     onItemRemove(item.id)
-      .then(() => this.setState({ isLoading: false }))
-      .catch(() => this.setState({ isLoading: false }))
+      .then(() => this.__isMounted && this.setState({ isLoading: false }))
+      .catch(() => this.__isMounted && this.setState({ isLoading: false }))
   }
 
 }

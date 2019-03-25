@@ -13,10 +13,9 @@ interface AddToListProps {
 class AddToList extends Component<AddToListProps, {}> {
   public render(): ReactNode {
     const { onClose } = this.props
-    const content = <ListMenuContent {...this.props} />
     return isMobile ? (
       <BottomBar onOutsideClick={onClose}>
-        {content}
+        <ListMenuContent {...this.props} />
       </BottomBar>
     ) : null
   }

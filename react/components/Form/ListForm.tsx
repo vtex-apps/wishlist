@@ -24,14 +24,20 @@ class ListForm extends Component<ListFormProps & InjectedIntlProps, ListFormStat
   public state: ListFormState = {
     listData: {},
   }
-
+  private __isMounted: boolean = false
+  
   public componentDidMount(): void {
     const { list } = this.props
+    this.__isMounted = true
     if (list) {
       this.setState({ listData: list })
     }
   }
-
+  
+    public componentWillUnmount() {
+      this.__isMounted = false
+    }
+  
   public render(): ReactNode {
     const { intl, onSubmit, isLoading, buttonLabel } = this.props
     const { isValid, isChanged, listData: { name, isPublic }, listData } = this.state
@@ -82,7 +88,7 @@ class ListForm extends Component<ListFormProps & InjectedIntlProps, ListFormStat
     const { list } = this.props
     const target = event.target as HTMLInputElement
     const name = target.value
-    this.setState({
+    this.__isMounted && this.setState({
       isChanged: !list || (list.name !== name),
       isValid: this.isNameValid(name),
       listData: { isPublic: listData.isPublic, name },
@@ -92,7 +98,7 @@ class ListForm extends Component<ListFormProps & InjectedIntlProps, ListFormStat
   private onChangePublic = (): void => {
     const { isPublic, name } = this.state.listData
     const { list } = this.props
-    this.setState(
+    this.__isMounted && this.setState(
       {
         isChanged: !list || (list.isPublic !== !isPublic),
         isValid: this.isNameValid(name),

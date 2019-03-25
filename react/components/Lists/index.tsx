@@ -46,14 +46,22 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
     show: true,
   }
 
+  private __isMounted: boolean = false
+
+  public componentWillUnmount() {
+    this.__isMounted = false
+  }
+
+
   public componentDidMount(): void {
     const { client } = this.props
+    this.__isMounted = true
     getListsFromLocaleStorage(client)
       .then(response => {
         const lists = map(item => item.data.list, response)
-        this.setState({ loading: false, lists })
+        this.__isMounted && this.setState({ loading: false, lists })
       })
-      .catch(() => this.setState({ loading: false }))
+      .catch(() => this.__isMounted && this.setState({ loading: false }))
   }
 
   public render = (): ReactNode => {
@@ -74,13 +82,13 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
             <Header
               title={translate('wishlist-my-lists', intl)}
               onClose={onClose}
-              action={() => this.setState({ showCreateList: true })}
+              action={() => this.__isMounted && this.setState({ showCreateList: true })}
             />
             {this.renderContent()}
             {showCreateList && (
               <div className="fixed vw-100 top-0 bg-base">
                 <CreateList
-                  onClose={() => this.setState({ showCreateList: false })}
+                  onClose={() => this.__isMounted && this.setState({ showCreateList: false })}
                   onFinishAdding={this.onListCreated}
                 />
               </div>
@@ -88,7 +96,7 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
             {showUpdateList && (
               <div className="fixed vw-100 top-0 left-0 bg-base">
                 <UpdateList
-                  onClose={() => this.setState({ showUpdateList: false })}
+                  onClose={() => this.__isMounted && this.setState({ showUpdateList: false })}
                   list={lists[listSelected]}
                   onFinishUpdate={this.onListUpdated}
                 />
@@ -97,7 +105,7 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
             {showListDetails && (
               <div className="fixed vw-100 top-0 left-0 bg-base">
                 <ListDetails
-                  onClose={() => this.setState({ showListDetails: false })}
+                  onClose={() => this.__isMounted && this.setState({ showListDetails: false })}
                   listId={lists[listSelected].id}
                   onDeleted={this.handleDeleteList}
                 />
@@ -124,7 +132,7 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
                   list={list}
                   id={key}
                   isDefault={key === DEFAULT_LIST_INDEX}
-                  onClick={() => this.setState({ showListDetails: true, listSelected: key })}
+                  onClick={() => this.__isMounted && this.setState({ showListDetails: true, listSelected: key })}
                   showMenuOptions
                   onDeleted={this.handleDeleteList}
                   onUpdated={this.handleUpdateList}
@@ -145,7 +153,7 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
     const { client } = this.props
     return deleteList(client, listId)
       .then(() => {
-        this.setState({
+        this.__isMounted && this.setState({
           lists: filter(list => list.id !== listId, lists),
           showListDetails: false,
         })
@@ -154,18 +162,18 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
   }
 
   private handleUpdateList = (index: number): void => {
-    this.setState({ listSelected: index, showUpdateList: true })
+    this.__isMounted && this.setState({ listSelected: index, showUpdateList: true })
   }
 
   private onListCreated = (list: any): void => {
     const { lists } = this.state
     saveListIdInLocalStorage(list.id)
-    this.setState({ showCreateList: false, lists: append(list, lists) })
+    this.__isMounted && this.setState({ showCreateList: false, lists: append(list, lists) })
   }
 
   private onListUpdated = (list: any): void => {
     const { lists, listSelected } = this.state
-    this.setState({ lists: update(listSelected, list, lists), showUpdateList: false })
+    this.__isMounted && this.setState({ lists: update(listSelected, list, lists), showUpdateList: false })
   }
 
   private renderContent = (): ReactNode => {

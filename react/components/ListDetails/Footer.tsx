@@ -18,6 +18,16 @@ interface FooterState {
 
 class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
   public state: FooterState = {}
+  private __isMounted: boolean = false
+
+  public componentDidMount() {
+    this.__isMounted = true
+  }
+
+  public componentWillUnmount() {
+    this.__isMounted = false
+  }
+
 
   public render(): ReactNode {
     const { intl, items } = this.props
@@ -73,14 +83,14 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
 
   private onAddToCart = (): void => {
     const { onAddToCart, showToast, intl } = this.props
-    this.setState({ isLoading: true })
+    this.__isMounted && this.setState({ isLoading: true })
     onAddToCart().then(() => {
       showToast({ message: translate('wishlist-add-to-cart-success', intl) })
-      this.setState({ isLoading: false })
+      this.__isMounted && this.setState({ isLoading: false })
     }).catch(err => {
       console.error(err)
       showToast({ message: translate('wishlist-add-to-cart-fail', intl) })
-      this.setState({ isLoading: false })
+      this.__isMounted && this.setState({ isLoading: false })
     })
   }
 
