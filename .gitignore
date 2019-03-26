@@ -32,3 +32,5 @@
  *.orig
 
  package-lock.json
+ 
+ *.log
