@@ -1,36 +1,42 @@
+*.orig
 ### SublimeText ###
- *.sublime-workspace
+*.sublime-workspace
 
- ### OSX ###
- .DS_Store
- .AppleDouble
- .LSOverride
- Icon
+### OSX ###
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
 
- # Thumbnails
- ._*
+# Thumbnails
+._*
 
- # Files that might appear on external disk
- .Spotlight-V100
- .Trashes
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
 
- ### Windows ###
- # Windows image file caches
- Thumbs.db
- ehthumbs.db
+### Windows ###
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
 
- # Folder config file
- Desktop.ini
+# Folder config file
+Desktop.ini
 
- node_modules/
- docs/_book/
- .tmp
- .idea
- npm-debug.log
- .build/
- lib
- *.orig
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
 
- package-lock.json
- 
- *.log
+# yarn
+yarn-error.log
+
+# App specific
+node_modules/
+docs/_book/
+.tmp
+.idea
+npm-debug.log
+.build/
+lib
+.eslintrc
+.vscode/
+coverage/
