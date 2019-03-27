@@ -27,15 +27,6 @@ const ICON_SIZE_LARGE = 32
 
 class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   public state: AddProductBtnState = {}
-  private __isMounted: boolean = false
-
-  public componentDidMount() {
-    this.__isMounted = true
-  }
-
-  public componentWillUnmount() {
-    this.__isMounted = false
-  }
 
   public render() {
     const { product, large } = this.props
@@ -74,14 +65,14 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   }
 
   private handleAddProductSuccess = (): void => {
-    this.__isMounted && this.setState({ showContent: true, isLoading: false })
+    this.setState({ showContent: true, isLoading: false })
   }
 
   private handleAddProductFailed = (error: string): void => {
     const { intl } = this.props
-    this.__isMounted && this.setState({ isLoading: false })
+    this.setState({ isLoading: false })
     console.error(error)
-    this.props.showToast({ message: intl.formatMessage({ id: "wishlist-add-product-fail" }) })
+    this.props.showToast({ message: intl.formatMessage({ id: 'wishlist-add-product-fail' }) })
   }
 
   private onAddProductClick = (): void => {
@@ -89,7 +80,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     if (!isLoading) {
       const { client, product, intl } = this.props
       this.setState({ isLoading: true })
-      addProductToDefaultList(intl.formatMessage({ id: "wishlist-default-list-name" }), client, product)
+      addProductToDefaultList(intl.formatMessage({ id: 'wishlist-default-list-name' }), client, product)
         .then(this.handleAddProductSuccess)
         .catch(this.handleAddProductFailed)
     }
@@ -97,17 +88,17 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
 
   private onAddToListsFail = (): void => {
     const { showToast, intl } = this.props
-    showToast({ message: intl.formatMessage({ id: "wishlist-add-product-fail" }) })
+    showToast({ message: intl.formatMessage({ id: 'wishlist-add-product-fail' }) })
   }
 
   private onAddToListsSuccess = (): void => {
     const { showToast, intl } = this.props
     showToast({
       action: {
-        label: intl.formatMessage({ id: "wishlist-see-lists" }),
+        label: intl.formatMessage({ id: 'wishlist-see-lists' }),
         onClick: () => this.setState({ showLists: true }),
       },
-      message: intl.formatMessage({ id: "wishlist-product-added-to-list" }),
+      message: intl.formatMessage({ id: 'wishlist-product-added-to-list' }),
     })
   }
 

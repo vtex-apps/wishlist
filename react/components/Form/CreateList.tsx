@@ -6,6 +6,8 @@ import { createList } from '../../GraphqlClient'
 import Header from '../Header'
 import ListForm from './ListForm'
 
+import wishlist from '../../wishList.css'
+
 interface CreateListProps {
   onFinishAdding: (list: List) => void
   onClose: () => void
@@ -22,14 +24,14 @@ interface CreateListState {
  */
 class CreateList extends Component<CreateListProps & InjectedIntlProps & WithApolloClient<{}>, CreateListState> {
   public state: CreateListState = {}
-  private __isMounted: boolean = false
+  private isComponentMounted: boolean = false
 
   public componentDidMount() {
-    this.__isMounted = true
+    this.isComponentMounted = true
   }
 
   public componentWillUnmount() {
-    this.__isMounted = false
+    this.isComponentMounted = false
   }
 
 
@@ -37,14 +39,14 @@ class CreateList extends Component<CreateListProps & InjectedIntlProps & WithApo
     const { onClose, intl } = this.props
     const { isLoading } = this.state
     return (
-      <div className="vh-100 fixed top-0 left-0 w-100 bg-base z-4">
+      <div className={`${wishlist.createList} vh-100 fixed top-0 left-0 w-100 bg-base z-4`}>
         <Header
-          title={intl.formatMessage({ id: "wishlist-new" })}
+          title={intl.formatMessage({ id: 'wishlist-new' })}
           onClose={onClose}
           showIconBack
         />
         <ListForm
-          buttonLabel={intl.formatMessage({ id: "wishlist-add-button" })}
+          buttonLabel={intl.formatMessage({ id: 'wishlist-add-button' })}
           onSubmit={this.onSubmit}
           isLoading={isLoading}
         />
@@ -54,16 +56,18 @@ class CreateList extends Component<CreateListProps & InjectedIntlProps & WithApo
 
   private onSubmit = (listData: List): void => {
     const { client } = this.props
-    this.__isMounted && this.setState({ isLoading: true })
+    this.setState({ isLoading: true })
     if (client) {
       createList(client, { ...listData, items: [] })
-      .then(response => {
-        this.props.onFinishAdding(response.data.createList)
-        this.__isMounted && this.setState({ isLoading: false })
-      })
-      .catch(err => {
-        console.error(err)
-      })
+        .then(response => {
+          this.props.onFinishAdding(response.data.createList)
+          if (this.isComponentMounted) {
+            this.setState({ isLoading: false })
+          }
+        })
+        .catch(err => {
+          console.error(err)
+        })
     }
 
   }

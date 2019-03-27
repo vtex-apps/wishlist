@@ -4,6 +4,8 @@ import { InjectedIntlProps, injectIntl, IntlShape, FormattedMessage } from 'reac
 import ProductPrice from 'vtex.store-components/ProductPrice'
 import { Button, withToast } from 'vtex.styleguide'
 
+import wishlist from '../../wishList.css'
+
 interface FooterProps {
   items: any
   onAddToCart: () => Promise<any>
@@ -17,16 +19,15 @@ interface FooterState {
 
 class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
   public state: FooterState = {}
-  private __isMounted: boolean = false
+  private isComponentMounted: boolean = false
 
   public componentDidMount() {
-    this.__isMounted = true
+    this.isComponentMounted = true
   }
 
   public componentWillUnmount() {
-    this.__isMounted = false
+    this.isComponentMounted = false
   }
-
 
   public render(): ReactNode {
     const { intl, items } = this.props
@@ -34,18 +35,18 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
     const totalPrice = this.calculateTotal()
 
     return (
-      <div className="flex-column pa4 bt b--muted-4">
+      <div className={`${wishlist.ListDetailsFooter} flex-column pa4 bt b--muted-4`}>
         <div className="tr">
-          <span className="ml2">
+          <span className={`${wishlist.quantityOfSelectedItemsLabel} ml2`}>
             <FormattedMessage
               id="wishlist-quantity-selected-items"
               values={{ selectedItemsQuantity: <b>{items.length}</b> }}
             />
           </span>
         </div>
-        <div className="pv4 flex flex-row justify-end b">
-          <span className="mr2">
-          <FormattedMessage
+        <div className={`${wishlist.pricesContainer} pv4 flex flex-row justify-end b`}>
+          <span className={`${wishlist.totalPriceLabel} mr2`}>
+            <FormattedMessage
               id="wishlist-total"
               values={{ selectedItemsQuantity: <b>{items.length}</b> }}
             />
@@ -57,7 +58,7 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
             showListPrice={false}
           />
         </div>
-        <div>
+        <div className={wishlist.buySelectedItemsBtnContainer}>
           <Button
             variation="primary"
             block
@@ -65,7 +66,7 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
             onClick={this.onAddToCart}
             isLoading={isLoading}
           >
-          <FormattedMessage id="wishlist-buy-items" />
+            <FormattedMessage id="wishlist-buy-items" />
           </Button>
         </div>
       </div>
@@ -89,14 +90,16 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
 
   private onAddToCart = (): void => {
     const { onAddToCart, showToast, intl } = this.props
-    this.__isMounted && this.setState({ isLoading: true })
+      this.setState({ isLoading: true })
     onAddToCart().then(() => {
-      showToast({ message: intl.formatMessage({ id: "wishlist-add-to-cart-success" }) })
-      this.__isMounted && this.setState({ isLoading: false })
+      showToast({ message: intl.formatMessage({ id: 'wishlist-add-to-cart-success' }) })
+      if (this.isComponentMounted) {
+        this.setState({ isLoading: false })
+      }
     }).catch((err: any) => {
       console.error(err)
-      showToast({ message: intl.formatMessage({ id: "wishlist-add-to-cart-fail" }) })
-      this.__isMounted && this.setState({ isLoading: false })
+      showToast({ message: intl.formatMessage({ id: 'wishlist-add-to-cart-fail' }) })
+      this.setState({ isLoading: false })
     })
   }
 

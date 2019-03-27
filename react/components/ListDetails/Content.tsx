@@ -5,6 +5,8 @@ import { withRuntimeContext } from 'vtex.render-runtime'
 import { Button } from 'vtex.styleguide'
 import ItemDetails from './ItemDetails'
 
+import wishlist from '../../wishList.css'
+
 interface ContentProps {
   items: any
   onItemSelect: (itemId: string, product: any, isSelected: boolean) => void
@@ -15,9 +17,9 @@ interface ContentProps {
 
 class Content extends Component<ContentProps & InjectedIntlProps, {}> {
   public render(): ReactNode {
-    const { items, intl } = this.props
+    const { items } = this.props
     return (
-      <div className="h-100 overflow-y-scroll flex flex-column">
+      <div className={`${wishlist.listDetailsContent} h-100 overflow-y-scroll flex flex-column`}>
         {
           items.length > 0 ? (
             <div>
@@ -47,13 +49,12 @@ class Content extends Component<ContentProps & InjectedIntlProps, {}> {
   }
   
   private renderListEmpty = (): ReactNode => {
-    const { intl } = this.props
     return (
-      <div className="flex flex-column w-100 h-100 items-center mt8 c-muted-2">
-        <div>
+      <div className={`${wishlist.listEmptyContainer} flex flex-column w-100 h-100 items-center mt8 c-muted-2`}>
+        <div className={wishlist.listEmptyLabel}>
             <FormattedMessage id="wishlist-list-empty" />
         </div>
-        <div className="mt8">
+        <div className={`${wishlist.goToAddProductsButtonContainer} mt8`}>
           <Button variation="primary" onClick={this.redirectToGallery}>
             <FormattedMessage id="wishlist-add-itens" />
           </Button>

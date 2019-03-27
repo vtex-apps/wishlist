@@ -32,22 +32,22 @@ class ListItem extends Component<ListItemProps & InjectedIntlProps, {}> {
   private options: Option[] = [
     {
       onClick: () => this.props.onUpdated(this.props.id),
-      title: this.props.intl.formatMessage({ id: "wishlist-option-configuration" }),
+      title: this.props.intl.formatMessage({ id: 'wishlist-option-configuration' }),
     },
     {
       onClick: () => this.setState({ showDeleteDialog: true }),
-      title: this.props.intl.formatMessage({ id: "wishlist-option-delete" }),
+      title: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
     },
   ]
 
-  private __isMounted: boolean = false
+  private isComponentMounted: boolean = false
 
   public componentDidMount() {
-    this.__isMounted = true
+    this.isComponentMounted = true
   }
 
   public componentWillUnmount() {
-    this.__isMounted = false
+    this.isComponentMounted = false
   }
 
   public render(): ReactNode {
@@ -96,14 +96,14 @@ class ListItem extends Component<ListItemProps & InjectedIntlProps, {}> {
           <Dialog
             message={
               intl.formatMessage(
-                { id: "wishlist-delete-confirmation-message" },
+                { id: 'wishlist-delete-confirmation-message' },
                 { listName: name }
               )
             }
-            onClose={() => this.__isMounted && this.setState({ showDeleteDialog: false })}
+            onClose={() => this.setState({ showDeleteDialog: false })}
             onSuccess={() => onDeleted(listId)
-              .then(() => this.__isMounted && this.setState({ showDeleteDialog: false }))
-              .catch(() => this.__isMounted && this.setState({ showDeleteDialog: false }))
+              .then(() => this.isComponentMounted && this.setState({ showDeleteDialog: false }))
+              .catch(() => this.isComponentMounted && this.setState({ showDeleteDialog: false }))
             }
           />
         )}

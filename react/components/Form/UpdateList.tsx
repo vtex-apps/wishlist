@@ -8,6 +8,8 @@ import { updateList } from '../../GraphqlClient'
 import Header from '../Header'
 import ListForm from './ListForm'
 
+import wishlist from '../../wishList.css'
+
 interface UpdateListProps {
   list: List
   onFinishUpdate: (list: any) => void
@@ -26,14 +28,14 @@ interface UpdateListState {
  */
 class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApolloClient<{}>, UpdateListState> {
   public state: UpdateListState = {}
-  private __isMounted: boolean = false
+  private isComponentMounted: boolean = false
 
   public componentDidMount() {
-    this.__isMounted = true
+    this.isComponentMounted = true
   }
 
   public componentWillUnmount() {
-    this.__isMounted = false
+    this.isComponentMounted = false
   }
 
 
@@ -41,15 +43,15 @@ class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApo
     const { onClose, intl, list } = this.props
     const { isLoading } = this.state
     return (
-      <div className="vh-100">
+      <div className={`${wishlist.updateList} vh-100`}>
         <Header
-          title={intl.formatMessage({ id: "wishlist-option-configuration" })}
+          title={intl.formatMessage({ id: 'wishlist-option-configuration' })}
           onClose={onClose}
           showIconBack
         />
         <ListForm
           list={list}
-          buttonLabel={intl.formatMessage({ id: "wishlist-save" })}
+          buttonLabel={intl.formatMessage({ id: 'wishlist-save' })}
           onSubmit={this.onSubmit}
           isLoading={isLoading}
         />
@@ -63,7 +65,7 @@ class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApo
 
   private onSubmit = ({ name, isPublic }: List): void => {
     const { client, list: { id, items }, list, showToast, intl } = this.props
-    this.__isMounted && this.setState({ isLoading: true })
+    this.setState({ isLoading: true })
     if (client) {
       updateList(
         client,
@@ -75,17 +77,19 @@ class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApo
           name,
         }
       )
-        .then(response => {
-          this.__isMounted && this.setState({ isLoading: false })
+        .then((response: any) => {
+          if (this.isComponentMounted) {
+            this.setState({ isLoading: false })
+          }
           if (showToast) {
-            showToast({ message: intl.formatMessage({ id: "wishlist-list-updated" }) })
+            showToast({ message: intl.formatMessage({ id: 'wishlist-list-updated' }) })
           }
           setTimeout(
             () => this.props.onFinishUpdate({ ...response.data.updateList, items }),
             500
           )
         })
-        .catch(err => {
+        .catch((err: any) => {
           console.error(err)
         })
     }

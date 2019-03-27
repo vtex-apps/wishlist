@@ -45,21 +45,23 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
     show: true,
   }
 
-  private __isMounted: boolean = false
+  private isComponentMounted: boolean = false
 
   public componentWillUnmount() {
-    this.__isMounted = false
+    this.isComponentMounted = false
   }
 
   public componentDidMount(): void {
     const { client } = this.props
-    this.__isMounted = true
+    this.isComponentMounted = true
     getListsFromLocaleStorage(client)
       .then(response => {
         const lists = map(item => item.data.list, response)
-        this.__isMounted && this.setState({ loading: false, lists })
+        if (this.isComponentMounted) {
+          this.setState({ loading: false, lists })
+        }
       })
-      .catch(() => this.__isMounted && this.setState({ loading: false }))
+      .catch(() => this.isComponentMounted && this.setState({ loading: false }))
   }
 
   public render = (): ReactNode => {
@@ -78,15 +80,15 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
         <Fragment>
           <div className="vw-100 vh-100 z-4 fixed bg-white top-0">
             <Header
-              title={intl.formatMessage({ id: "wishlist-my-lists" })}
+              title={intl.formatMessage({ id: 'wishlist-my-lists' })}
               onClose={onClose}
-              action={() => this.__isMounted && this.setState({ showCreateList: true })}
+              action={() => this.setState({ showCreateList: true })}
             />
             {this.renderContent()}
             {showCreateList && (
               <div className="fixed vw-100 top-0 bg-base">
                 <CreateList
-                  onClose={() => this.__isMounted && this.setState({ showCreateList: false })}
+                  onClose={() => this.setState({ showCreateList: false })}
                   onFinishAdding={this.onListCreated}
                 />
               </div>
@@ -94,7 +96,7 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
             {showUpdateList && (
               <div className="fixed vw-100 top-0 left-0 bg-base">
                 <UpdateList
-                  onClose={() => this.__isMounted && this.setState({ showUpdateList: false })}
+                  onClose={() => this.setState({ showUpdateList: false })}
                   list={lists[listSelected]}
                   onFinishUpdate={this.onListUpdated}
                 />
@@ -103,7 +105,7 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
             {showListDetails && (
               <div className="fixed vw-100 top-0 left-0 bg-base">
                 <ListDetails
-                  onClose={() => this.__isMounted && this.setState({ showListDetails: false })}
+                  onClose={() => this.setState({ showListDetails: false })}
                   listId={lists[listSelected].id}
                   onDeleted={this.handleDeleteList}
                 />
@@ -130,7 +132,7 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
                   list={list}
                   id={key}
                   isDefault={key === DEFAULT_LIST_INDEX}
-                  onClick={() => this.__isMounted && this.setState({ showListDetails: true, listSelected: key })}
+                  onClick={() => this.setState({ showListDetails: true, listSelected: key })}
                   showMenuOptions
                   onDeleted={this.handleDeleteList}
                   onUpdated={this.handleUpdateList}
@@ -151,27 +153,29 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
     const { client } = this.props
     return deleteList(client, listId)
       .then(() => {
-        this.__isMounted && this.setState({
-          lists: filter(list => list.id !== listId, lists),
-          showListDetails: false,
-        })
+        if (this.isComponentMounted) {
+          this.setState({
+            lists: filter(list => list.id !== listId, lists),
+            showListDetails: false,
+          })
+        }
       })
       .catch(err => console.error('something went wrong', err))
   }
 
   private handleUpdateList = (index: number): void => {
-    this.__isMounted && this.setState({ listSelected: index, showUpdateList: true })
+    this.setState({ listSelected: index, showUpdateList: true })
   }
 
   private onListCreated = (list: any): void => {
     const { lists } = this.state
     saveListIdInLocalStorage(list.id)
-    this.__isMounted && this.setState({ showCreateList: false, lists: append(list, lists) })
+    this.setState({ showCreateList: false, lists: append(list, lists) })
   }
 
   private onListUpdated = (list: any): void => {
     const { lists, listSelected } = this.state
-    this.__isMounted && this.setState({ lists: update(listSelected, list, lists), showUpdateList: false })
+    this.setState({ lists: update(listSelected, list, lists), showUpdateList: false })
   }
 
   private renderContent = (): ReactNode => {

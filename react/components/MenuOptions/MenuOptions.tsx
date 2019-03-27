@@ -19,28 +19,18 @@ class MenuOptions extends Component<MenuOptionsProps, MenuOptionsState> {
     size: 16,
   }
 
-  private __isMounted: boolean = false
-
-  public componentDidMount() {
-    this.__isMounted = true
-  }
-
-  public componentWillUnmount() {
-    this.__isMounted = false
-  }
-
   public render(): ReactNode {
     const { showContent } = this.state
     const { options, size } = this.props
     return (
       <div className="flex items-center c-action-primary pointer relative">
         <div
-          onClick={() => this.__isMounted && this.setState({ showContent: true })}>
+          onClick={() => this.setState({ showContent: true })}>
           <IconOptionsDots size={size} />
         </div>
         {showContent && (
           <MenuOptionsContent
-            onClose={() => this.__isMounted && this.setState({ showContent: false })}
+            onClose={() => this.setState({ showContent: false })}
             options={options} />
         )}
       </div>

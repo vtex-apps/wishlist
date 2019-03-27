@@ -17,14 +17,14 @@ interface ItemDetailsState {
 
 class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
   public state: ItemDetailsState = {}
-  private __isMounted: boolean = false
+  private isComponentMounted: boolean = false
 
   public componentDidMount() {
-    this.__isMounted = true
+    this.isComponentMounted = true
   }
 
   public componentWillUnmount() {
-    this.__isMounted = false
+    this.isComponentMounted = false
   }
 
   public render(): ReactNode {
@@ -87,16 +87,16 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
   private onItemSelectedChange = (): void => {
     const { item: { id, product }, onItemSelect } = this.props
     const { isSelected } = this.state
-    this.__isMounted && this.setState({ isSelected: !isSelected })
+    this.setState({ isSelected: !isSelected })
     onItemSelect(id, product, !isSelected)
   }
 
   private onItemRemove = (): void => {
     const { onItemRemove, item } = this.props
-    this.__isMounted && this.setState({ isLoading: true })
+    this.setState({ isLoading: true })
     onItemRemove(item.id)
-      .then(() => this.__isMounted && this.setState({ isLoading: false }))
-      .catch(() => this.__isMounted && this.setState({ isLoading: false }))
+      .then(() => this.isComponentMounted && this.setState({ isLoading: false }))
+      .catch(() => this.isComponentMounted && this.setState({ isLoading: false }))
   }
 
 }

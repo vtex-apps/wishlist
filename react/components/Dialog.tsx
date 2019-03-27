@@ -1,5 +1,5 @@
 import React, { Component, Fragment, ReactNode } from 'react'
-import { InjectedIntlProps, injectIntl, IntlShape, FormattedMessage } from 'react-intl'
+import { FormattedMessage, InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
 import OutsideClickHandler from 'react-outside-click-handler'
 import { Button } from 'vtex.styleguide'
 
