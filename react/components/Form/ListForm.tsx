@@ -1,7 +1,6 @@
 import React, { Component, FormEvent, Fragment, ReactNode } from 'react'
 import { FormattedMessage, InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
 import { Button, Input, Toggle } from 'vtex.styleguide'
-import { translate } from '../../utils/translate'
 
 const LIST_NAME_MINIMUM_LENGTH = 1
 
@@ -25,7 +24,7 @@ class ListForm extends Component<ListFormProps & InjectedIntlProps, ListFormStat
     listData: {},
   }
   private __isMounted: boolean = false
-  
+
   public componentDidMount(): void {
     const { list } = this.props
     this.__isMounted = true
@@ -33,11 +32,11 @@ class ListForm extends Component<ListFormProps & InjectedIntlProps, ListFormStat
       this.setState({ listData: list })
     }
   }
-  
-    public componentWillUnmount() {
-      this.__isMounted = false
-    }
-  
+
+  public componentWillUnmount() {
+    this.__isMounted = false
+  }
+
   public render(): ReactNode {
     const { intl, onSubmit, isLoading, buttonLabel } = this.props
     const { isValid, isChanged, listData: { name, isPublic }, listData } = this.state
@@ -47,8 +46,8 @@ class ListForm extends Component<ListFormProps & InjectedIntlProps, ListFormStat
           <div className="tl">
             <Input
               value={name}
-              placeholder={translate('wishlist-list-name-placeholder', intl)}
-              label={translate('wishlist-list-name-label', intl)}
+              placeholder={intl.formatMessage({ id: "wishlist-list-name-placeholder" })}
+              label={intl.formatMessage({ id: "wishlist-list-name-label" })}
               onChange={this.onChangeName}
             />
           </div>

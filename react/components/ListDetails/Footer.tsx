@@ -1,9 +1,8 @@
 import { map } from 'ramda'
 import React, { Component, ReactNode } from 'react'
-import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import { InjectedIntlProps, injectIntl, IntlShape, FormattedMessage } from 'react-intl'
 import ProductPrice from 'vtex.store-components/ProductPrice'
 import { Button, withToast } from 'vtex.styleguide'
-import { translate } from '../../utils/translate'
 
 interface FooterProps {
   items: any
@@ -37,12 +36,19 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
     return (
       <div className="flex-column pa4 bt b--muted-4">
         <div className="tr">
-          <span className="b">{items.length}</span>
-          <span className="ml2">{translate('wishlist-quantity-selected-items', intl)}</span>
+          <span className="ml2">
+            <FormattedMessage
+              id="wishlist-quantity-selected-items"
+              values={{ selectedItemsQuantity: <b>{items.length}</b> }}
+            />
+          </span>
         </div>
         <div className="pv4 flex flex-row justify-end b">
           <span className="mr2">
-            {translate('wishlist-total', intl)}
+          <FormattedMessage
+              id="wishlist-total"
+              values={{ selectedItemsQuantity: <b>{items.length}</b> }}
+            />
           </span>
           <ProductPrice
             sellingPrice={totalPrice}
@@ -59,7 +65,7 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
             onClick={this.onAddToCart}
             isLoading={isLoading}
           >
-            {translate('wishlist-buy-items', intl)}
+          <FormattedMessage id="wishlist-buy-items" />
           </Button>
         </div>
       </div>
@@ -85,11 +91,11 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
     const { onAddToCart, showToast, intl } = this.props
     this.__isMounted && this.setState({ isLoading: true })
     onAddToCart().then(() => {
-      showToast({ message: translate('wishlist-add-to-cart-success', intl) })
+      showToast({ message: intl.formatMessage({ id: "wishlist-add-to-cart-success" }) })
       this.__isMounted && this.setState({ isLoading: false })
-    }).catch(err => {
+    }).catch((err: any) => {
       console.error(err)
-      showToast({ message: translate('wishlist-add-to-cart-fail', intl) })
+      showToast({ message: intl.formatMessage({ id: "wishlist-add-to-cart-fail" }) })
       this.__isMounted && this.setState({ isLoading: false })
     })
   }

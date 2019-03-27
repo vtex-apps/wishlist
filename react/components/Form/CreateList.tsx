@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import { withApollo, WithApolloClient } from 'react-apollo'
 import { InjectedIntlProps, injectIntl } from 'react-intl'
 import { createList } from '../../GraphqlClient'
-import { translate } from '../../utils/translate'
 import Header from '../Header'
 import ListForm from './ListForm'
 
@@ -40,12 +39,12 @@ class CreateList extends Component<CreateListProps & InjectedIntlProps & WithApo
     return (
       <div className="vh-100 fixed top-0 left-0 w-100 bg-base z-4">
         <Header
-          title={translate('wishlist-new', intl)}
+          title={intl.formatMessage({ id: "wishlist-new" })}
           onClose={onClose}
           showIconBack
         />
         <ListForm
-          buttonLabel={translate('wishlist-add-button', intl)}
+          buttonLabel={intl.formatMessage({ id: "wishlist-add-button" })}
           onSubmit={this.onSubmit}
           isLoading={isLoading}
         />

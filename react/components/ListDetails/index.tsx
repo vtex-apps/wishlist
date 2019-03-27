@@ -2,10 +2,9 @@ import { ApolloClient } from 'apollo-client'
 import { append, filter, map, path } from 'ramda'
 import React, { Component, Fragment, ReactNode } from 'react'
 import { withApollo, WithApolloClient } from 'react-apollo'
-import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import { InjectedIntlProps, injectIntl, IntlShape, FormattedMessage } from 'react-intl'
 import { orderFormConsumer } from 'vtex.store-resources/OrderFormContext'
 import { deleteList, getListDetailed, updateList } from '../../GraphqlClient'
-import { translate } from '../../utils/translate'
 import Dialog from '../Dialog'
 import UpdateList from '../Form/UpdateList'
 import Header from '../Header'
@@ -43,34 +42,34 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
     selectedItems: [],
   }
   private __isMounted: boolean = false
-  
+
   private options: Option[] = [
     {
       onClick: () => this.__isMounted && this.setState({ showUpdateList: true }),
-      title: translate('wishlist-option-configuration', this.props.intl),
+      title: this.props.intl.formatMessage({ id: "wishlist-option-configuration" }),
     },
     {
       onClick: () => this.__isMounted && this.setState({ showDeleteConfirmation: true }),
-      title: translate('wishlist-option-delete', this.props.intl),
+      title: this.props.intl.formatMessage({ id: "wishlist-option-delete" }),
     },
   ]
-  
+
   public componentDidMount(): void {
     const { listId, client } = this.props
     this.__isMounted = true
     if (client) {
       getListDetailed(client, listId)
-      .then(response => {
-        this.setState({ list: response.data.list, isLoading: false })
-      })
-      .catch(err => console.error(err))
+        .then(response => {
+          this.setState({ list: response.data.list, isLoading: false })
+        })
+        .catch(err => console.error(err))
     }
   }
-  
-    public componentWillUnmount() {
-      this.__isMounted = false
-    }
-  
+
+  public componentWillUnmount() {
+    this.__isMounted = false
+  }
+
   public render(): ReactNode {
     const { list, isLoading, showDeleteConfirmation, showUpdateList } = this.state
     const { intl, listId } = this.props
@@ -79,7 +78,12 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
         {isLoading ? renderLoading() : this.renderContent()}
         {showDeleteConfirmation && (
           <Dialog
-            message={`${translate('wishlist-delete-confirmation-message', intl)} "${list.name}"?`}
+            message={
+              <FormattedMessage
+              id="wishlist-delete-confirmation-message"
+              values={{listName: <b>{list.name}</b>}}
+              />
+            }
             onClose={() => this.setState({ showDeleteConfirmation: false })}
             onSuccess={this.handleDeleteList}
           />

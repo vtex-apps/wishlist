@@ -7,7 +7,6 @@ import { IconHeart } from 'vtex.store-icons'
 import { Spinner, withToast } from 'vtex.styleguide'
 import AddToList from './components/AddToList/index'
 import { addProductToDefaultList } from './GraphqlClient'
-import { translate } from './utils/translate'
 
 interface AddProductBtnProps {
   large?: boolean
@@ -82,7 +81,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     const { intl } = this.props
     this.__isMounted && this.setState({ isLoading: false })
     console.error(error)
-    this.props.showToast({ message: translate('wishlist-add-product-fail', intl) })
+    this.props.showToast({ message: intl.formatMessage({ id: "wishlist-add-product-fail" }) })
   }
 
   private onAddProductClick = (): void => {
@@ -90,7 +89,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     if (!isLoading) {
       const { client, product, intl } = this.props
       this.setState({ isLoading: true })
-      addProductToDefaultList(translate('wishlist-default-list-name', intl), client, product)
+      addProductToDefaultList(intl.formatMessage({ id: "wishlist-default-list-name" }), client, product)
         .then(this.handleAddProductSuccess)
         .catch(this.handleAddProductFailed)
     }
@@ -98,17 +97,17 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
 
   private onAddToListsFail = (): void => {
     const { showToast, intl } = this.props
-    showToast({ message: translate('wishlist-add-product-fail', intl) })
+    showToast({ message: intl.formatMessage({ id: "wishlist-add-product-fail" }) })
   }
 
   private onAddToListsSuccess = (): void => {
     const { showToast, intl } = this.props
     showToast({
       action: {
-        label: translate('wishlist-see-lists', intl),
+        label: intl.formatMessage({ id: "wishlist-see-lists" }),
         onClick: () => this.setState({ showLists: true }),
       },
-      message: translate('wishlist-product-added-to-list', intl),
+      message: intl.formatMessage({ id: "wishlist-product-added-to-list" }),
     })
   }
 

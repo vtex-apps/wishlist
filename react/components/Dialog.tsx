@@ -1,8 +1,7 @@
 import React, { Component, Fragment, ReactNode } from 'react'
-import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import { InjectedIntlProps, injectIntl, IntlShape, FormattedMessage } from 'react-intl'
 import OutsideClickHandler from 'react-outside-click-handler'
 import { Button } from 'vtex.styleguide'
-import { translate } from '../utils/translate'
 
 interface DialogProps {
   message: string
@@ -37,7 +36,7 @@ class Dialog extends Component<DialogProps & InjectedIntlProps, DialogState> {
                   onClick={onClose}
                   disabled={isLoading}
                 >
-                  {translate('wishlist-dialog-cancel', intl)}
+                  <FormattedMessage id="wishlist-dialog-cancel" />
                 </Button>
                 <div className="ml3">
                   <Button
@@ -46,7 +45,7 @@ class Dialog extends Component<DialogProps & InjectedIntlProps, DialogState> {
                     onClick={() => { this.setState({ isLoading: true }); onSuccess() }}
                     isLoading={isLoading}
                   >
-                    {translate('wishlist-dialog-confirm', intl)}
+                    <FormattedMessage id="wishlist-dialog-confirm" />
                   </Button>
                 </div>
               </div>

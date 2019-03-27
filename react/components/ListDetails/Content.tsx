@@ -1,9 +1,8 @@
 import { map } from 'ramda'
 import React, { Component, Fragment, ReactNode } from 'react'
-import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import { InjectedIntlProps, injectIntl, IntlShape, FormattedMessage } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import { Button } from 'vtex.styleguide'
-import { translate } from '../../utils/translate'
 import ItemDetails from './ItemDetails'
 
 interface ContentProps {
@@ -23,8 +22,12 @@ class Content extends Component<ContentProps & InjectedIntlProps, {}> {
           items.length > 0 ? (
             <div>
               <div className="h3 flex items-center justify-center c-muted-1">
-                <span className="mr2">{items.length}</span>
-                <span>{translate('wishlist-quantity-of-items', intl)}</span>
+                <span>
+                  <FormattedMessage
+                  id="wishlist-quantity-of-items"
+                  values={{itemsQuantity: items.length}}
+                  />
+                </span>
               </div>
               {this.renderItems()}
             </div>
@@ -48,11 +51,11 @@ class Content extends Component<ContentProps & InjectedIntlProps, {}> {
     return (
       <div className="flex flex-column w-100 h-100 items-center mt8 c-muted-2">
         <div>
-          <span>{translate('wishlist-list-empty', intl)}</span>
+            <FormattedMessage id="wishlist-list-empty" />
         </div>
         <div className="mt8">
           <Button variation="primary" onClick={this.redirectToGallery}>
-            {translate('wishlist-add-itens', intl)}
+            <FormattedMessage id="wishlist-add-itens" />
           </Button>
         </div>
       </div>

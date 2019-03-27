@@ -1,7 +1,6 @@
 import React, { Component, ReactNode } from "react"
-import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import { InjectedIntlProps, injectIntl, IntlShape, FormattedMessage } from 'react-intl'
 import { Button } from 'vtex.styleguide'
-import { translate } from '../../utils/translate'
 import wishlist from '../../wishList.css'
 
 interface FooterProps {
@@ -23,7 +22,7 @@ class Footer extends Component<FooterProps & InjectedIntlProps, {}> {
           onClick={onClick}
           isLoading={isLoading}
         >
-          {translate('wishlist-apply', intl)}
+          <FormattedMessage id="wishlist-apply" />
         </Button>
       </div>
     )

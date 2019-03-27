@@ -5,7 +5,6 @@ import { withApollo, WithApolloClient } from 'react-apollo'
 import { InjectedIntlProps, injectIntl } from 'react-intl'
 import { withToast } from 'vtex.styleguide'
 import { updateList } from '../../GraphqlClient'
-import { translate } from '../../utils/translate'
 import Header from '../Header'
 import ListForm from './ListForm'
 
@@ -44,13 +43,13 @@ class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApo
     return (
       <div className="vh-100">
         <Header
-          title={translate('wishlist-option-configuration', intl)}
+          title={intl.formatMessage({ id: "wishlist-option-configuration" })}
           onClose={onClose}
           showIconBack
         />
         <ListForm
           list={list}
-          buttonLabel={translate('wishlist-save', intl)}
+          buttonLabel={intl.formatMessage({ id: "wishlist-save" })}
           onSubmit={this.onSubmit}
           isLoading={isLoading}
         />
@@ -79,7 +78,7 @@ class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApo
         .then(response => {
           this.__isMounted && this.setState({ isLoading: false })
           if (showToast) {
-            showToast({ message: translate('wishlist-list-updated', intl) })
+            showToast({ message: intl.formatMessage({ id: "wishlist-list-updated" }) })
           }
           setTimeout(
             () => this.props.onFinishUpdate({ ...response.data.updateList, items }),

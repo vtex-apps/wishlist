@@ -11,7 +11,6 @@ import {
   getListsFromLocaleStorage,
   saveListIdInLocalStorage
 } from '../../GraphqlClient'
-import { translate } from '../../utils/translate'
 
 import CreateList from '../Form/CreateList'
 import UpdateList from '../Form/UpdateList'
@@ -52,7 +51,6 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
     this.__isMounted = false
   }
 
-
   public componentDidMount(): void {
     const { client } = this.props
     this.__isMounted = true
@@ -80,7 +78,7 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
         <Fragment>
           <div className="vw-100 vh-100 z-4 fixed bg-white top-0">
             <Header
-              title={translate('wishlist-my-lists', intl)}
+              title={intl.formatMessage({ id: "wishlist-my-lists" })}
               onClose={onClose}
               action={() => this.__isMounted && this.setState({ showCreateList: true })}
             />

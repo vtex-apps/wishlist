@@ -4,7 +4,6 @@ import React, { Component, ReactNode } from "react"
 import { withApollo, WithApolloClient } from 'react-apollo'
 import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
 import { getListsFromLocaleStorage, saveListIdInLocalStorage, updateList } from '../../GraphqlClient'
-import { translate } from '../../utils/translate'
 import wishlist from '../../wishList.css'
 import CreateList from '../Form/CreateList'
 import Header from '../Header'
@@ -74,7 +73,7 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
     return (
       <div className="z-4 bg-base">
         <Header
-          title={translate('wishlist-add-to-list', intl)}
+          title={intl.formatMessage({ id: "wishlist-add-to-list" })}
           onClose={onClose}
           action={() => this.setState({ showCreateList: true })}
         />
