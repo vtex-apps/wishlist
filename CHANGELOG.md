@@ -7,5 +7,5 @@
 
  ## [Unreleased]
  ### Added
-  - Scaffholding the `Wishlist` app.
+  - Scaffolding the `Wishlist` app.
   - Add `wishlist` functionalities in mobile mode.

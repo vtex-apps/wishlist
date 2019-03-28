@@ -5,9 +5,9 @@
   "version": "0.0.0",
   "defaultLocale": "pt-BR",
   "builders": {
-    "pages": "1.x",
     "react": "3.x",
-    "messages": "1.x"
+    "messages": "1.x",
+    "store": "0.x"
   },
   "mustUpdateAt": "2019-04-20",
   "categories": [],
