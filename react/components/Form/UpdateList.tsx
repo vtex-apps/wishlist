@@ -10,6 +10,8 @@ import ListForm from './ListForm'
 
 import wishlist from '../../wishList.css'
 
+const OPEN_UPDATE_LIST_CLASS = wishlist.open
+
 interface UpdateListProps {
   list: List
   onFinishUpdate: (list: any) => void
@@ -32,10 +34,12 @@ class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApo
 
   public componentDidMount() {
     this.isComponentMounted = true
+    document.body.classList.add(OPEN_UPDATE_LIST_CLASS)
   }
 
   public componentWillUnmount() {
     this.isComponentMounted = false
+    document.body.classList.remove(OPEN_UPDATE_LIST_CLASS)
   }
 
 

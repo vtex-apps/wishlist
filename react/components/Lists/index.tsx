@@ -19,7 +19,10 @@ import ListDetails from '../ListDetails/index'
 import ListItem from '../ListItem'
 import renderLoading from '../Loading'
 
+import wishlist from '../../wishList.css'
+
 const DEFAULT_LIST_INDEX = 0
+const OPEN_LISTS_CLASS = wishlist.open
 
 interface ListsStates {
   listSelected: number
@@ -49,11 +52,13 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
 
   public componentWillUnmount() {
     this.isComponentMounted = false
+    document.body.classList.remove(OPEN_LISTS_CLASS)
   }
 
   public componentDidMount(): void {
     const { client } = this.props
     this.isComponentMounted = true
+    document.body.classList.add(OPEN_LISTS_CLASS)
     getListsFromLocaleStorage(client)
       .then(response => {
         const lists = map(item => item.data.list, response)

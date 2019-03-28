@@ -1,6 +1,10 @@
 import React, { Component, MouseEvent, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 
+import wishlist from '../wishList.css'
+
+const OPEN_BOTTOM_BAR_CLASS = wishlist.open
+
 interface BottomBarProps {
   children: ReactNode,
   onOutsideClick: (e: MouseEvent<HTMLElement>) => void
@@ -10,6 +14,14 @@ interface BottomBarProps {
  * Bottom bar component.
  */
 export default class BottomBar extends Component<BottomBarProps> {
+  public componentDidMount() {
+    document.body.classList.add(OPEN_BOTTOM_BAR_CLASS)
+  }
+
+  public componentWillUnmount() {
+    document.body.classList.remove(OPEN_BOTTOM_BAR_CLASS)
+  }
+
   public render(): ReactNode {
     const {
       children,

@@ -8,6 +8,8 @@ import ListForm from './ListForm'
 
 import wishlist from '../../wishList.css'
 
+const OPEN_CREATE_LIST_CLASS = wishlist.open
+
 interface CreateListProps {
   onFinishAdding: (list: List) => void
   onClose: () => void
@@ -28,10 +30,12 @@ class CreateList extends Component<CreateListProps & InjectedIntlProps & WithApo
 
   public componentDidMount() {
     this.isComponentMounted = true
+    document.body.classList.add(OPEN_CREATE_LIST_CLASS)
   }
 
   public componentWillUnmount() {
     this.isComponentMounted = false
+    document.body.classList.remove(OPEN_CREATE_LIST_CLASS)
   }
 
 

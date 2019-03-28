@@ -12,6 +12,10 @@
   top: 100%;
 }
 
+.open {
+  overflow: hidden;
+}
+
 .addToListContent {
 }
 
