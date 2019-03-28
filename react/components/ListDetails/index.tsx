@@ -1,5 +1,5 @@
 import { ApolloClient } from 'apollo-client'
-import { append, filter, map, path } from 'ramda'
+import { append, filter, map } from 'ramda'
 import React, { Component, Fragment, ReactNode } from 'react'
 import { withApollo, WithApolloClient } from 'react-apollo'
 import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
@@ -12,7 +12,6 @@ import renderLoading from '../Loading'
 import MenuOptions from '../MenuOptions/MenuOptions'
 import Content from './Content'
 import Footer from './Footer'
-
 
 enum Size {
   large, small,
@@ -120,38 +119,10 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
         {items.length > 0 && (
           <Footer
             items={selectedItems}
-            onAddToCart={this.addItensToCart}
           />
         )}
       </Fragment>
     )
-  }
-
-  private createItemShapeFromItem = ({ product: { items } }: any) => {
-    const sku = items[0]
-    return {
-      id: Number(sku.itemId),
-      quantity: 1,
-      seller: Number(sku.sellers[0].sellerId),
-    }
-  }
-
-  private addItensToCart = (): Promise<any> => {
-    const { orderFormContext } = this.props
-    const { selectedItems } = this.state
-
-    this.setState({ isAddingToCart: true })
-    return orderFormContext
-      .addItem({
-        variables: {
-          items: map(this.createItemShapeFromItem, selectedItems),
-          orderFormId: path(['orderForm', 'orderFormId'], orderFormContext),
-        },
-      })
-      .then(() => {
-        this.setState({ isAddingToCart: false })
-        orderFormContext.refetch()
-      })
   }
 
   private onItemSelectedChange = (itemId: string, product: any, isSelected: boolean) => {

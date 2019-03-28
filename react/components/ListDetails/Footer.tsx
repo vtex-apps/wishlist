@@ -1,14 +1,14 @@
-import { map } from 'ramda'
+import { map, path } from 'ramda'
 import React, { Component, ReactNode } from 'react'
-import { InjectedIntlProps, injectIntl, IntlShape, FormattedMessage } from 'react-intl'
+import { FormattedMessage, InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import BuyButton from 'vtex.store-components/BuyButton'
 import ProductPrice from 'vtex.store-components/ProductPrice'
-import { Button, withToast } from 'vtex.styleguide'
+import { withToast } from 'vtex.styleguide'
 
 import wishlist from '../../wishList.css'
 
 interface FooterProps {
   items: any
-  onAddToCart: () => Promise<any>
   showToast: any
   intl: IntlShape
 }
@@ -18,22 +18,10 @@ interface FooterState {
 }
 
 class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
-  public state: FooterState = {}
-  private isComponentMounted: boolean = false
-
-  public componentDidMount() {
-    this.isComponentMounted = true
-  }
-
-  public componentWillUnmount() {
-    this.isComponentMounted = false
-  }
-
   public render(): ReactNode {
-    const { intl, items } = this.props
-    const { isLoading } = this.state
+    const { items } = this.props
     const totalPrice = this.calculateTotal()
-
+    const itemsToAddToCart = map(this.productShape, items)
     return (
       <div className={`${wishlist.ListDetailsFooter} flex-column pa4 bt b--muted-4`}>
         <div className="tr">
@@ -59,18 +47,67 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
           />
         </div>
         <div className={wishlist.buySelectedItemsBtnContainer}>
-          <Button
-            variation="primary"
-            block
-            disabled={items.length <= 0}
-            onClick={this.onAddToCart}
-            isLoading={isLoading}
+          <BuyButton
+            available={items.length > 0}
+            isAvailable
+            skuItems={itemsToAddToCart}
+            isOneClickBuy={false}
+            large
           >
             <FormattedMessage id="wishlist-buy-items" />
-          </Button>
+          </BuyButton>
         </div>
       </div>
     )
+  }
+
+  private findAvailableProduct = (item: any): any =>
+    item.sellers.find(({ commertialOffer }: any) => commertialOffer.AvailableQuantity > 0)
+
+  private normalizeProduct = (product: any): any => {
+    if (!product) {
+      return null
+    }
+    const normalizedProduct = { ...product }
+    const items = product.items || []
+    const sku = items.find(this.findAvailableProduct)
+    if (sku) {
+      const [seller = { commertialOffer: { Price: 0, ListPrice: 0 } }] =
+        path(['sellers'], sku) || []
+      const [referenceId = { Value: '' }] = path(['referenceId'], sku) || []
+      const [image = { imageUrl: '' }] = path(['images'], sku) || []
+      const resizedImage = image.imageUrl
+      const normalizedImage = { ...image, imageUrl: resizedImage }
+      normalizedProduct.sku = {
+        ...sku,
+        image: normalizedImage,
+        referenceId,
+        seller,
+      }
+    }
+    return normalizedProduct
+  }
+
+  private productShape = (item: any): any => {
+    const product = this.normalizeProduct(item.product)
+    return (path(['sku', 'itemId'], product) && {
+      brand: product.brand,
+      detailUrl: `/${product.linkText}/p`,
+      imageUrl: path(['sku', 'image', 'imageUrl'], product),
+      listPrice: path(
+        ['sku', 'seller', 'commertialOffer', 'ListPrice'],
+        product
+      ),
+      name: product.productName,
+      price: path(
+        ['sku', 'seller', 'commertialOffer', 'Price'],
+        product
+      ),
+      quantity: 1,
+      seller: path(['sku', 'seller', 'sellerId'], product),
+      skuId: path(['sku', 'itemId'], product),
+      variant: path(['sku', 'name'], product),
+    })
   }
 
   private calculateTotal = (): number => {
@@ -86,21 +123,6 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
       return Price
     }, items)
       .reduce((a, b) => a + b, 0)
-  }
-
-  private onAddToCart = (): void => {
-    const { onAddToCart, showToast, intl } = this.props
-      this.setState({ isLoading: true })
-    onAddToCart().then(() => {
-      showToast({ message: intl.formatMessage({ id: 'wishlist-add-to-cart-success' }) })
-      if (this.isComponentMounted) {
-        this.setState({ isLoading: false })
-      }
-    }).catch((err: any) => {
-      console.error(err)
-      showToast({ message: intl.formatMessage({ id: 'wishlist-add-to-cart-fail' }) })
-      this.setState({ isLoading: false })
-    })
   }
 
 }
