@@ -141,7 +141,7 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
             </div>
           ) : (
             <div className="tc pv4 c-muted-2">
-              <FormattedMessage id="wishlist-no-lists" />
+              <FormattedMessage id="wishlist-no-list-created" />
             </div>
           )}
       </Fragment>
