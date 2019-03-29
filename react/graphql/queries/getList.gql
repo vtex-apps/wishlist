@@ -1,0 +1,14 @@
+query getList($id: ID){
+  list(id: $id) {
+    id
+    name
+    isPublic
+    owner
+    items {
+      id
+      productId
+      skuId
+      quantity
+    }
+  }
+}

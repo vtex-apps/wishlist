@@ -1,0 +1,14 @@
+mutation updateList($id: ID!, $list: ListInput) {
+  updateList(id: $id, list: $list) {
+    id
+    name
+    isPublic
+    owner
+    items {
+      id
+      productId
+      skuId
+      quantity
+    }
+  }
+}

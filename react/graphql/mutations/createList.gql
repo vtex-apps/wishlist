@@ -1,0 +1,18 @@
+mutation createList($name: String!, $isPublic: Boolean, $items: [ListItemInput]) {
+  createList(list: {
+    name: $name,
+    isPublic: $isPublic
+    items: $items
+  }) {
+    id
+    name
+    owner
+    isPublic
+    items {
+      id
+      quantity
+      productId
+      quantity
+    }
+  }
+}

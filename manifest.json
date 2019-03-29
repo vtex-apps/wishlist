@@ -1,0 +1,25 @@
+{
+  "vendor": "vtex",
+  "name": "wishlist",
+  "title": "Wishlist",
+  "version": "0.0.0",
+  "defaultLocale": "pt-BR",
+  "builders": {
+    "react": "3.x",
+    "messages": "1.x",
+    "store": "0.x"
+  },
+  "mustUpdateAt": "2019-04-20",
+  "scripts": {
+    "postreleasy": "vtex publish --verbose"
+  },
+  "dependencies": {
+    "vtex.store-components": "3.x",
+    "vtex.styleguide": "9.x",
+    "vtex.store-graphql": "2.x",
+    "vtex.store-resources": "0.x",
+    "vtex.store-icons": "0.x",
+    "vtex.product-summary": "2.x",
+    "vtex.product-details": "1.x"
+  }
+}

@@ -1,0 +1,74 @@
+.applyButton > button {
+  border-radius: 0px;
+  padding-bottom: 0.5625em;
+  padding-top: 0.5625em;
+}
+
+.contentContainer {
+  max-height: 40vh;
+}
+
+.popover {
+  top: 100%;
+}
+
+.open {
+  overflow: hidden;
+}
+
+.addToListContent {
+}
+
+.addToListListsToSwitch {
+}
+
+.createList { 
+}
+
+.createListButtonContainer {
+}
+
+.isPublicLabel {
+}
+
+.isPublicHint {
+}
+
+.isPublicContainer {
+}
+
+.nameInputContainer {
+}
+
+.form {
+}
+
+.updateList{
+}
+
+.listEmptyContainer {
+}
+
+.listEmptyLabel{
+}
+
+.goToAddProductsButtonContainer {
+}
+
+.listDetailsContent {
+}
+
+.buySelectedItemsBtnContainer {
+}
+
+.totalPriceLabel {
+}
+
+.pricesContainer {
+}
+
+.quantityOfSelectedItemsLabel {
+}
+
+.ListDetailsFooter {
+}
