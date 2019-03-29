@@ -13,10 +13,6 @@ import MenuOptions from '../MenuOptions/MenuOptions'
 import Content from './Content'
 import Footer from './Footer'
 
-import wishlist from '../../wishList.css'
-
-const OPEN_LIST_DETAILS_CLASS = wishlist.open
-
 enum Size {
   large, small,
 }
@@ -60,7 +56,6 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
   public componentDidMount(): void {
     const { listId, client } = this.props
     this.isComponentMounted = true
-    document.body.classList.add(OPEN_LIST_DETAILS_CLASS)
     if (client) {
       getListDetailed(client, listId)
         .then(response => {
@@ -72,7 +67,6 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
 
   public componentWillUnmount() {
     this.isComponentMounted = false
-    document.body.classList.remove(OPEN_LIST_DETAILS_CLASS)
   }
 
   public render(): ReactNode {
