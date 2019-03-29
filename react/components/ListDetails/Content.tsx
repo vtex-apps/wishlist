@@ -1,6 +1,6 @@
 import { map } from 'ramda'
 import React, { Component, Fragment, ReactNode } from 'react'
-import { InjectedIntlProps, injectIntl, IntlShape, FormattedMessage } from 'react-intl'
+import { FormattedMessage, InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import { Button } from 'vtex.styleguide'
 import ItemDetails from './ItemDetails'

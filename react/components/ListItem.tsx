@@ -17,8 +17,8 @@ interface ListItemProps {
   showMenuOptions?: boolean,
   onClick?: (id: number) => void
   onSelected?: (id: number, isSelected?: boolean) => void
-  onDeleted: (listId: string) => Promise<any>
-  onUpdated: (index: number) => void
+  onDeleted?: (listId: string) => Promise<any>
+  onUpdated?: (index: number) => void
   intl?: IntlShape
 }
 
@@ -31,7 +31,7 @@ class ListItem extends Component<ListItemProps & InjectedIntlProps, {}> {
 
   private options: Option[] = [
     {
-      onClick: () => this.props.onUpdated(this.props.id),
+      onClick: () => this.props.onUpdated && this.props.onUpdated(this.props.id),
       title: this.props.intl.formatMessage({ id: 'wishlist-option-configuration' }),
     },
     {
@@ -101,7 +101,7 @@ class ListItem extends Component<ListItemProps & InjectedIntlProps, {}> {
               )
             }
             onClose={() => this.setState({ showDeleteDialog: false })}
-            onSuccess={() => onDeleted(listId)
+            onSuccess={() => onDeleted && onDeleted(listId || '')
               .then(() => this.isComponentMounted && this.setState({ showDeleteDialog: false }))
               .catch(() => this.isComponentMounted && this.setState({ showDeleteDialog: false }))
             }
@@ -112,4 +112,4 @@ class ListItem extends Component<ListItemProps & InjectedIntlProps, {}> {
   }
 }
 
-export default injectIntl(ListItem)
+export default injectIntl<ListItemProps>(ListItem)

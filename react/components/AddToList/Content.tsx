@@ -28,7 +28,7 @@ interface AddToListContentState {
   isLoading: boolean
   isAdding?: boolean
   showCreateList?: boolean
-  lists: List[]
+  lists: any[]
   changedLists: number[]
   showListDetails?: boolean
   selectedListId: string
@@ -67,7 +67,7 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
     return (
       <div className={`${wishlist.addToListContent} z-4 bg-base`}>
         <Header
-          title={intl.formatMessage({ id: "wishlist-add-to-list" })}
+          title={intl.formatMessage({ id: 'wishlist-add-to-list' })}
           onClose={onClose}
           action={() => this.setState({ showCreateList: true })}
         />
@@ -111,7 +111,7 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
       this.setState({ isAdding: true })
       Promise.all(map(index => {
         const { id } = lists[index]
-        return updateList(client, id, { ...lists[index] })
+        return updateList(client, id || '', { ...lists[index] })
       }, changedLists))
         .then(() => {
           onClose()
@@ -127,9 +127,9 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
 
   private containsProduct = (list: List): boolean => {
     const { product } = this.props
-    return filter((item: Item) =>
+    return filter((item: any) =>
       item.productId === product.productId &&
-      item.skuId === product.skuId, list.items)
+      item.skuId === product.skuId, list.items || {})
       .length > 0
   }
 
@@ -169,7 +169,7 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
     const { product } = this.props
     const { lists } = this.state
     const list = lists[index]
-    const listUpdated = { ...list, items: append(product, list.items) }
+    const listUpdated = { ...list, items: append(product, list.items || []) }
     return update(index, listUpdated, lists)
   }
 
@@ -177,7 +177,7 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
     const { product: { productId, skuId } } = this.props
     const { lists } = this.state
     const list = lists[index]
-    const items = filter((item: Item) => item.productId !== productId || item.skuId !== skuId, list.items)
+    const items = filter((item: any) => item.productId !== productId || item.skuId !== skuId, list.items || [])
     return update(index, { ...list, items }, lists)
   }
 

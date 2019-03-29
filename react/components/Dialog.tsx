@@ -18,7 +18,7 @@ class Dialog extends Component<DialogProps & InjectedIntlProps, DialogState> {
   public state: DialogState = {}
 
   public render(): ReactNode {
-    const { message, onClose, onSuccess, intl } = this.props
+    const { message, onClose, onSuccess } = this.props
     const { isLoading } = this.state
     return (
       <Fragment>

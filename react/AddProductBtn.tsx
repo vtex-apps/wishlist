@@ -1,7 +1,7 @@
 import { ApolloClient } from "apollo-client"
 import React, { Component } from 'react'
 import { withApollo } from "react-apollo"
-import { injectIntl, IntlShape } from 'react-intl'
+import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
 import { ExtensionPoint } from 'vtex.render-runtime'
 import { IconHeart } from 'vtex.store-icons'
 import { Spinner, withToast } from 'vtex.styleguide'
@@ -25,7 +25,7 @@ interface AddProductBtnState {
 const ICON_SIZE_SMALL = 16
 const ICON_SIZE_LARGE = 32
 
-class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
+class AddProductBtn extends Component<AddProductBtnProps & InjectedIntlProps, AddProductBtnState> {
   public state: AddProductBtnState = {}
 
   public render() {
@@ -104,4 +104,4 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
 
 }
 
-export default injectIntl(withToast(withApollo<AddProductBtnProps, {}>(AddProductBtn)))
+export default injectIntl(withToast(withApollo<AddProductBtnProps & InjectedIntlProps, {}>(AddProductBtn)))

@@ -63,7 +63,7 @@ class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApo
     )
   }
 
-  private itemsToItemsInput = (items: any): [Items] => map(
+  private itemsToItemsInput = (items: any): [any] => map(
     ({ id, productId, skuId, quantity }) => ({ id, productId, skuId, quantity }),
     items)
 
@@ -73,7 +73,7 @@ class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApo
     if (client) {
       updateList(
         client,
-        id,
+        id || '',
         {
           ...list,
           isPublic,
