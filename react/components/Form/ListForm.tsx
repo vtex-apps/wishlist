@@ -63,7 +63,7 @@ class ListForm extends Component<ListFormProps & InjectedIntlProps, ListFormStat
             />
           </div>
         </div>
-        <div className={`${wishlist.createListButtonContainer} flex flex-row justify-center pb3`}>
+        <div className={`${wishlist.createListButtonContainer} flex flex-row justify-center pb5`}>
           <Button
             variation="primary"
             size="small"

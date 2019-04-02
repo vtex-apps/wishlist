@@ -5,7 +5,7 @@ import { withApollo, WithApolloClient } from 'react-apollo'
 import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
 import { orderFormConsumer } from 'vtex.store-resources/OrderFormContext'
 import { deleteList, getListDetailed, updateList } from '../../GraphqlClient'
-import Dialog from '../Dialog'
+import DialogMessage from '../Dialog/DialogMessage'
 import UpdateList from '../Form/UpdateList'
 import Header from '../Header'
 import renderLoading from '../Loading'
@@ -76,7 +76,7 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
       <div className="fixed top-0 left-0 vw-100 vh-100 flex flex-column z-4 bg-base">
         {isLoading ? renderLoading() : this.renderContent()}
         {showDeleteConfirmation && (
-          <Dialog
+          <DialogMessage
             message={
               intl.formatMessage(
                 { id: 'wishlist-delete-confirmation-message' },
