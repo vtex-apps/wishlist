@@ -6,7 +6,7 @@ import {
   IconVisibilityOff,
   IconVisibilityOn
 } from 'vtex.styleguide'
-import Dialog from './Dialog'
+import DialogMessage from './Dialog/DialogMessage'
 import MenuOptions from './MenuOptions/MenuOptions'
 
 interface ListItemProps {
@@ -93,7 +93,7 @@ class ListItem extends Component<ListItemProps & InjectedIntlProps, {}> {
             )
           )}
         {showDeleteDialog && (
-          <Dialog
+          <DialogMessage
             message={
               intl.formatMessage(
                 { id: 'wishlist-delete-confirmation-message' },

@@ -12,6 +12,10 @@
   top: 100%;
 }
 
+.popoverLeft {
+  width: 322px;
+}
+
 .open {
   overflow: hidden;
 }

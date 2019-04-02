@@ -7,6 +7,7 @@ import Header from '../Header'
 import ListForm from './ListForm'
 
 import wishlist from '../../wishList.css'
+import FormView from './FormView';
 
 interface CreateListProps {
   onFinishAdding: (list: List) => void
@@ -39,18 +40,20 @@ class CreateList extends Component<CreateListProps & InjectedIntlProps & WithApo
     const { onClose, intl } = this.props
     const { isLoading } = this.state
     return (
-      <div className={`${wishlist.createList} vh-100 fixed top-0 left-0 w-100 bg-base z-4`}>
-        <Header
-          title={intl.formatMessage({ id: 'wishlist-new' })}
-          onClose={onClose}
-          showIconBack
-        />
-        <ListForm
-          buttonLabel={intl.formatMessage({ id: 'wishlist-add-button' })}
-          onSubmit={this.onSubmit}
-          isLoading={isLoading}
-        />
-      </div>
+      <FormView onClose={onClose}>
+        <div className={`${wishlist.createList} bg-base h-100`}>
+          <Header
+            title={intl.formatMessage({ id: 'wishlist-new' })}
+            onClose={onClose}
+            showIconBack
+          />
+          <ListForm
+            buttonLabel={intl.formatMessage({ id: 'wishlist-add-button' })}
+            onSubmit={this.onSubmit}
+            isLoading={isLoading}
+          />
+        </div>
+      </FormView>
     )
   }
 
