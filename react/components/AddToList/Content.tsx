@@ -1,16 +1,19 @@
 import { ApolloClient } from 'apollo-client'
+import classNames from 'classnames'
 import { append, filter, indexOf, map, path, remove, update } from 'ramda'
-import React, { Component, ReactNode } from "react"
+import React, { Component, ReactNode } from 'react'
 import { withApollo, WithApolloClient } from 'react-apollo'
+import { isMobile } from 'react-device-detect'
 import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
 import { getListsFromLocaleStorage, saveListIdInLocalStorage, updateList } from '../../GraphqlClient'
-import wishlist from '../../wishList.css'
 import CreateList from '../Form/CreateList'
 import Header from '../Header'
 import ListDetails from '../ListDetails'
 import ListItem from '../ListItem'
 import renderLoading from '../Loading'
 import Footer from './Footer'
+
+import wishlist from '../../wishList.css'
 
 const DEFAULT_LIST_INDEX = 0
 const QUANTITY_WITH_ONLY_DEFAULT_LIST = 1
@@ -64,6 +67,11 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
       isAdding,
       lists,
     } = this.state
+
+    const className = classNames(`${wishlist.contentContainer} overflow-y-auto`, {
+      [wishlist.contentContainerMobile]: isMobile,
+      [wishlist.contentContainerDesktop]: !isMobile,
+    })
     return (
       <div className={`${wishlist.addToListContent} z-4 bg-base`}>
         <Header
@@ -71,7 +79,7 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
           onClose={onClose}
           action={() => this.setState({ showCreateList: true })}
         />
-        <div className={`${wishlist.contentContainer} overflow-y-auto`}>
+        <div className={className}>
           {this.renderMainContent()}
         </div>
         {lists && lists.length > QUANTITY_WITH_ONLY_DEFAULT_LIST && (

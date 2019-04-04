@@ -1,10 +1,21 @@
 {
   "add-to-list": {
     "component": "AddProductBtn",
-    "required": ["my-lists", "product-summary"]
+    "required": ["lists", "product-summary"]
   },
-  "my-lists": {
-    "component": "MyLists",
+  "lists": {
+    "component": "ListsPage",
     "required": ["product-summary"]
+  },
+  "store.lists": {
+    "required": [
+      "lists"
+    ],
+    "after": [
+      "footer"
+    ]
+  },
+  "footer": {
+     "component": "Footer"
   }
 }

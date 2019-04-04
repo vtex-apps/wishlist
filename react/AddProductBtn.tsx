@@ -1,8 +1,9 @@
 import { ApolloClient } from "apollo-client"
 import React, { Component } from 'react'
 import { withApollo } from "react-apollo"
+import { isMobile } from 'react-device-detect'
 import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
-import { ExtensionPoint } from 'vtex.render-runtime'
+import { ExtensionPoint, withRuntimeContext } from 'vtex.render-runtime'
 import { IconHeart } from 'vtex.store-icons'
 import { Spinner, withToast } from 'vtex.styleguide'
 import AddToList from './components/AddToList/index'
@@ -14,6 +15,7 @@ interface AddProductBtnProps {
   showToast: ({ }) => void
   client: ApolloClient<any>
   intl: IntlShape
+  runtime?: any
 }
 
 interface AddProductBtnState {
@@ -65,7 +67,12 @@ class AddProductBtn extends Component<AddProductBtnProps & InjectedIntlProps, Ad
   }
 
   private handleAddProductSuccess = (): void => {
-    this.setState({ showContent: true, isLoading: false })
+    const { runtime: { navigate } } = this.props
+    if (!isMobile) {
+      navigate({ page: 'store.lists' })
+    } else {
+      this.setState({ showContent: true, isLoading: false })
+    }
   }
 
   private handleAddProductFailed = (error: string): void => {
@@ -104,4 +111,14 @@ class AddProductBtn extends Component<AddProductBtnProps & InjectedIntlProps, Ad
 
 }
 
-export default injectIntl(withToast(withApollo<AddProductBtnProps & InjectedIntlProps, {}>(AddProductBtn)))
+export default (
+  withRuntimeContext(
+    injectIntl(
+      withToast(
+        withApollo<AddProductBtnProps & InjectedIntlProps, {}>(
+          AddProductBtn
+        )
+      )
+    )
+  )
+)
