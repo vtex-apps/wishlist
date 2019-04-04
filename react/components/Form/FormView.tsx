@@ -1,7 +1,9 @@
 import React, { Component, ReactNode } from 'react'
-import isMobile from 'react-device-detect'
+import { isMobile } from 'react-device-detect'
 import Dialog from '../Dialog/index'
 import Screen from '../Screen'
+
+import wishlist from '../../wishList.css'
 
 interface FormViewProps {
   onClose: () => void
@@ -18,7 +20,9 @@ class FormView extends Component<FormViewProps, {}> {
       </Screen>
     ) : (
         <Dialog onClose={onClose}>
+          <div className={wishlist.formViewDialog}>
           {children}
+          </div>
         </Dialog>
       )
   }

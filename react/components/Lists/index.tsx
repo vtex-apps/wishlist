@@ -80,47 +80,44 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
     } = this.state
     const { onClose, intl } = this.props
     if (!show) { return null }
-    return createPortal(
-      (
-        <Fragment>
-          <div className="vw-100 vh-100 z-4 fixed bg-white top-0">
-            <Header
-              title={intl.formatMessage({ id: 'wishlist-my-lists' })}
-              onClose={onClose}
-              action={() => this.setState({ showCreateList: true })}
-            />
-            {this.renderContent()}
-            {showCreateList && (
-              <div className="fixed vw-100 top-0 bg-base">
-                <CreateList
-                  onClose={() => this.setState({ showCreateList: false })}
-                  onFinishAdding={this.onListCreated}
-                />
-              </div>
-            )}
-            {showUpdateList && (
-              <div className="fixed vw-100 top-0 left-0 bg-base">
-                <UpdateList
-                  onClose={() => this.setState({ showUpdateList: false })}
-                  list={lists[listSelected]}
-                  onFinishUpdate={this.onListUpdated}
-                />
-              </div>
-            )}
-            {showListDetails && (
-              <div className="fixed vw-100 top-0 left-0 bg-base">
-                <ListDetails
-                  onClose={() => this.setState({ showListDetails: false })}
-                  listId={lists[listSelected].id}
-                  onDeleted={this.handleDeleteList}
-                />
-              </div>
-            )}
-          </div>
+    return (
+      <Fragment>
+        <div className="vw-100 vh-100 z-4 fixed bg-white top-0">
+          <Header
+            title={intl.formatMessage({ id: 'wishlist-my-lists' })}
+            onClose={onClose}
+            action={() => this.setState({ showCreateList: true })}
+          />
+          {this.renderContent()}
+          {showCreateList && (
+            <div className="fixed vw-100 top-0 bg-base">
+              <CreateList
+                onClose={() => this.setState({ showCreateList: false })}
+                onFinishAdding={this.onListCreated}
+              />
+            </div>
+          )}
+          {showUpdateList && (
+            <div className="fixed vw-100 top-0 left-0 bg-base">
+              <UpdateList
+                onClose={() => this.setState({ showUpdateList: false })}
+                list={lists[listSelected]}
+                onFinishUpdate={this.onListUpdated}
+              />
+            </div>
+          )}
+          {showListDetails && (
+            <div className="fixed vw-100 top-0 left-0 bg-base">
+              <ListDetails
+                onClose={() => this.setState({ showListDetails: false })}
+                listId={lists[listSelected].id}
+                onDeleted={this.handleDeleteList}
+              />
+            </div>
+          )}
+        </div>
 
-        </Fragment>
-      ),
-      document.body
+      </Fragment>
     )
   }
 

@@ -1,4 +1,4 @@
-import React, { Component, Fragment, ReactNode } from 'react'
+import React, { Component, ReactNode } from 'react'
 import { FormattedMessage, InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
 import { Button } from 'vtex.styleguide'
 import Dialog from './index'
@@ -22,7 +22,7 @@ class DialogMessage extends Component<DialogMessageProps & InjectedIntlProps, Di
     const { isLoading } = this.state
     return (
       <Dialog onClose={() => !isLoading && onClose()}>
-        <Fragment>
+        <div className="mv6 mh7">
           <span className="tc c-muted-1 t-small">{message}</span>
           <div className="flex flex-row mt4 justify-center">
             <Button
@@ -44,7 +44,7 @@ class DialogMessage extends Component<DialogMessageProps & InjectedIntlProps, Di
               </Button>
             </div>
           </div>
-        </Fragment>
+        </div>
       </Dialog>
     )
   }

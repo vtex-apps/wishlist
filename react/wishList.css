@@ -5,7 +5,14 @@
 }
 
 .contentContainer {
+}
+
+.contentContainerMobile {
   max-height: 40vh;
+}
+
+.contentContainerDesktop {
+  max-height: 16vh;
 }
 
 .popover {
@@ -18,6 +25,10 @@
 
 .open {
   overflow: hidden;
+}
+
+.formViewDialog {
+  min-width: 480px;
 }
 
 .addToListContent {
