@@ -1,6 +1,6 @@
-import { ApolloClient } from "apollo-client"
+import { ApolloClient } from 'apollo-client'
 import React, { Component } from 'react'
-import { withApollo } from "react-apollo"
+import { withApollo } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
 import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
 import { ExtensionPoint, withRuntimeContext } from 'vtex.render-runtime'
@@ -12,7 +12,7 @@ import { addProductToDefaultList } from './GraphqlClient'
 interface AddProductBtnProps {
   large?: boolean
   product: Product
-  showToast: ({ }) => void
+  showToast: ({}) => void
   client: ApolloClient<any>
   intl: IntlShape
   runtime?: any
@@ -27,7 +27,10 @@ interface AddProductBtnState {
 const ICON_SIZE_SMALL = 16
 const ICON_SIZE_LARGE = 32
 
-class AddProductBtn extends Component<AddProductBtnProps & InjectedIntlProps, AddProductBtnState> {
+class AddProductBtn extends Component<
+  AddProductBtnProps & InjectedIntlProps,
+  AddProductBtnState
+> {
   public state: AddProductBtnState = {}
 
   public render() {
@@ -42,11 +45,11 @@ class AddProductBtn extends Component<AddProductBtnProps & InjectedIntlProps, Ad
           {isLoading ? (
             <Spinner size={17} />
           ) : (
-              <IconHeart
-                width={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
-                height={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
-              />
-            )}
+            <IconHeart
+              width={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
+              height={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
+            />
+          )}
         </div>
         {showContent && (
           <AddToList
@@ -67,19 +70,21 @@ class AddProductBtn extends Component<AddProductBtnProps & InjectedIntlProps, Ad
   }
 
   private handleAddProductSuccess = (): void => {
-    const { runtime: { navigate } } = this.props
-    if (!isMobile) {
-      navigate({ page: 'store.lists' })
-    } else {
-      this.setState({ showContent: true, isLoading: false })
-    }
+    const { showToast, intl } = this.props
+    this.setState({ showContent: isMobile, isLoading: false })
+
+    showToast({
+      message: intl.formatMessage({ id: 'wishlist-product-added-to-list' }),
+    })
   }
 
   private handleAddProductFailed = (error: string): void => {
     const { intl } = this.props
     this.setState({ isLoading: false })
     console.error(error)
-    this.props.showToast({ message: intl.formatMessage({ id: 'wishlist-add-product-fail' }) })
+    this.props.showToast({
+      message: intl.formatMessage({ id: 'wishlist-add-product-fail' }),
+    })
   }
 
   private onAddProductClick = (): void => {
@@ -87,7 +92,11 @@ class AddProductBtn extends Component<AddProductBtnProps & InjectedIntlProps, Ad
     if (!isLoading) {
       const { client, product, intl } = this.props
       this.setState({ isLoading: true })
-      addProductToDefaultList(intl.formatMessage({ id: 'wishlist-default-list-name' }), client, product)
+      addProductToDefaultList(
+        intl.formatMessage({ id: 'wishlist-default-list-name' }),
+        client,
+        product
+      )
         .then(this.handleAddProductSuccess)
         .catch(this.handleAddProductFailed)
     }
@@ -95,7 +104,9 @@ class AddProductBtn extends Component<AddProductBtnProps & InjectedIntlProps, Ad
 
   private onAddToListsFail = (): void => {
     const { showToast, intl } = this.props
-    showToast({ message: intl.formatMessage({ id: 'wishlist-add-product-fail' }) })
+    showToast({
+      message: intl.formatMessage({ id: 'wishlist-add-product-fail' }),
+    })
   }
 
   private onAddToListsSuccess = (): void => {
@@ -108,17 +119,12 @@ class AddProductBtn extends Component<AddProductBtnProps & InjectedIntlProps, Ad
       message: intl.formatMessage({ id: 'wishlist-product-added-to-list' }),
     })
   }
-
 }
 
-export default (
-  withRuntimeContext(
-    injectIntl(
-      withToast(
-        withApollo<AddProductBtnProps & InjectedIntlProps, {}>(
-          AddProductBtn
-        )
-      )
+export default withRuntimeContext(
+  injectIntl(
+    withToast(
+      withApollo<AddProductBtnProps & InjectedIntlProps, {}>(AddProductBtn)
     )
   )
 )
