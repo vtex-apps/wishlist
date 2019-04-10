@@ -1,7 +1,6 @@
 import React from 'react'
 
-export default () => (
-  <div>
-    Hello world!!!
-  </div>
-)
+/**
+ * TODO: Wait for redesign
+ */
+export default () => <div>Check your lists!</div>
