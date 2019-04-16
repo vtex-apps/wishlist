@@ -21,7 +21,6 @@
     "vtex.store-icons": "0.x",
     "vtex.product-summary": "2.x",
     "vtex.product-details": "1.x",
-    "vtex.store-header": "2.x",
     "vtex.store": "2.x"
   }
 }

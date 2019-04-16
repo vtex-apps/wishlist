@@ -110,11 +110,17 @@ class AddProductBtn extends Component<
   }
 
   private onAddToListsSuccess = (): void => {
-    const { showToast, intl } = this.props
+    const { showToast, intl, runtime: { navigate } } = this.props
     showToast({
       action: {
         label: intl.formatMessage({ id: 'wishlist-see-lists' }),
-        onClick: () => this.setState({ showLists: true }),
+        onClick: () => {
+          if (isMobile) {
+            this.setState({ showLists: true })
+          } else {
+            navigate({ page: 'store.lists' })
+          }
+        },
       },
       message: intl.formatMessage({ id: 'wishlist-product-added-to-list' }),
     })

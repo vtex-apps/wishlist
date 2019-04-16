@@ -4,10 +4,10 @@ import { withApollo, WithApolloClient } from 'react-apollo'
 import { InjectedIntlProps, injectIntl } from 'react-intl'
 import { createList } from '../../GraphqlClient'
 import Header from '../Header'
+import FormView from './FormView'
 import ListForm from './ListForm'
 
 import wishlist from '../../wishList.css'
-import FormView from './FormView';
 
 interface CreateListProps {
   onFinishAdding: (list: List) => void
