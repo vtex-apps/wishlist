@@ -1,4 +1,3 @@
 {
-  "product-details > add-to-list-btn#product-details": "add-to-list",
-  "product-summary > add-to-list-btn#product-summary": "add-to-list"
+  "product-details > add-to-list-btn#product-details": "add-to-list"
 }
