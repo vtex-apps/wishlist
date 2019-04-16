@@ -67,12 +67,7 @@ class AddProductBtn extends Component<AddProductBtnProps & InjectedIntlProps, Ad
   }
 
   private handleAddProductSuccess = (): void => {
-    const { runtime: { navigate } } = this.props
-    if (!isMobile) {
-      navigate({ page: 'store.lists' })
-    } else {
-      this.setState({ showContent: true, isLoading: false })
-    }
+    this.setState({ showContent: true, isLoading: false })
   }
 
   private handleAddProductFailed = (error: string): void => {
@@ -99,11 +94,17 @@ class AddProductBtn extends Component<AddProductBtnProps & InjectedIntlProps, Ad
   }
 
   private onAddToListsSuccess = (): void => {
-    const { showToast, intl } = this.props
+    const { showToast, intl, runtime: { navigate } } = this.props
     showToast({
       action: {
         label: intl.formatMessage({ id: 'wishlist-see-lists' }),
-        onClick: () => this.setState({ showLists: true }),
+        onClick: () => {
+          if (isMobile) {
+            this.setState({ showLists: true })
+          } else {
+            navigate({ page: 'store.lists' })
+          }
+        },
       },
       message: intl.formatMessage({ id: 'wishlist-product-added-to-list' }),
     })
