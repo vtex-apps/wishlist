@@ -16,8 +16,8 @@ class Header extends Component<{}, HeaderState> {
     const plusIcon = <IconPlusLines />
 
     return (
-      <div className="w-100 h4 ph8 flex">
-        <ListSelector />
+      <div className="w-100 ph8 flex">
+        {/* <ListSelector /> */}
         <div className="w-100 flex items-end">
         <ButtonWithIcon
           icon={plusIcon}

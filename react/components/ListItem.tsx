@@ -14,7 +14,9 @@ interface ListItemProps {
   list: List
   isDefault: boolean
   isSelected?: boolean
-  showMenuOptions?: boolean,
+  showMenuOptions?: boolean
+  hideAction?: boolean
+  hideBorders?: boolean
   onClick?: (id: number) => void
   onSelected?: (id: number, isSelected?: boolean) => void
   onDeleted?: (listId: string) => Promise<any>
@@ -57,19 +59,24 @@ class ListItem extends Component<ListItemProps & InjectedIntlProps, {}> {
       isSelected,
       isDefault,
       showMenuOptions,
+      hideAction,
+      hideBorders,
       intl,
       onClick,
       onDeleted,
       onSelected,
     } = this.props
     const { showDeleteDialog } = this.state
-    const className = classNames('w-100 bt b--muted-4 flex flex-row pv3 ph4 c-muted-3', {
+    const className = classNames('w-100 flex flex-row pv3 ph4', {
       'bg-muted-5': isDefault,
+      'bt b--muted-4': !hideBorders,
+      'c-emphasis': hideBorders && isSelected,
+      'c-muted-2': !isSelected || !hideBorders,
     })
     return (
       <div className={className}>
         <div
-          className="w-100 flex"
+          className="w-100 flex pointer"
           onClick={() => onClick && onClick(id)}
         >
           <div className="flex items-center ml2">{isPublic ?
@@ -78,9 +85,9 @@ class ListItem extends Component<ListItemProps & InjectedIntlProps, {}> {
             <IconVisibilityOff />
           }
           </div>
-          <span className="w-100 mh4 mv1 c-muted-1">{name}</span>
+          <span className="w-100 mh4 mv1">{name}</span>
         </div>
-        {showMenuOptions ? (
+        {!hideAction && (showMenuOptions ? (
           <MenuOptions options={this.options} />
         ) : (
             !isDefault && (
@@ -91,7 +98,7 @@ class ListItem extends Component<ListItemProps & InjectedIntlProps, {}> {
                 />
               </div>
             )
-          )}
+          ))}
         {showDeleteDialog && (
           <DialogMessage
             message={
