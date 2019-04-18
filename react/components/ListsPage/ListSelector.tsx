@@ -13,7 +13,7 @@ interface ListSelectorProps {
 class ListSelector extends Component<ListSelectorProps, {}> {
   public render(): ReactNode {
     return (
-      <div className="flex flex-column">
+      <div className="flex flex-column w5">
         <div className="bl b--rebel-pink bw2 pa4 b">
           <FormattedMessage
             id="wishlist-my-lists"

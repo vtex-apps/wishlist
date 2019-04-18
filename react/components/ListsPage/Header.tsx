@@ -47,7 +47,7 @@ class Header extends Component<HeaderProps & InjectedIntlProps & WithApolloClien
     const { list, intl } = this.props
 
     return list ? (
-      <div className="w-100 ph8 flex items-center">
+      <div className="w-100 ph6 flex items-center">
         <div className="w-100 t-heading-2">
           {list.name}
         </div>
