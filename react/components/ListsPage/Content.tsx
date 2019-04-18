@@ -9,6 +9,7 @@ interface ContentProps {
   listId: string
   onListCreated: (list: List) => void
   onListUpdated: (list: List) => void
+  onListDeleted: () => void
   client?: ApolloClient<any>
 }
 
@@ -45,6 +46,7 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
           list={{ ...list, id: listId }}
           onListCreated={this.props.onListCreated}
           onListUpdated={this.props.onListUpdated}
+          onListDeleted={this.props.onListDeleted}
         />
       </div>
     )

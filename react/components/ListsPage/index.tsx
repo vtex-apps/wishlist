@@ -1,15 +1,13 @@
 import React, { Component, ReactNode } from 'react'
+import { withRuntimeContext } from 'vtex.render-runtime'
 
 import ApolloClient from 'apollo-client'
-import { concat, map } from 'ramda'
+import { concat, filter, findIndex, map, update } from 'ramda'
 import { withApollo, WithApolloClient } from 'react-apollo'
-import { withRuntimeContext } from 'vtex.render-runtime'
 import { getListsFromLocaleStorage } from '../../GraphqlClient'
 
 import Content from './Content'
 import ListSelector from './ListSelector'
-import findIndex from 'ramda/es/findIndex';
-import update from 'ramda/es/update';
 
 interface ListsPageState {
   lists?: any
@@ -72,6 +70,7 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any>, ListsP
             listId={selectedListId}
             onListCreated={this.onListCreated}
             onListUpdated={this.onListUpdated}
+            onListDeleted={this.onListDeleted}
           />
         </div>
       </div>
@@ -88,6 +87,16 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any>, ListsP
     const index = findIndex((list: List) => list.id === listUpdated.id, lists)
     this.setState({
       lists: update(index, listUpdated, lists),
+    })
+  }
+
+  private onListDeleted = (): void => {
+    const { lists, selectedListId } = this.state
+    const { runtime: { navigate } } = this.props
+    this.setState({ lists: filter((list: List) => list !== selectedListId, lists) })
+    navigate({
+      page: 'store.lists',
+      params: { listId: lists[0].id },
     })
   }
 }

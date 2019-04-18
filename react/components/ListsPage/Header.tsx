@@ -2,13 +2,20 @@ import React, { Component, ReactNode } from 'react'
 import { FormattedMessage, InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
 import { IconPlusLines } from 'vtex.styleguide'
 
+import ApolloClient from 'apollo-client'
+import { withApollo, WithApolloClient } from 'react-apollo'
+
+import DialogMessage from '../Dialog/DialogMessage'
 import CreateList from '../Form/CreateList'
 import UpdateList from '../Form/UpdateList'
 import MenuOptions from '../MenuOptions/MenuOptions'
 
+import { deleteList } from '../../GraphqlClient'
+
 interface HeaderState {
   showcreateList?: boolean
   showUpdateList?: boolean
+  showDeleteConfirmation?: boolean
 }
 
 interface HeaderProps {
@@ -16,11 +23,13 @@ interface HeaderProps {
   intl?: IntlShape
   onListCreated: (list: List) => void
   onListUpdated: (list: List) => void
+  onListDeleted: () => void
+  client?: ApolloClient<any>
 }
 
 const ICONS_SIZE = 20
 
-class Header extends Component<HeaderProps & InjectedIntlProps, HeaderState> {
+class Header extends Component<HeaderProps & InjectedIntlProps & WithApolloClient<any>, HeaderState> {
   public state: HeaderState = {}
   private options: Option[] = [
     {
@@ -28,14 +37,14 @@ class Header extends Component<HeaderProps & InjectedIntlProps, HeaderState> {
       title: this.props.intl.formatMessage({ id: 'wishlist-option-configuration' }),
     },
     {
-      onClick: () => this.setState({}),
+      onClick: () => this.setState({ showDeleteConfirmation: true }),
       title: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
     },
   ]
 
   public render(): ReactNode {
-    const { showcreateList, showUpdateList } = this.state
-    const { list } = this.props
+    const { showcreateList, showUpdateList, showDeleteConfirmation } = this.state
+    const { list, intl } = this.props
 
     return list ? (
       <div className="w-100 ph8 flex items-center">
@@ -75,6 +84,18 @@ class Header extends Component<HeaderProps & InjectedIntlProps, HeaderState> {
           onFinishUpdate={this.onListUpdated}
           />
         )}
+        {showDeleteConfirmation && (
+          <DialogMessage
+          message={
+            intl.formatMessage(
+              { id: 'wishlist-delete-confirmation-message' },
+              { listName: list.name }
+            )
+          }
+          onClose={() => this.setState({ showDeleteConfirmation: false })}
+          onSuccess={this.handleDeleteList}
+        />
+        )}
       </div>
     ) : null
   }
@@ -89,6 +110,17 @@ class Header extends Component<HeaderProps & InjectedIntlProps, HeaderState> {
     this.setState({ showUpdateList: false })
     this.props.onListUpdated(list)
   }
+
+  private handleDeleteList = (): void => {
+    const { client, list } = this.props
+    if (client) {
+      deleteList(client, list.id)
+      .then(() => {
+        this.setState({ showDeleteConfirmation: false })
+        this.props.onListDeleted()
+      })
+    }
+  }
 }
 
-export default injectIntl(Header)
+export default injectIntl(withApollo(Header))
