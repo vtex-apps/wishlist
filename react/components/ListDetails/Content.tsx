@@ -11,7 +11,7 @@ interface ContentProps {
   items: any
   onItemSelect: (itemId: string, product: any, isSelected: boolean) => void
   onItemRemove: (id: string) => Promise<any>
-  intl: IntlShape
+  intl?: IntlShape
   runtime?: any
 }
 
