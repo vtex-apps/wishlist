@@ -43,7 +43,7 @@ class ListSelector extends Component<ListSelectorProps, {}> {
   private handleOnListSelect = (id: number): void => {
     const { runtime: { navigate }, lists } = this.props
     navigate({
-      page: 'store.lists',
+      page: 'store.listsWithId',
       params: { listId: lists[id].id },
     })
   }
