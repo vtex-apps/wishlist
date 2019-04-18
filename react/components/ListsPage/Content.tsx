@@ -1,9 +1,12 @@
 import React, { Component, ReactNode } from 'react'
 
+import { append, filter, map } from 'ramda'
+
 import ApolloClient from 'apollo-client'
 import { withApollo, WithApolloClient } from 'react-apollo'
-import { getListDetailed } from '../../GraphqlClient'
+import { getListDetailed, updateList } from '../../GraphqlClient'
 import ListItems from '../ListDetails/Content'
+import Footer from '../ListDetails/Footer'
 import Header from './Header'
 
 interface ContentProps {
@@ -15,12 +18,15 @@ interface ContentProps {
 }
 
 interface ContentState {
-  list?: List
+  list?: any
+  selectedItems: any
   isLoading?: boolean
 }
 
 class Content extends Component<ContentProps & WithApolloClient<any>, ContentState> {
-  public state: ContentState = {}
+  public state: ContentState = {
+    selectedItems: [],
+  }
   private isComponentMounted = false
 
   public componentWillUnmount(): void {
@@ -39,7 +45,7 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
   }
 
   public render(): ReactNode {
-    const { list } = this.state
+    const { list, selectedItems } = this.state
     const { listId } = this.props
     return (
       <div>
@@ -49,15 +55,46 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
           onListUpdated={this.props.onListUpdated}
           onListDeleted={this.props.onListDeleted}
         />
-        <div className="ba b--muted-1">
+        <div className="ba b--muted-3 pa5 mt6">
           <ListItems
             items={list ? list.items : []}
-            onItemSelect={(itemId: string, product: any, isSelected: boolean) => console.log('hello on item selected')}
-            onItemRemove={(id: string) => console.log('on item removed')}
+            onItemSelect={this.onItemSelect}
+            onItemRemove={this.onItemRemove}
           />
+          {selectedItems.length > 0 && (
+            <Footer items={selectedItems} />
+          )}
         </div>
       </div>
     )
+  }
+
+  private onItemSelect = (itemId: string, product: any, isSelected: boolean): void => {
+    const { selectedItems } = this.state
+    if (isSelected) {
+      this.setState({ selectedItems: append({ itemId, product }, selectedItems) })
+    } else {
+      this.setState({ selectedItems: filter(({ itemId: id }) => id !== itemId, selectedItems) })
+    }
+  }
+
+  private itemWithoutProduct =
+    ({ id, productId, skuId, quantity }: any): any => ({ id, productId, skuId, quantity })
+
+  private onItemRemove = (itemId: string): Promise<any> => {
+    const { client, listId } = this.props
+    const { list, selectedItems } = this.state
+    const listUpdated = { ...list, items: filter(({ id }) => id !== itemId, list ? list.items : []) }
+    const itemsUpdated = map(item => this.itemWithoutProduct(item), listUpdated.items)
+    return updateList(client, listId, { ...list, items: itemsUpdated })
+      .then(() => {
+        if (this.isComponentMounted) {
+          this.setState({
+            list: listUpdated,
+            selectedItems: filter(({ itemId: id }) => id !== itemId, selectedItems),
+          })
+        }
+      })
   }
 
   private fetchListDetails(): void {
