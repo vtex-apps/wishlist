@@ -3,6 +3,7 @@ import React, { Component, ReactNode } from 'react'
 import ApolloClient from 'apollo-client'
 import { withApollo, WithApolloClient } from 'react-apollo'
 import { getListDetailed } from '../../GraphqlClient'
+import ListItems from '../ListDetails/Content'
 import Header from './Header'
 
 interface ContentProps {
@@ -48,6 +49,13 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
           onListUpdated={this.props.onListUpdated}
           onListDeleted={this.props.onListDeleted}
         />
+        <div className="ba b--muted-1">
+          <ListItems
+            items={list ? list.items : []}
+            onItemSelect={(itemId: string, product: any, isSelected: boolean) => console.log('hello on item selected')}
+            onItemRemove={(id: string) => console.log('on item removed')}
+          />
+        </div>
       </div>
     )
   }
