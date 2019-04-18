@@ -7,6 +7,17 @@
     "component": "ListsPage",
     "required": ["product-summary"]
   },
+  "store.listsWithId": {
+    "required": [
+      "lists"
+    ],
+    "before": [
+      "header.full"
+    ],
+    "after": [
+      "footer"
+    ]
+  },
   "store.lists": {
     "required": [
       "lists"

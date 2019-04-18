@@ -1,5 +1,8 @@
 {
-  "store.lists": {
+  "store.listsWithId": {
     "path": "/lists/:listId"
+  },
+  "store.lists": {
+    "path": "/lists/"
   }
 }
