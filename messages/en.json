@@ -28,5 +28,6 @@
   "wishlist-list-updated": "Your list was updated",
   "wishlist-quantity-of-items": "{itemsQuantity} items in this list",
   "wishlist-add-to-cart-success": "Items added to cart",
-  "wishlist-add-to-cart-fail": "Could not add items to cart"
+  "wishlist-add-to-cart-fail": "Could not add items to cart",
+  "wishlist-quantity-products": "{productsQuantity} products"
 }

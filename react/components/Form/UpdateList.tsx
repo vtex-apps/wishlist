@@ -9,6 +9,7 @@ import Header from '../Header'
 import ListForm from './ListForm'
 
 import wishlist from '../../wishList.css'
+import FormView from './FormView'
 
 interface UpdateListProps {
   list: List
@@ -43,19 +44,21 @@ class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApo
     const { onClose, intl, list } = this.props
     const { isLoading } = this.state
     return (
-      <div className={`${wishlist.updateList} vh-100`}>
-        <Header
-          title={intl.formatMessage({ id: 'wishlist-option-configuration' })}
-          onClose={onClose}
-          showIconBack
-        />
-        <ListForm
-          list={list}
-          buttonLabel={intl.formatMessage({ id: 'wishlist-save' })}
-          onSubmit={this.onSubmit}
-          isLoading={isLoading}
-        />
-      </div>
+      <FormView onClose={onClose}>
+        <div className={`${wishlist.updateList}`}>
+          <Header
+            title={intl.formatMessage({ id: 'wishlist-option-configuration' })}
+            onClose={onClose}
+            showIconBack
+          />
+          <ListForm
+            list={list}
+            buttonLabel={intl.formatMessage({ id: 'wishlist-save' })}
+            onSubmit={this.onSubmit}
+            isLoading={isLoading}
+          />
+        </div>
+      </FormView>
     )
   }
 
@@ -66,12 +69,16 @@ class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApo
   private onSubmit = ({ name, isPublic }: List): void => {
     const { client, list: { id, items }, list, showToast, intl } = this.props
     this.setState({ isLoading: true })
+    const bla = {
+      isPublic,
+      items: this.itemsToItemsInput(items),
+      name,
+    }
     if (client) {
       updateList(
         client,
         id || '',
         {
-          ...list,
           isPublic,
           items: this.itemsToItemsInput(items),
           name,
@@ -84,10 +91,7 @@ class UpdateList extends Component<UpdateListProps & InjectedIntlProps & WithApo
           if (showToast) {
             showToast({ message: intl.formatMessage({ id: 'wishlist-list-updated' }) })
           }
-          setTimeout(
-            () => this.props.onFinishUpdate({ ...response.data.updateList, items }),
-            500
-          )
+          this.props.onFinishUpdate({ ...response.data.updateList, items })
         })
         .catch((err: any) => {
           console.error(err)

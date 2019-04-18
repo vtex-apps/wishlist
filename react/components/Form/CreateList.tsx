@@ -2,7 +2,7 @@ import { ApolloClient } from 'apollo-client'
 import React, { Component } from 'react'
 import { withApollo, WithApolloClient } from 'react-apollo'
 import { InjectedIntlProps, injectIntl } from 'react-intl'
-import { createList } from '../../GraphqlClient'
+import { createList, saveListIdInLocalStorage } from '../../GraphqlClient'
 import Header from '../Header'
 import FormView from './FormView'
 import ListForm from './ListForm'
@@ -64,6 +64,7 @@ class CreateList extends Component<CreateListProps & InjectedIntlProps & WithApo
       createList(client, { ...listData, items: [] })
         .then(response => {
           this.props.onFinishAdding(response.data.createList)
+          saveListIdInLocalStorage(response.data.createList.id)
           if (this.isComponentMounted) {
             this.setState({ isLoading: false })
           }
