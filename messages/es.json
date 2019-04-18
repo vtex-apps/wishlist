@@ -28,5 +28,6 @@
   "wishlist-list-updated": "Su lista fue editada",
   "wishlist-quantity-of-items": "{itemsQuantity} elementos en esta lista",
   "wishlist-add-to-cart-success": "Artículos añadidos al carrito",
-  "wishlist-add-to-cart-fail": "No se han agregado elementos al carrito"
+  "wishlist-add-to-cart-fail": "No se han agregado elementos al carrito",
+  "wishlist-quantity-products": "{productsQuantity} productos"
 }

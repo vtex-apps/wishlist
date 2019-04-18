@@ -8,13 +8,10 @@ interface ListSelectorProps {
   lists: any
   selectedListId: string
   runtime?: any
-  onListSelected: (listId: string) => void
 }
 
 class ListSelector extends Component<ListSelectorProps, {}> {
   public render(): ReactNode {
-    console.log('props do list page', this.props)
-
     return (
       <div className="flex flex-column">
         <div className="bl b--rebel-pink bw2 pa4 b">
@@ -29,7 +26,6 @@ class ListSelector extends Component<ListSelectorProps, {}> {
 
   private renderLists = (): ReactNode => {
     const { lists, selectedListId } = this.props
-    console.log('selected list', selectedListId)
     return lists ? lists.map((list: List, index: number) => (
       <ListItem
         key={index}
@@ -45,12 +41,11 @@ class ListSelector extends Component<ListSelectorProps, {}> {
   }
 
   private handleOnListSelect = (id: number): void => {
-    const { runtime: { navigate }, lists, onListSelected } = this.props
+    const { runtime: { navigate }, lists } = this.props
     navigate({
       page: 'store.lists',
       params: { listId: lists[id].id },
     })
-    onListSelected(lists[id].id)
   }
 }
 
