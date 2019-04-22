@@ -1,5 +1,9 @@
 {
-  "add-to-list": {
+  "addon-summary-btn.add-to-list": {
+    "component": "AddProductBtn",
+    "required": ["lists", "product-summary"]
+  },
+  "addon-details-btn.add-to-list": {
     "component": "AddProductBtn",
     "required": ["lists", "product-summary"]
   },
