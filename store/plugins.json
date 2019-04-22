@@ -1,4 +1,4 @@
 {
-  "product-details > add-to-list-btn#product-details": "add-to-list",
-  "product-summary > add-to-list-btn#product-summary": "add-to-list"
+  "product-details > addon-details-btn": "addon-details-btn.add-to-list",
+  "product-summary > addon-summary-btn": "addon-summary-btn.add-to-list"
 }
