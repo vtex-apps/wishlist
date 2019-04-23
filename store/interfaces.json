@@ -12,6 +12,7 @@
     "required": ["product-summary"]
   },
   "store.listsWithId": {
+    "component": "ContainerWrapper",
     "required": [
       "lists"
     ],
@@ -23,6 +24,7 @@
     ]
   },
   "store.lists": {
+    "component": "ContainerWrapper",
     "required": [
       "lists"
     ],

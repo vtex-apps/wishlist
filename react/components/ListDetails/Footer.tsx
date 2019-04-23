@@ -25,11 +25,9 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
     const { items } = this.props
     const totalPrice = this.calculateTotal()
     const itemsToAddToCart = map(this.productShape, items)
-    const className = classNames(`${wishlist.ListDetailsFooter} flex flex-column pa4 bt b--muted-4 w-100 items-end`, {
-      'ph10': !isMobile,
-    })
+    
     return (
-      <div className={className}>
+      <div className={`${wishlist.ListDetailsFooter} flex flex-column pa4 bt b--muted-4 w-100 items-end`}>
         <div className="tr">
           <span className={`${wishlist.quantityOfSelectedItemsLabel} ml2`}>
             <FormattedMessage

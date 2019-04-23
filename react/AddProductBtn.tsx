@@ -7,12 +7,12 @@ import { ExtensionPoint, withRuntimeContext } from 'vtex.render-runtime'
 import { IconHeart } from 'vtex.store-icons'
 import { Spinner, withToast } from 'vtex.styleguide'
 import AddToList from './components/AddToList/index'
-import { addProductToDefaultList } from './GraphqlClient'
+import { addProductToDefaultList, getListsIdFromCookies } from './GraphqlClient'
 
 interface AddProductBtnProps {
   large?: boolean
   product: Product
-  showToast: ({}) => void
+  showToast: ({ }) => void
   client: ApolloClient<any>
   intl: IntlShape
   runtime?: any
@@ -30,7 +30,7 @@ const ICON_SIZE_LARGE = 32
 class AddProductBtn extends Component<
   AddProductBtnProps & InjectedIntlProps,
   AddProductBtnState
-> {
+  > {
   public state: AddProductBtnState = {}
 
   public render() {
@@ -45,11 +45,11 @@ class AddProductBtn extends Component<
           {isLoading ? (
             <Spinner size={17} />
           ) : (
-            <IconHeart
-              width={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
-              height={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
-            />
-          )}
+              <IconHeart
+                width={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
+                height={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
+              />
+            )}
         </div>
         {showContent && (
           <AddToList
@@ -70,10 +70,15 @@ class AddProductBtn extends Component<
   }
 
   private handleAddProductSuccess = (): void => {
-    const { showToast, intl } = this.props
+    // this.setState({ showContent: true, isLoading: false })
+    const { showToast, intl, runtime: { navigate } } = this.props
     this.setState({ showContent: isMobile, isLoading: false })
 
     showToast({
+      action: {
+        label: intl.formatMessage({ id: 'wishlist-see-lists' }),
+        onClick: () => navigate({ page: 'store.lists' }),
+      },
       message: intl.formatMessage({ id: 'wishlist-product-added-to-list' }),
     })
   }

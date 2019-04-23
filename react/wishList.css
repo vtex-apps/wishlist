@@ -1,3 +1,21 @@
+:global(.vtex-store__template) {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.listPageItemsContainer {
+  max-height: 660px;
+}
+
+.listPageItemsContainer2 {
+  max-height: 535px;
+}
+
+.listPage {
+  
+}
+
 .applyButton > button {
   border-radius: 0px;
   padding-bottom: 0.5625em;
@@ -30,6 +48,12 @@
 .formViewDialog {
   min-width: 480px;
 }
+
+.footerDesktop {
+  margin-left: 256px;
+}
+
+.summaryContainer {}
 
 .addToListContent {
 }

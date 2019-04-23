@@ -1,5 +1,6 @@
 import React, { Component, ReactNode } from 'react'
 
+import classNames from 'classnames'
 import { append, filter, map } from 'ramda'
 
 import ApolloClient from 'apollo-client'
@@ -8,6 +9,8 @@ import { getListDetailed, updateList } from '../../GraphqlClient'
 import ListItems from '../ListDetails/Content'
 import Footer from '../ListDetails/Footer'
 import Header from './Header'
+
+import wishlist from '../../wishList.css'
 
 interface ContentProps {
   listId: string
@@ -47,22 +50,34 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
   public render(): ReactNode {
     const { list, selectedItems } = this.state
     const { listId } = this.props
+    const className = classNames('overflow-auto', {
+      [wishlist.listPageItemsContainer]: !selectedItems || selectedItems.length === 0,
+      [wishlist.listPageItemsContainer2]: selectedItems && selectedItems.length > 0,
+    })
+
     return (
-      <div>
+      <div className="h-100 flex flex-column">
         <Header
           list={{ ...list, id: listId }}
           onListCreated={this.props.onListCreated}
           onListUpdated={this.props.onListUpdated}
           onListDeleted={this.props.onListDeleted}
         />
-        <div className="ba b--muted-3 pa5 mt6">
-          <ListItems
-            items={list ? list.items : []}
-            onItemSelect={this.onItemSelect}
-            onItemRemove={this.onItemRemove}
-          />
+        <div className="ba b--muted-3 mt6 h-100 relative">
+          <div className={className}>
+            <ListItems
+              hideItemsQuantityLabel
+              items={list ? list.items : []}
+              onItemSelect={this.onItemSelect}
+              onItemRemove={this.onItemRemove}
+            />
+          </div>
           {selectedItems.length > 0 && (
-            <Footer items={selectedItems} />
+            <div className="absolute bottom-0 left-0 w-100">
+              <div className="ba b--muted-3 bg-base">
+                <Footer items={selectedItems} />
+              </div>
+            </div>
           )}
         </div>
       </div>
