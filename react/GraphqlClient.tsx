@@ -8,7 +8,7 @@ import getListDetailedQuery from './graphql/queries/getListDetails.gql'
 
 const WISHLIST_STORAKE_KEY = 'vtexwishlists'
 
-const getListsIdFromCookies = () => {
+export const getListsIdFromCookies = () => {
   const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
   return (lists && lists.split(',').map((id: string) => id.replace('\"', '').replace('\"', ''))) || []
 }

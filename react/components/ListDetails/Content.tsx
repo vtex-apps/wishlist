@@ -9,6 +9,7 @@ import wishlist from '../../wishList.css'
 
 interface ContentProps {
   items: any
+  hideItemsQuantityLabel?: boolean
   onItemSelect: (itemId: string, product: any, isSelected: boolean) => void
   onItemRemove: (id: string) => Promise<any>
   intl?: IntlShape
@@ -17,20 +18,22 @@ interface ContentProps {
 
 class Content extends Component<ContentProps & InjectedIntlProps, {}> {
   public render(): ReactNode {
-    const { items } = this.props
+    const { items, hideItemsQuantityLabel } = this.props
     return (
       <div className={`${wishlist.listDetailsContent} h-100 overflow-y-auto flex flex-column`}>
         {
           items.length > 0 ? (
             <div>
-              <div className="h3 flex items-center justify-center c-muted-1">
-                <span>
-                  <FormattedMessage
-                  id="wishlist-quantity-of-items"
-                  values={{itemsQuantity: items.length}}
-                  />
-                </span>
-              </div>
+              {!hideItemsQuantityLabel && (
+                <div className="h3 flex items-center justify-center c-muted-1">
+                  <span>
+                    <FormattedMessage
+                      id="wishlist-quantity-of-items"
+                      values={{ itemsQuantity: items.length }}
+                    />
+                  </span>
+                </div>
+              )}
               {this.renderItems()}
             </div>
           )
@@ -47,12 +50,12 @@ class Content extends Component<ContentProps & InjectedIntlProps, {}> {
       to: '/',
     })
   }
-  
+
   private renderListEmpty = (): ReactNode => {
     return (
       <div className={`${wishlist.listEmptyContainer} flex flex-column w-100 h-100 items-center mv8 c-muted-2`}>
         <div className={wishlist.listEmptyLabel}>
-            <FormattedMessage id="wishlist-list-empty" />
+          <FormattedMessage id="wishlist-list-empty" />
         </div>
         <div className={`${wishlist.goToAddProductsButtonContainer} mt8`}>
           <Button variation="primary" onClick={this.redirectToGallery}>

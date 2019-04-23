@@ -4,6 +4,8 @@ import { ExtensionPoint } from 'vtex.render-runtime'
 import { ButtonWithIcon, Checkbox, IconDelete } from 'vtex.styleguide'
 import renderLoading from '../Loading'
 
+import wishlist from '../../wishList.css'
+
 interface ItemDetailsProps {
   item: any
   onItemSelect: (itemId: string, product: any, isSelected: boolean) => void
@@ -53,17 +55,19 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
               />
             )}
         </div>
-        <ExtensionPoint
-          id="product-summary"
-          showBorders
-          product={this.normalizeProduct(product)}
-          displayMode="inlinePrice"
-          showListPrice={false}
-          showBadge={false}
-          showInstallments={false}
-          showLabels={false}
-          showQuantitySelector={false}
-        />
+        <div className={`${wishlist.summaryContainer}`}>
+          <ExtensionPoint
+            id="product-summary"
+            showBorders
+            product={this.normalizeProduct(product)}
+            displayMode="inlinePrice"
+            showListPrice={false}
+            showBadge={false}
+            showInstallments={false}
+            showLabels={false}
+            showQuantitySelector={false}
+          />
+        </div>
       </div>
     )
   }
