@@ -63,7 +63,7 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
           onListUpdated={this.props.onListUpdated}
           onListDeleted={this.props.onListDeleted}
         />
-        <div className="ba b--muted-3 mt6 h-100 relative">
+        <div className="ba b--muted-4 mt6 h-100 relative">
           <div className={className}>
             <ListItems
               hideItemsQuantityLabel
@@ -74,7 +74,7 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
           </div>
           {selectedItems.length > 0 && (
             <div className="absolute bottom-0 left-0 w-100">
-              <div className="ba b--muted-3 bg-base">
+              <div className="bg-base">
                 <Footer items={selectedItems} />
               </div>
             </div>

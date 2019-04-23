@@ -70,14 +70,14 @@ class AddProductBtn extends Component<
   }
 
   private handleAddProductSuccess = (): void => {
-    // this.setState({ showContent: true, isLoading: false })
+    const listId = getListsIdFromCookies()[0]
     const { showToast, intl, runtime: { navigate } } = this.props
     this.setState({ showContent: isMobile, isLoading: false })
 
     showToast({
       action: {
         label: intl.formatMessage({ id: 'wishlist-see-lists' }),
-        onClick: () => navigate({ page: 'store.lists' }),
+        onClick: () => navigate({ page: 'store.listsWithId', params: { listId } }),
       },
       message: intl.formatMessage({ id: 'wishlist-product-added-to-list' }),
     })
