@@ -4,7 +4,11 @@ import { withRuntimeContext } from 'vtex.render-runtime'
 import ApolloClient from 'apollo-client'
 import { concat, filter, findIndex, map, update } from 'ramda'
 import { withApollo, WithApolloClient } from 'react-apollo'
-import { createList, getListsFromLocaleStorage, saveListIdInLocalStorage } from '../../GraphqlClient'
+import {
+  createList,
+  getListsFromLocaleStorage,
+  saveListIdInLocalStorage,
+} from '../../GraphqlClient'
 
 import Content from './Content'
 import ListSelector from './ListSelector'
@@ -57,11 +61,11 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any>, ListsP
   }
 
   public render(): ReactNode {
-    const { selectedListId: id, lists } = this.state
+    const { selectedListId: id, lists, isLoading } = this.state
     const selectedListId = id || (lists && lists.length > 0 && lists[0].id)
-    return (
-      <div className={`${wishlist.listPage} flex flex-row ph10 pv8 h-100`}>
-        <div>
+    return isLoading ? null : (
+      <div className={`${wishlist.listPage} flex flex-row mt6 ph10 pv8 h-100`}>
+        <div className="h-100 mr6">
           <ListSelector {...this.state} selectedListId={selectedListId} />
         </div>
         <div className="w-100">

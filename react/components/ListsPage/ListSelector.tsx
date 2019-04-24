@@ -13,13 +13,15 @@ interface ListSelectorProps {
 class ListSelector extends Component<ListSelectorProps, {}> {
   public render(): ReactNode {
     return (
-      <div className="flex flex-column w5">
+      <div className="flex flex-column w5 h-100">
         <div className="bl b--rebel-pink bw2 pa4 b">
           <FormattedMessage
             id="wishlist-my-lists"
           />
         </div>
-        {this.renderLists()}
+        <div className="h-100 overflow-auto">
+          {this.renderLists()}
+        </div>
       </div>
     )
   }
