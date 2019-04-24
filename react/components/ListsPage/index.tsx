@@ -1,5 +1,6 @@
-import React, { Component, ReactNode } from 'react'
+import React, { Component, Fragment, ReactNode } from 'react'
 import { withRuntimeContext } from 'vtex.render-runtime'
+import { Spinner } from 'vtex.styleguide'
 
 import ApolloClient from 'apollo-client'
 import { concat, filter, findIndex, map, update } from 'ramda'
@@ -27,7 +28,9 @@ interface ListsPageProps {
 }
 
 class ListsPage extends Component<ListsPageProps & WithApolloClient<any>, ListsPageState> {
-  public state: ListsPageState = {}
+  public state: ListsPageState = {
+    isLoading: true,
+  }
   private isComponentMounted: boolean = false
 
   public componentWillUnmount(): void {
@@ -63,19 +66,28 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any>, ListsP
   public render(): ReactNode {
     const { selectedListId: id, lists, isLoading } = this.state
     const selectedListId = id || (lists && lists.length > 0 && lists[0].id)
-    return isLoading ? null : (
+    return (
       <div className={`${wishlist.listPage} flex flex-row mt6 ph10 pv8 h-100`}>
-        <div className="h-100 mr6">
-          <ListSelector {...this.state} selectedListId={selectedListId} />
-        </div>
-        <div className="w-100">
-          <Content
-            listId={selectedListId}
-            onListCreated={this.onListCreated}
-            onListUpdated={this.onListUpdated}
-            onListDeleted={this.onListDeleted}
-          />
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center w-100">
+            <Spinner />
+          </div>
+        ) : (
+            <Fragment>
+              <div className="h-100 mr6">
+                <ListSelector {...this.state} selectedListId={selectedListId} />
+              </div>
+              <div className="w-100">
+                <Content
+                  listId={selectedListId}
+                  onListCreated={this.onListCreated}
+                  onListUpdated={this.onListUpdated}
+                  onListDeleted={this.onListDeleted}
+                />
+              </div>
+            </Fragment>
+          )
+        }
       </div>
     )
   }
