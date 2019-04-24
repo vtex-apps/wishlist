@@ -1,7 +1,8 @@
-import React, { Component, ReactNode } from 'react'
+import React, { Component, Fragment, ReactNode } from 'react'
 
 import classNames from 'classnames'
 import { append, filter, map } from 'ramda'
+import { Spinner } from 'vtex.styleguide'
 
 import ApolloClient from 'apollo-client'
 import { withApollo, WithApolloClient } from 'react-apollo'
@@ -28,6 +29,7 @@ interface ContentState {
 
 class Content extends Component<ContentProps & WithApolloClient<any>, ContentState> {
   public state: ContentState = {
+    isLoading: true,
     selectedItems: [],
   }
   private isComponentMounted = false
@@ -48,41 +50,50 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
   }
 
   public render(): ReactNode {
-    const { list, selectedItems } = this.state
+    const { list, selectedItems, isLoading } = this.state
     const { listId } = this.props
     const className = classNames('ba b--muted-4 mt6 h-90 relative overflow-auto', {
       'pb10': selectedItems && selectedItems.length > 0,
     })
-    const isDefault = getListsIdFromCookies()[0] === listId
+    const isDefault = window.localStorage ? getListsIdFromCookies()[0] === listId : true
 
     return (
       <div className="h-100 flex flex-column">
-        <Header
-          isDefault={isDefault}
-          list={{ ...list, id: listId }}
-          onListCreated={this.props.onListCreated}
-          onListUpdated={this.props.onListUpdated}
-          onListDeleted={this.props.onListDeleted}
-        />
-        <div className={className}>
-          <div className={`${wishlist.listPageItemsContainer} overflow-auto`}>
-            <div>
-              <ListItems
-                hideItemsQuantityLabel
-                items={list ? list.items : []}
-                onItemSelect={this.onItemSelect}
-                onItemRemove={this.onItemRemove}
-              />
-            </div>
+        {isLoading ? (
+          <div className="flex justify-center w-100">
+            <Spinner />
           </div>
-          {selectedItems.length > 0 && (
-            <div className="absolute bottom-0 left-0 w-100">
-              <div className="bg-base">
-                <Footer items={selectedItems} />
+        ) : (
+            <Fragment>
+              <Header
+                isDefault={isDefault}
+                list={{ ...list, id: listId }}
+                onListCreated={this.props.onListCreated}
+                onListUpdated={this.props.onListUpdated}
+                onListDeleted={this.props.onListDeleted}
+              />
+              <div className={className}>
+                <div className={`${wishlist.listPageItemsContainer} overflow-auto`}>
+                  <div className="w-100">
+                    <ListItems
+                      hideItemsQuantityLabel
+                      items={list ? list.items : []}
+                      onItemSelect={this.onItemSelect}
+                      onItemRemove={this.onItemRemove}
+                    />
+                  </div>
+                </div>
+                {selectedItems.length > 0 && (
+                  <div className="absolute bottom-0 left-0 w-100">
+                    <div className="bg-base">
+                      <Footer items={selectedItems} />
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
-          )}
-        </div>
+            </Fragment>
+          )
+        }
       </div>
     )
   }
