@@ -5,7 +5,7 @@ import { append, filter, map } from 'ramda'
 
 import ApolloClient from 'apollo-client'
 import { withApollo, WithApolloClient } from 'react-apollo'
-import { getListDetailed, updateList } from '../../GraphqlClient'
+import { getListDetailed, getListsIdFromCookies, updateList } from '../../GraphqlClient'
 import ListItems from '../ListDetails/Content'
 import Footer from '../ListDetails/Footer'
 import Header from './Header'
@@ -50,27 +50,30 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
   public render(): ReactNode {
     const { list, selectedItems } = this.state
     const { listId } = this.props
-    const className = classNames('overflow-auto', {
-      [wishlist.listPageItemsContainer]: !selectedItems || selectedItems.length === 0,
-      [wishlist.listPageItemsContainer2]: selectedItems && selectedItems.length > 0,
+    const className = classNames('ba b--muted-4 mt6 h-90 relative overflow-auto', {
+      'pb10': selectedItems && selectedItems.length > 0,
     })
+    const isDefault = getListsIdFromCookies()[0] === listId
 
     return (
       <div className="h-100 flex flex-column">
         <Header
+          isDefault={isDefault}
           list={{ ...list, id: listId }}
           onListCreated={this.props.onListCreated}
           onListUpdated={this.props.onListUpdated}
           onListDeleted={this.props.onListDeleted}
         />
-        <div className="ba b--muted-4 mt6 h-100 relative">
-          <div className={className}>
-            <ListItems
-              hideItemsQuantityLabel
-              items={list ? list.items : []}
-              onItemSelect={this.onItemSelect}
-              onItemRemove={this.onItemRemove}
-            />
+        <div className={className}>
+          <div className={`${wishlist.listPageItemsContainer} overflow-auto`}>
+            <div>
+              <ListItems
+                hideItemsQuantityLabel
+                items={list ? list.items : []}
+                onItemSelect={this.onItemSelect}
+                onItemRemove={this.onItemRemove}
+              />
+            </div>
           </div>
           {selectedItems.length > 0 && (
             <div className="absolute bottom-0 left-0 w-100">

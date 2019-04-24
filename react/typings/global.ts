@@ -24,5 +24,6 @@ interface List {
 interface Option {
   title: string
   onClick: (params?: any) => void
+  disabled?: boolean
 }
 

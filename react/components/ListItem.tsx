@@ -33,10 +33,12 @@ class ListItem extends Component<ListItemProps & InjectedIntlProps, {}> {
 
   private options: Option[] = [
     {
+      disabled: this.props.isDefault,
       onClick: () => this.props.onUpdated && this.props.onUpdated(this.props.id),
       title: this.props.intl.formatMessage({ id: 'wishlist-option-configuration' }),
     },
     {
+      disabled: this.props.isDefault,
       onClick: () => this.setState({ showDeleteDialog: true }),
       title: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
     },
