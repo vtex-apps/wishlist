@@ -55,7 +55,7 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
               />
             )}
         </div>
-        <div className={`${wishlist.summaryContainer}`}>
+        <div className={`${wishlist.summaryContainer} h4`}>
           <ExtensionPoint
             id="product-summary"
             showBorders
@@ -66,6 +66,7 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
             showInstallments={false}
             showLabels={false}
             showQuantitySelector={false}
+            priceAlignLeft
           />
         </div>
       </div>
