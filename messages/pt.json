@@ -29,5 +29,8 @@
   "wishlist-quantity-of-items": "{itemsQuantity} items nesta lista",
   "wishlist-add-to-cart-success": "Itens adicionados ao carrinho",
   "wishlist-add-to-cart-fail": "Itens não foram adicionados ao carrinho",
-  "wishlist-quantity-products": "{productsQuantity} produtos"
+  "wishlist-quantity-products": "{productsQuantity} produtos",
+  "wishlist-copy-to": "Copiar para",
+  "wishlist-copied": "Item copiado para {listName}",
+  "wishlist-see": "Ver"
 }

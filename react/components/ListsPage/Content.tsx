@@ -1,7 +1,7 @@
 import React, { Component, Fragment, ReactNode } from 'react'
 
 import classNames from 'classnames'
-import { append, filter, map } from 'ramda'
+import { append, filter, map, tail } from 'ramda'
 import { Spinner } from 'vtex.styleguide'
 
 import ApolloClient from 'apollo-client'
@@ -15,6 +15,7 @@ import wishlist from '../../wishList.css'
 
 interface ContentProps {
   listId: string
+  lists?: any
   onListCreated: (list: List) => void
   onListUpdated: (list: List) => void
   onListDeleted: () => void
@@ -51,10 +52,11 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
 
   public render(): ReactNode {
     const { list, selectedItems, isLoading } = this.state
-    const { listId } = this.props
-    const className = classNames('ba b--muted-4 mt6 h-90 relative overflow-auto w-100', {
+    const { listId, lists } = this.props
+    const className = classNames('ba b--muted-4 mt6 relative overflow-auto w-100 h-100', {
       'pb10': selectedItems && selectedItems.length > 0,
     })
+    const listsAsOptions = filter((e: any) => e.id !== listId, tail(lists))
 
     return (
       <div className="h-100 flex flex-column">
@@ -74,6 +76,7 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
                 <div className={`${wishlist.listPageItemsContainer} overflow-auto w-100`}>
                   <div className="w-100">
                     <ListItems
+                      lists={listsAsOptions}
                       hideItemsQuantityLabel
                       items={list ? list.items : []}
                       onItemSelect={this.onItemSelect}
