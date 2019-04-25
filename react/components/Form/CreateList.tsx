@@ -61,7 +61,7 @@ class CreateList extends Component<CreateListProps & InjectedIntlProps & WithApo
     const { client } = this.props
     this.setState({ isLoading: true })
     if (client) {
-      createList(client, { ...listData, items: [] })
+      createList(client, { ...listData, items: [], isEditable: true })
         .then(response => {
           this.props.onFinishAdding(response.data.createList)
           saveListIdInLocalStorage(response.data.createList.id)

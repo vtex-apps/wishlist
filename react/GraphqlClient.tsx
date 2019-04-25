@@ -71,6 +71,7 @@ export const addProductToDefaultList = (listName: any, client: ApolloClient<any>
     })
   }
   return createList(client, {
+    isEditable: false,
     items: [product],
     name: listName,
   }).then((response: any) =>
