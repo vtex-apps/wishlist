@@ -16,6 +16,8 @@ import ListSelector from './ListSelector'
 
 import wishlist from '../../wishList.css'
 
+const ON_LISTS_PAGE_CLASS = 'vtex-lists-page'
+
 interface ListsPageState {
   lists?: any
   selectedListId?: string
@@ -35,6 +37,7 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any>, ListsP
 
   public componentWillUnmount(): void {
     this.isComponentMounted = false
+    document.body.classList.remove(ON_LISTS_PAGE_CLASS)
   }
 
   public componentDidUpdate(prevProps: any): void {
@@ -59,6 +62,7 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any>, ListsP
   }
 
   public componentDidMount(): void {
+    document.body.classList.add(ON_LISTS_PAGE_CLASS)
     this.isComponentMounted = true
     this.fetchLists()
   }

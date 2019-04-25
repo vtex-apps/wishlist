@@ -138,7 +138,7 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
                   showMenuOptions
                   onDeleted={this.handleDeleteList}
                   onUpdated={this.handleUpdateList}
-                />
+                /> 
               ))}
             </div>
           ) : (

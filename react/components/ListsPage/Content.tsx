@@ -52,10 +52,9 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
   public render(): ReactNode {
     const { list, selectedItems, isLoading } = this.state
     const { listId } = this.props
-    const className = classNames('ba b--muted-4 mt6 h-90 relative overflow-auto', {
+    const className = classNames('ba b--muted-4 mt6 h-90 relative overflow-auto w-100', {
       'pb10': selectedItems && selectedItems.length > 0,
     })
-    const isDefault = window.localStorage ? getListsIdFromCookies()[0] === listId : true
 
     return (
       <div className="h-100 flex flex-column">
@@ -66,14 +65,13 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
         ) : (
             <Fragment>
               <Header
-                isDefault={isDefault}
                 list={{ ...list, id: listId }}
                 onListCreated={this.props.onListCreated}
                 onListUpdated={this.props.onListUpdated}
                 onListDeleted={this.props.onListDeleted}
               />
               <div className={className}>
-                <div className={`${wishlist.listPageItemsContainer} overflow-auto`}>
+                <div className={`${wishlist.listPageItemsContainer} overflow-auto w-100`}>
                   <div className="w-100">
                     <ListItems
                       hideItemsQuantityLabel
