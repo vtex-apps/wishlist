@@ -34,12 +34,10 @@ class Header extends Component<HeaderProps & InjectedIntlProps & WithApolloClien
   public state: HeaderState = {}
   private options: Option[] = [
     {
-      disabled: this.props.isDefault,
       onClick: () => this.setState({ showUpdateList: true }),
       title: this.props.intl.formatMessage({ id: 'wishlist-option-configuration' }),
     },
     {
-      disabled: this.props.isDefault,
       onClick: () => this.setState({ showDeleteConfirmation: true }),
       title: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
     },
