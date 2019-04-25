@@ -3,6 +3,7 @@ query getList($id: ID){
     id
     name
     isPublic
+    isEditable
     owner
     items {
       id

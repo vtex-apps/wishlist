@@ -130,14 +130,15 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any>, ListsP
           const lists = map(item => item.data.list, response)
           if (this.isComponentMounted) {
             if (lists.length === 0) {
-              createList(client, { name: 'all items', items: [] }).then((r: any) => {
-                this.setState({
-                  isLoading: false,
-                  lists: [r.data.createList],
-                  selectedListId: r.data.createList.id,
+              createList(client, { name: 'all items', items: [], isEditable: false })
+                .then((r: any) => {
+                  this.setState({
+                    isLoading: false,
+                    lists: [r.data.createList],
+                    selectedListId: r.data.createList.id,
+                  })
+                  saveListIdInLocalStorage(r.data.createList.id)
                 })
-                saveListIdInLocalStorage(r.data.createList.id)
-              })
             } else {
               this.setState({ isLoading: false, lists, selectedListId: params.listId })
             }
