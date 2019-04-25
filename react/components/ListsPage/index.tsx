@@ -84,6 +84,7 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any>, ListsP
               <div className="w-100">
                 <Content
                   listId={selectedListId}
+                  lists={lists}
                   onListCreated={this.onListCreated}
                   onListUpdated={this.onListUpdated}
                   onListDeleted={this.onListDeleted}

@@ -9,6 +9,7 @@ import wishlist from '../../wishList.css'
 
 interface ContentProps {
   items: any
+  lists?: any
   hideItemsQuantityLabel?: boolean
   onItemSelect: (itemId: string, product: any, isSelected: boolean) => void
   onItemRemove: (id: string) => Promise<any>
@@ -67,11 +68,11 @@ class Content extends Component<ContentProps & InjectedIntlProps, {}> {
   }
 
   private renderItems = (): ReactNode => {
-    const { items } = this.props
+    const { items, lists } = this.props
     return (
       <Fragment>
         {map(item => (
-          <ItemDetails {...this.props} item={item} key={item.id} />
+          <ItemDetails {...this.props} item={item} lists={lists} key={item.id} />
         ), items)}
       </Fragment>
     )
