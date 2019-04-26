@@ -73,7 +73,7 @@ class ItemDetails extends Component<ItemDetailsProps & WithApolloClient<any> & I
               />
             )}
           <div className="mt2 mr3">
-            {isCopying ? (
+            {lists && (isCopying ? (
               renderLoading()
             ) : (
                 <Dropdown
@@ -84,7 +84,7 @@ class ItemDetails extends Component<ItemDetailsProps & WithApolloClient<any> & I
                   disabled={!(lists && lists.length > 0)}
                   onChange={(_: any, value: any) => this.copyProductToList(value)}
                 />
-              )}
+              ))}
           </div>
         </div>
         <div className={`${wishlist.summaryContainer} h4 bb b--muted-4`}>

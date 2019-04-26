@@ -5,6 +5,8 @@ import { Spinner } from 'vtex.styleguide'
 import ApolloClient from 'apollo-client'
 import { concat, filter, findIndex, map, update } from 'ramda'
 import { withApollo, WithApolloClient } from 'react-apollo'
+import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+
 import {
   createList,
   getListsFromLocaleStorage,
@@ -27,9 +29,10 @@ interface ListsPageState {
 interface ListsPageProps {
   client: ApolloClient<any>
   runtime: any
+  intl: IntlShape
 }
 
-class ListsPage extends Component<ListsPageProps & WithApolloClient<any>, ListsPageState> {
+class ListsPage extends Component<ListsPageProps & WithApolloClient<any> & InjectedIntlProps, ListsPageState> {
   public state: ListsPageState = {
     isLoading: true,
   }
@@ -122,7 +125,7 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any>, ListsP
   }
 
   private fetchLists = (): void => {
-    const { client, runtime: { route: { params } } } = this.props
+    const { client, runtime: { route: { params } }, intl } = this.props
 
     if (client) {
       getListsFromLocaleStorage(client)
@@ -130,7 +133,11 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any>, ListsP
           const lists = map(item => item.data.list, response)
           if (this.isComponentMounted) {
             if (lists.length === 0) {
-              createList(client, { name: 'all items', items: [], isEditable: false })
+              createList(client, {
+                isEditable: false,
+                items: [],
+                name: intl.formatMessage({ id: 'wishlist-default-list-name' }),
+              })
                 .then((r: any) => {
                   this.setState({
                     isLoading: false,
@@ -155,4 +162,4 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any>, ListsP
   }
 }
 
-export default withRuntimeContext(withApollo(ListsPage))
+export default injectIntl(withRuntimeContext(withApollo(ListsPage)))
