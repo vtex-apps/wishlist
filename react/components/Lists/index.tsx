@@ -8,8 +8,7 @@ import { injectIntl, IntlShape } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import {
   deleteList,
-  getListsFromLocaleStorage,
-  saveListIdInLocalStorage
+  getListsFromLocaleStorage
 } from '../../GraphqlClient'
 
 import CreateList from '../Form/CreateList'
@@ -175,7 +174,6 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
 
   private onListCreated = (list: any): void => {
     const { lists } = this.state
-    saveListIdInLocalStorage(list.id)
     this.setState({ showCreateList: false, lists: append(list, lists) })
   }
 

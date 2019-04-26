@@ -5,7 +5,7 @@ import React, { Component, ReactNode } from 'react'
 import { withApollo, WithApolloClient } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
 import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
-import { getListsFromLocaleStorage, saveListIdInLocalStorage, updateList } from '../../GraphqlClient'
+import { getListsFromLocaleStorage, updateList } from '../../GraphqlClient'
 import CreateList from '../Form/CreateList'
 import Header from '../Header'
 import ListDetails from '../ListDetails'
@@ -108,7 +108,6 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
 
   private onListCreated = (list: any): void => {
     const { lists } = this.state
-    saveListIdInLocalStorage(list.id)
     this.setState({ showCreateList: false, lists: append(list, lists) })
   }
 
