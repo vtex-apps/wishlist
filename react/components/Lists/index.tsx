@@ -18,6 +18,7 @@ import Header from '../Header'
 import ListDetails from '../ListDetails/index'
 import ListItem from '../ListItem'
 import renderLoading from '../Loading'
+import Screen from '../Screen'
 
 import wishlist from '../../wishList.css'
 
@@ -79,45 +80,48 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
       lists,
     } = this.state
     const { onClose, intl } = this.props
+    console.log('Waaaaaaza')
     if (!show) { return null }
-    return (
-      <Fragment>
-        <div className="vw-100 vh-100 z-4 fixed bg-white top-0">
-          <Header
-            title={intl.formatMessage({ id: 'wishlist-my-lists' })}
-            onClose={onClose}
-            action={() => this.setState({ showCreateList: true })}
-          />
-          {this.renderContent()}
-          {showCreateList && (
-            <div className="fixed vw-100 top-0 bg-base">
-              <CreateList
-                onClose={() => this.setState({ showCreateList: false })}
-                onFinishAdding={this.onListCreated}
-              />
-            </div>
-          )}
-          {showUpdateList && (
-            <div className="fixed vw-100 top-0 left-0 bg-base">
-              <UpdateList
-                onClose={() => this.setState({ showUpdateList: false })}
-                list={lists[listSelected]}
-                onFinishUpdate={this.onListUpdated}
-              />
-            </div>
-          )}
-          {showListDetails && (
-            <div className="fixed vw-100 top-0 left-0 bg-base">
-              <ListDetails
-                onClose={() => this.setState({ showListDetails: false })}
-                listId={lists[listSelected].id}
-                onDeleted={this.handleDeleteList}
-              />
-            </div>
-          )}
-        </div>
-
-      </Fragment>
+    console.log('Hello')
+    return createPortal(
+      <Screen>
+        <Header
+          title={intl.formatMessage({ id: 'wishlist-my-lists' })}
+          onClose={onClose}
+          action={() => this.setState({ showCreateList: true })}
+        />
+        {this.renderContent()}
+        {showCreateList && (
+          <div className="fixed vw-100 top-0 bg-base">
+            <CreateList
+              onClose={() => this.setState({ showCreateList: false })}
+              onFinishAdding={this.onListCreated}
+            />
+          </div>
+        )
+        }
+        {showUpdateList && (
+          <Screen>
+            <UpdateList
+              onClose={() => this.setState({ showUpdateList: false })}
+              list={lists[listSelected]}
+              onFinishUpdate={this.onListUpdated}
+            />
+          </Screen>
+        )
+        }
+        {showListDetails && (
+          <div className="fixed vw-100 top-0 left-0 bg-base">
+            <ListDetails
+              onClose={() => this.setState({ showListDetails: false })}
+              listId={lists[listSelected].id}
+              onDeleted={this.handleDeleteList}
+            />
+          </div>
+        )
+        }
+      </Screen>,
+      document.body
     )
   }
 
@@ -138,7 +142,7 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
                   showMenuOptions
                   onDeleted={this.handleDeleteList}
                   onUpdated={this.handleUpdateList}
-                /> 
+                />
               ))}
             </div>
           ) : (
