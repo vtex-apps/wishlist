@@ -1,4 +1,5 @@
 import React, { Component, ReactNode } from 'react'
+import { isMobile } from 'react-device-detect'
 import { IconCaretLeft, IconClose, IconPlusLines } from 'vtex.styleguide'
 
 interface HeaderProps {
@@ -15,7 +16,7 @@ class Header extends Component<HeaderProps, {}> {
     return (
       <div className="flex flex-row pa4 items-center bb bt b--muted-4">
         <div className="flex items-center pointer" onClick={onClose}>
-          {showIconBack ? (
+          {(showIconBack && isMobile) ? (
             <IconCaretLeft size={20} />
           ) : (
               <IconClose size={23} />
