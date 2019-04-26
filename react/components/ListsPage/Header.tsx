@@ -62,15 +62,19 @@ class Header extends Component<HeaderProps & InjectedIntlProps & WithApolloClien
             </span>
           </div>
           <div
-            className="pointer c-on-base mh5"
+            className="pointer c-on-base ml5"
             onClick={() => this.setState({ showcreateList: true })}
           >
             <IconPlusLines size={ICONS_SIZE} />
           </div>
-          <MenuOptions
-            options={this.options}
-            size={ICONS_SIZE}
-          />
+          {list.isEditable && (
+            <div className="ml5">
+              <MenuOptions
+              options={this.options}
+              size={ICONS_SIZE}
+            />
+            </div>
+          )}
         </div>
         {showcreateList && (
           <CreateList
@@ -80,22 +84,22 @@ class Header extends Component<HeaderProps & InjectedIntlProps & WithApolloClien
         )}
         {showUpdateList && (
           <UpdateList
-          list={list}
-          onClose={() => this.setState({ showUpdateList: false })}
-          onFinishUpdate={this.onListUpdated}
+            list={list}
+            onClose={() => this.setState({ showUpdateList: false })}
+            onFinishUpdate={this.onListUpdated}
           />
         )}
         {showDeleteConfirmation && (
           <DialogMessage
-          message={
-            intl.formatMessage(
-              { id: 'wishlist-delete-confirmation-message' },
-              { listName: list.name }
-            )
-          }
-          onClose={() => this.setState({ showDeleteConfirmation: false })}
-          onSuccess={this.handleDeleteList}
-        />
+            message={
+              intl.formatMessage(
+                { id: 'wishlist-delete-confirmation-message' },
+                { listName: list.name }
+              )
+            }
+            onClose={() => this.setState({ showDeleteConfirmation: false })}
+            onSuccess={this.handleDeleteList}
+          />
         )}
       </div>
     ) : null
@@ -116,10 +120,10 @@ class Header extends Component<HeaderProps & InjectedIntlProps & WithApolloClien
     const { client, list } = this.props
     if (client) {
       deleteList(client, list.id)
-      .then(() => {
-        this.setState({ showDeleteConfirmation: false })
-        this.props.onListDeleted()
-      })
+        .then(() => {
+          this.setState({ showDeleteConfirmation: false })
+          this.props.onListDeleted()
+        })
     }
   }
 }
