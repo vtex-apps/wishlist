@@ -7,6 +7,8 @@ import { ExtensionPoint, withRuntimeContext } from 'vtex.render-runtime'
 import { IconHeart } from 'vtex.store-icons'
 import { Spinner, withToast } from 'vtex.styleguide'
 import AddToList from './components/AddToList/index'
+import MyLists from './MyLists'
+
 import { addProductToDefaultList, getListsIdFromCookies } from './GraphqlClient'
 
 interface AddProductBtnProps {
@@ -60,10 +62,7 @@ class AddProductBtn extends Component<
           />
         )}
         {showLists && (
-          <ExtensionPoint
-            id="my-lists"
-            onClose={() => this.setState({ showLists: false })}
-          />
+          <MyLists onClose={() => this.setState({ showLists: false })} />
         )}
       </div>
     )
@@ -74,13 +73,15 @@ class AddProductBtn extends Component<
     const { showToast, intl, runtime: { navigate } } = this.props
     this.setState({ showContent: isMobile, isLoading: false })
 
-    showToast({
-      action: {
-        label: intl.formatMessage({ id: 'wishlist-see-lists' }),
-        onClick: () => navigate({ page: 'store.listsWithId', params: { listId } }),
-      },
-      message: intl.formatMessage({ id: 'wishlist-product-added-to-list' }),
-    })
+    if (!isMobile) {
+      showToast({
+        action: {
+          label: intl.formatMessage({ id: 'wishlist-see-lists' }),
+          onClick: () => navigate({ page: 'store.listsWithId', params: { listId } }),
+        },
+        message: intl.formatMessage({ id: 'wishlist-product-added-to-list' }),
+      })
+    }
   }
 
   private handleAddProductFailed = (error: string): void => {
