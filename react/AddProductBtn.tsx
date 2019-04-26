@@ -69,7 +69,7 @@ class AddProductBtn extends Component<
   }
 
   private handleAddProductSuccess = (): void => {
-    const listId = getListsIdFromCookies()[0]
+    const [listId] = getListsIdFromCookies()
     const { showToast, intl, runtime: { navigate } } = this.props
     this.setState({ showContent: isMobile, isLoading: false })
 
