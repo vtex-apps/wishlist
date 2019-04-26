@@ -1,4 +1,4 @@
-:global(.vtex-lists-page .vtex-store__template) {
+:global(.vtex-lists-page) :global(.vtex-store__template) {
   height: 100vh;
   display: flex;
   flex-direction: column;
