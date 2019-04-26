@@ -43,24 +43,22 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any> & Injec
     document.body.classList.remove(ON_LISTS_PAGE_CLASS)
   }
 
-  public componentDidUpdate(prevProps: any): void {
-    if (this.props !== prevProps) {
-      const { runtime: { route: { params } }, client } = this.props
-      if (client) {
-        getListsFromLocaleStorage(client)
-          .then((response: any) => {
-            const lists = map(item => item.data.list, response)
-            if (this.isComponentMounted) {
-              this.setState({ isLoading: false, lists })
-            }
-          })
-          .catch(() => {
-            if (this.isComponentMounted) {
-              this.setState({ isLoading: false })
-            }
-          })
-      }
+  public componentDidUpdate(prevProps: ListsPageProps): void {
+    const { runtime: { route: { params } }, client } = this.props
+    if (client && prevProps.runtime.route.params.listId !== params.listId) {
       this.setState({ selectedListId: params.listId })
+      getListsFromLocaleStorage(client)
+        .then((response: any) => {
+          const lists = map(item => item.data.list, response)
+          if (this.isComponentMounted) {
+            this.setState({ isLoading: false, lists })
+          }
+        })
+        .catch(() => {
+          if (this.isComponentMounted) {
+            this.setState({ isLoading: false })
+          }
+        })
     }
   }
 
@@ -82,7 +80,10 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any> & Injec
         ) : (
             <Fragment>
               <div className="h-100 mr6">
-                <ListSelector {...this.state} selectedListId={selectedListId} />
+                <ListSelector
+                  {...this.state}
+                  selectedListId={selectedListId}
+                />
               </div>
               <div className="w-100">
                 <Content

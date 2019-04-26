@@ -6,7 +6,7 @@ import { Spinner } from 'vtex.styleguide'
 
 import ApolloClient from 'apollo-client'
 import { withApollo, WithApolloClient } from 'react-apollo'
-import { getListDetailed, getListsIdFromCookies, updateList } from '../../GraphqlClient'
+import { getListDetailed, updateList } from '../../GraphqlClient'
 import ListItems from '../ListDetails/Content'
 import Footer from '../ListDetails/Footer'
 import Header from './Header'
@@ -45,7 +45,7 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
   }
 
   public componentDidUpdate(prevProps: any): void {
-    if (this.props !== prevProps) {
+    if (this.props.listId !== prevProps.listId) {
       this.fetchListDetails()
     }
   }
@@ -131,6 +131,7 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
 
   private fetchListDetails(): void {
     const { client, listId } = this.props
+    this.setState({ isLoading: true, list: null })
     if (client) {
       getListDetailed(client, listId)
         .then(response => {
