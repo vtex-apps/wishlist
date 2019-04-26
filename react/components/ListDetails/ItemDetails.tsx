@@ -53,7 +53,7 @@ class ItemDetails extends Component<ItemDetailsProps & WithApolloClient<any> & I
     const { item: { product }, lists, intl } = this.props
     const { isSelected, isLoading, isCopying } = this.state
     const deleteIcon = <IconDelete />
-    const className = classNames(`${wishlist.summaryContainer} h4 bb b--muted-4`, {
+    const className = classNames(wishlist.summaryContainer, 'h4 bb b--muted-4', {
       [wishlist.summaryContainerLarge]: !isMobile,
     })
 
