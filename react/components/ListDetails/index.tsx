@@ -42,24 +42,15 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
   }
   private isComponentMounted: boolean = false
 
-  private options: Option[] = [
-    {
-      onClick: () => this.setState({ showUpdateList: true }),
-      title: this.props.intl.formatMessage({ id: 'wishlist-option-configuration' }),
-    },
-    {
-      onClick: () => this.setState({ showDeleteConfirmation: true }),
-      title: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
-    },
-  ]
-
   public componentDidMount(): void {
     const { listId, client } = this.props
     this.isComponentMounted = true
     if (client) {
       getListDetailed(client, listId)
         .then(response => {
-          this.setState({ list: response.data.list, isLoading: false })
+          if (this.isComponentMounted) {
+            this.setState({ list: response.data.list, isLoading: false })
+          }
         })
         .catch(err => console.error(err))
     }
@@ -102,6 +93,19 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
 
   private renderContent = (): ReactNode => {
     const { list: { items, name }, selectedItems } = this.state
+    const options: Option[] = [
+      {
+        disabled: !this.state.isLoading && !this.state.list.isEditable,
+        onClick: () => this.setState({ showUpdateList: true }),
+        title: this.props.intl.formatMessage({ id: 'wishlist-option-configuration' }),
+      },
+      {
+        disabled: !this.state.isLoading && !this.state.list.isEditable,
+        onClick: () => this.setState({ showDeleteConfirmation: true }),
+        title: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
+      },
+    ]
+
     return (
       <Fragment>
         <Header
@@ -109,7 +113,7 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
           onClose={this.handleOnClose}
           showIconBack
         >
-          <MenuOptions options={this.options} size={Size.large} />
+          <MenuOptions options={options} />
         </Header>
         <Content
           items={items}

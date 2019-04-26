@@ -79,10 +79,8 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
       lists,
     } = this.state
     const { onClose, intl } = this.props
-    console.log('Waaaaaaza')
-    if (!show) { return null }
-    console.log('Hello')
-    return createPortal(
+    
+    return !show ? null : createPortal(
       <Screen>
         <Header
           title={intl.formatMessage({ id: 'wishlist-my-lists' })}
