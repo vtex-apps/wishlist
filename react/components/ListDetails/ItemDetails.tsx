@@ -1,8 +1,10 @@
 import React, { Component, ReactNode } from 'react'
 
 import ApolloClient from 'apollo-client'
+import classNames from 'classnames'
 import { append, map, path } from 'ramda'
 import { withApollo, WithApolloClient } from 'react-apollo'
+import { isMobile } from 'react-device-detect'
 import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
 import { ExtensionPoint, withRuntimeContext } from 'vtex.render-runtime'
 import {
@@ -51,6 +53,9 @@ class ItemDetails extends Component<ItemDetailsProps & WithApolloClient<any> & I
     const { item: { product }, lists, intl } = this.props
     const { isSelected, isLoading, isCopying } = this.state
     const deleteIcon = <IconDelete />
+    const className = classNames(`${wishlist.summaryContainer} h4 bb b--muted-4`, {
+      [wishlist.summaryContainerLarge]: !isMobile,
+    })
 
     return (
       <div className="relative">
@@ -87,7 +92,7 @@ class ItemDetails extends Component<ItemDetailsProps & WithApolloClient<any> & I
               ))}
           </div>
         </div>
-        <div className={`${wishlist.summaryContainer} h4 bb b--muted-4`}>
+        <div className={className}>
           <ExtensionPoint
             id="product-summary"
             showBorders

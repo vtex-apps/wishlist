@@ -12,6 +12,7 @@ import wishlist from '../../wishList.css'
 
 interface FooterProps {
   items: any
+  onAddFinish?: () => void
   showToast?: any
   intl?: IntlShape
 }
@@ -22,7 +23,7 @@ interface FooterState {
 
 class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
   public render(): ReactNode {
-    const { items } = this.props
+    const { items, onAddFinish } = this.props
     const totalPrice = this.calculateTotal()
     const itemsToAddToCart = map(this.productShape, items)
     
@@ -57,6 +58,7 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
             skuItems={itemsToAddToCart}
             isOneClickBuy={false}
             large={isMobile}
+            onAddFinish={onAddFinish}
           >
             <FormattedMessage id="wishlist-buy-items" />
           </BuyButton>

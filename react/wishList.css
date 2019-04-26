@@ -53,6 +53,10 @@
 
 .summaryContainer {}
 
+.summaryContainerLarge {
+  height: 200px;
+}
+
 .addToListContent {
 }
 

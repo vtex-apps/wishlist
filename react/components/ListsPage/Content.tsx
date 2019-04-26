@@ -87,7 +87,9 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
                 {selectedItems.length > 0 && (
                   <div className="absolute bottom-0 left-0 w-100">
                     <div className="bg-base">
-                      <Footer items={selectedItems} />
+                      <Footer
+                        items={selectedItems}
+                      />
                     </div>
                   </div>
                 )}
