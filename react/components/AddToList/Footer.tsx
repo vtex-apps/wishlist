@@ -2,7 +2,7 @@ import React from 'react'
 import { FormattedMessage } from 'react-intl'
 import { Button } from 'vtex.styleguide'
 
-import wishlist from '../../wishList.css'
+import styles from '../../wishList.css'
 
 interface FooterProps {
   isLoading?: boolean
@@ -11,7 +11,7 @@ interface FooterProps {
 }
 
 export default ({ isLoading, changedLists, onClick }: FooterProps): JSX.Element => (
-  <div className={wishlist.applyButton}>
+  <div className={styles.applyButton}>
     <Button
       vatiation="primary"
       disabled={!changedLists.length}

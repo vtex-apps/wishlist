@@ -13,7 +13,7 @@ import { withToast } from 'vtex.styleguide'
 import BuyButton from 'vtex.store-components/BuyButton'
 import ProductPrice from 'vtex.store-components/ProductPrice'
 
-import wishlist from '../../wishList.css'
+import styles from '../../wishList.css'
 
 interface FooterProps extends InjectedIntlProps {
   items: any
@@ -34,17 +34,17 @@ class Footer extends Component<FooterProps, FooterState> {
     const itemsToAddToCart = map(this.productShape, items)
 
     return (
-      <div className={`${wishlist.ListDetailsFooter} flex flex-column pa4 bt b--muted-4 w-100 items-end`}>
+      <div className={`${styles.ListDetailsFooter} flex flex-column pa4 bt b--muted-4 w-100 items-end`}>
         <div className="tr">
-          <span className={`${wishlist.quantityOfSelectedItemsLabel} ml2`}>
+          <span className={`${styles.quantityOfSelectedItemsLabel} ml2`}>
             <FormattedMessage
               id="wishlist-quantity-selected-items"
               values={{ selectedItemsQuantity: <b>{items.length}</b> }}
             />
           </span>
         </div>
-        <div className={`${wishlist.pricesContainer} pv4 flex flex-row justify-end b`}>
-          <span className={`${wishlist.totalPriceLabel} mr2`}>
+        <div className={`${styles.pricesContainer} pv4 flex flex-row justify-end b`}>
+          <span className={`${styles.totalPriceLabel} mr2`}>
             <FormattedMessage
               id="wishlist-total"
               values={{ selectedItemsQuantity: <b>{items.length}</b> }}
@@ -57,7 +57,7 @@ class Footer extends Component<FooterProps, FooterState> {
             showListPrice={false}
           />
         </div>
-        <div className={wishlist.buySelectedItemsBtnContainer}>
+        <div className={styles.buySelectedItemsBtnContainer}>
           <BuyButton
             available={items.length > 0}
             isAvailable

@@ -15,7 +15,7 @@ import {
 import Content from './Content'
 import ListSelector from './ListSelector'
 
-import wishlist from '../../wishList.css'
+import styles from '../../wishList.css'
 
 const ON_LISTS_PAGE_CLASS = 'vtex-lists-page'
 
@@ -69,7 +69,7 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     const { selectedListId: id, lists, isLoading } = this.state
     const selectedListId = id || (lists && lists.length > 0 && lists[0].id)
     return (
-      <div className={`${wishlist.listPage} flex flex-row mt6 ph10 pv8 h-100`}>
+      <div className={`${styles.listPage} flex flex-row mt6 ph10 pv8 h-100`}>
         {isLoading ? (
           <div className="flex justify-center w-100">
             <Spinner />
@@ -125,39 +125,35 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
   private fetchLists = (): void => {
     const { client, runtime: { route: { params } }, intl } = this.props
 
-    if (client) {
-      getListsFromLocaleStorage(client)
-        .then((response: any) => {
-          const lists = map(item => item.data.list, response)
-          if (this.isComponentMounted) {
-            if (lists.length === 0) {
-              createList(client, {
-                isEditable: false,
-                items: [],
-                name: intl.formatMessage({ id: 'wishlist-default-list-name' }),
-              })
-                .then((responseCreateList: any) => {
-                  const list = responseCreateList.data.createList
-                  this.setState({
-                    isLoading: false,
-                    lists: [list],
-                    selectedListId: list.id,
-                  })
-                  saveListIdInLocalStorage(list.id)
+    getListsFromLocaleStorage(client)
+      .then((response: any) => {
+        const lists = map(item => item.data.list, response)
+        if (this.isComponentMounted) {
+          if (lists.length === 0) {
+            createList(client, {
+              isEditable: false,
+              items: [],
+              name: intl.formatMessage({ id: 'wishlist-default-list-name' }),
+            })
+              .then((responseCreateList: any) => {
+                const list = responseCreateList.data.createList
+                this.setState({
+                  isLoading: false,
+                  lists: [list],
+                  selectedListId: list.id,
                 })
-            } else {
-              this.setState({ isLoading: false, lists, selectedListId: params.listId })
-            }
+                saveListIdInLocalStorage(list.id)
+              })
+          } else {
+            this.setState({ isLoading: false, lists, selectedListId: params.listId })
           }
-        })
-        .catch(() => {
-          if (this.isComponentMounted) {
-            this.setState({ isLoading: false })
-          }
-        })
-    } else {
-      this.fetchLists()
-    }
+        }
+      })
+      .catch(() => {
+        if (this.isComponentMounted) {
+          this.setState({ isLoading: false })
+        }
+      })
   }
 }
 

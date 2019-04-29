@@ -7,7 +7,7 @@ import Header from '../Header'
 import FormView from './FormView'
 import ListForm from './ListForm'
 
-import wishlist from '../../wishList.css'
+import styles from '../../wishList.css'
 
 interface CreateListProps extends InjectedIntlProps, WithApolloClient<any> {
   onFinishAdding: (list: List) => void
@@ -36,7 +36,7 @@ class CreateList extends Component<CreateListProps, CreateListState> {
     const { isLoading } = this.state
     return (
       <FormView onClose={onClose}>
-        <div className={`${wishlist.createList} bg-base h-100`}>
+        <div className={`${styles.createList} bg-base h-100`}>
           <Header
             title={intl.formatMessage({ id: 'wishlist-new' })}
             onClose={onClose}

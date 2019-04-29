@@ -9,7 +9,7 @@ import Header from '../Header'
 import FormView from './FormView'
 import ListForm from './ListForm'
 
-import wishlist from '../../wishList.css'
+import styles from '../../wishList.css'
 
 interface UpdateListProps extends InjectedIntlProps, WithApolloClient<any> {
   list: List
@@ -40,7 +40,7 @@ class UpdateList extends Component<UpdateListProps, UpdateListState> {
     const { isLoading } = this.state
     return (
       <FormView onClose={onClose}>
-        <div className={`${wishlist.updateList}`}>
+        <div className={`${styles.updateList}`}>
           <Header
             title={intl.formatMessage({ id: 'wishlist-option-configuration' })}
             onClose={onClose}

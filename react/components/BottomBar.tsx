@@ -1,9 +1,9 @@
 import React, { Component, MouseEvent, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 
-import wishlist from '../wishList.css'
+import styles from '../wishList.css'
 
-const OPEN_BOTTOM_BAR_CLASS = wishlist.open
+const OPEN_BOTTOM_BAR_CLASS = styles.open
 
 interface BottomBarProps {
   children: ReactNode,

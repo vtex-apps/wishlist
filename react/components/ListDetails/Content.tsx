@@ -7,7 +7,7 @@ import { withRuntimeContext } from 'vtex.render-runtime'
 import { Button } from 'vtex.styleguide'
 import ItemDetails from './ItemDetails'
 
-import wishlist from '../../wishList.css'
+import styles from '../../wishList.css'
 
 interface ContentProps extends InjectedIntlProps {
   items: any
@@ -22,7 +22,7 @@ class Content extends Component<ContentProps, {}> {
   public render(): ReactNode {
     const { items, hideItemsQuantityLabel } = this.props
     return (
-      <div className={`${wishlist.listDetailsContent} h-100 overflow-y-auto flex flex-column`}>
+      <div className={`${styles.listDetailsContent} h-100 overflow-y-auto flex flex-column`}>
         {
           items.length > 0 ? (
             <div>
@@ -55,11 +55,11 @@ class Content extends Component<ContentProps, {}> {
 
   private renderListEmpty = (): ReactNode => {
     return (
-      <div className={`${wishlist.listEmptyContainer} flex flex-column w-100 h-100 items-center mv8 c-muted-2`}>
-        <div className={wishlist.listEmptyLabel}>
+      <div className={`${styles.listEmptyContainer} flex flex-column w-100 h-100 items-center mv8 c-muted-2`}>
+        <div className={styles.listEmptyLabel}>
           <FormattedMessage id="wishlist-list-empty" />
         </div>
-        <div className={`${wishlist.goToAddProductsButtonContainer} mt8`}>
+        <div className={`${styles.goToAddProductsButtonContainer} mt8`}>
           <Button variation="primary" onClick={this.redirectToGallery}>
             <FormattedMessage id="wishlist-add-itens" />
           </Button>

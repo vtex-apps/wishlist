@@ -17,7 +17,7 @@ import renderLoading from '../Loading'
 
 import { getListDetailed, updateList } from '../../GraphqlClient'
 
-import wishlist from '../../wishList.css'
+import styles from '../../wishList.css'
 
 interface ItemDetailsProps extends WithApolloClient<any>, InjectedIntlProps {
   lists?: List[]
@@ -50,8 +50,8 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
     const { item: { product }, lists, intl } = this.props
     const { isSelected, isLoading, isCopying } = this.state
     const deleteIcon = <IconDelete />
-    const className = classNames(wishlist.summaryContainer, 'h4 bb b--muted-4', {
-      [wishlist.summaryContainerLarge]: !isMobile,
+    const className = classNames(styles.summaryContainer, 'h4 bb b--muted-4', {
+      [styles.summaryContainerLarge]: !isMobile,
     })
 
     return (

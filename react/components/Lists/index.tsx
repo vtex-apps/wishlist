@@ -19,10 +19,10 @@ import ListItem from '../ListItem'
 import renderLoading from '../Loading'
 import Screen from '../Screen'
 
-import wishlist from '../../wishList.css'
+import styles from '../../wishList.css'
 
 const DEFAULT_LIST_INDEX = 0
-const OPEN_LISTS_CLASS = wishlist.open
+const OPEN_LISTS_CLASS = styles.open
 
 interface ListsState {
   listSelected: number

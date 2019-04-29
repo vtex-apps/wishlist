@@ -3,7 +3,7 @@ import { isMobile } from 'react-device-detect'
 import Dialog from '../Dialog/index'
 import Screen from '../Screen'
 
-import wishlist from '../../wishList.css'
+import styles from '../../wishList.css'
 
 interface FormViewProps {
   onClose: () => void
@@ -17,7 +17,7 @@ export default ({ children, onClose }: FormViewProps): JSX.Element => (
     </Screen>
   ) : (
       <Dialog onClose={onClose}>
-        <div className={wishlist.formViewDialog}>
+        <div className={styles.formViewDialog}>
           {children}
         </div>
       </Dialog>

@@ -30,7 +30,7 @@ class ListSelector extends Component<ListSelectorProps, {}> {
     const { lists, selectedListId } = this.props
     return lists ? lists.map((list: List, index: number) => (
       <ListItem
-        key={index}
+        key={list.id}
         id={index}
         list={list}
         isDefault={false}

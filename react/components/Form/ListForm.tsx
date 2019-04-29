@@ -2,7 +2,7 @@ import React, { Component, FormEvent, Fragment, ReactNode } from 'react'
 import { FormattedMessage, InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
 import { Button, Input, Toggle } from 'vtex.styleguide'
 
-import wishlist from '../../wishList.css'
+import styles from '../../wishList.css'
 
 const LIST_NAME_MINIMUM_LENGTH = 1
 
@@ -37,8 +37,8 @@ class ListForm extends Component<ListFormProps, ListFormState> {
     const { isValid, isChanged, listData: { name, isPublic }, listData } = this.state
     return (
       <Fragment>
-        <div className={`${wishlist.form} w-100 gray f5 pv5 ph5`}>
-          <div className={`${wishlist.nameInputContainer} tl`}>
+        <div className={`${styles.form} w-100 gray f5 pv5 ph5`}>
+          <div className={`${styles.nameInputContainer} tl`}>
             <Input
               value={name}
               placeholder={intl.formatMessage({ id: 'wishlist-list-name-placeholder' })}
@@ -46,12 +46,12 @@ class ListForm extends Component<ListFormProps, ListFormState> {
               onChange={this.onChangeName}
             />
           </div>
-          <div className={`${wishlist.isPublicContainer} flex flex-row justify-between tl mt5`}>
+          <div className={`${styles.isPublicContainer} flex flex-row justify-between tl mt5`}>
             <div className="flex flex-column">
-              <span className={`${wishlist.isPublicLabel} c-on-base mt1 t-small`}>
+              <span className={`${styles.isPublicLabel} c-on-base mt1 t-small`}>
                 <FormattedMessage id="wishlist-is-public" />
               </span>
-              <span className={`${wishlist.isPublicHint} light-gray mt3`}>
+              <span className={`${styles.isPublicHint} light-gray mt3`}>
                 <FormattedMessage id="wishlist-is-public-hint" />
               </span>
             </div>
@@ -62,7 +62,7 @@ class ListForm extends Component<ListFormProps, ListFormState> {
             />
           </div>
         </div>
-        <div className={`${wishlist.createListButtonContainer} flex flex-row justify-center pb5`}>
+        <div className={`${styles.createListButtonContainer} flex flex-row justify-center pb5`}>
           <Button
             variation="primary"
             size="small"

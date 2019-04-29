@@ -72,7 +72,10 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
       showToast({
         action: {
           label: intl.formatMessage({ id: 'wishlist-see-lists' }),
-          onClick: () => navigate({ page: 'store.listsWithId', params: { listId } }),
+          onClick: () => navigate({
+            page: 'store.listsWithId',
+            params: { listId },
+          }),
         },
         message: intl.formatMessage({ id: 'wishlist-product-added-to-list' }),
       })

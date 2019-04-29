@@ -10,7 +10,7 @@ import ListItems from '../ListDetails/Content'
 import Footer from '../ListDetails/Footer'
 import Header from './Header'
 
-import wishlist from '../../wishList.css'
+import styles from '../../wishList.css'
 
 interface ContentProps extends WithApolloClient<any> {
   listId: string
@@ -54,7 +54,7 @@ class Content extends Component<ContentProps, ContentState> {
     const className = classNames('ba b--muted-4 mt6 relative overflow-auto w-100 h-100', {
       'pb10': selectedItems && selectedItems.length > 0,
     })
-    const listsAsOptions = filter((e: any) => e.id !== listId, tail(lists))
+    const listsAsOptions = lists ? filter((e: any) => e.id !== listId, tail(lists)) : null
 
     return (
       <div className="h-100 flex flex-column">
@@ -71,7 +71,7 @@ class Content extends Component<ContentProps, ContentState> {
                 onListDeleted={this.props.onListDeleted}
               />
               <div className={className}>
-                <div className={`${wishlist.listPageItemsContainer} overflow-auto w-100`}>
+                <div className={`${styles.listPageItemsContainer} overflow-auto w-100`}>
                   <div className="w-100">
                     <ListItems
                       lists={listsAsOptions}

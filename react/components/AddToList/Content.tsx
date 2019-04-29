@@ -14,7 +14,7 @@ import ListItem from '../ListItem'
 import renderLoading from '../Loading'
 import Footer from './Footer'
 
-import wishlist from '../../wishList.css'
+import styles from '../../wishList.css'
 
 const DEFAULT_LIST_INDEX = 0
 const QUANTITY_WITH_ONLY_DEFAULT_LIST = 1
@@ -65,12 +65,12 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
       lists,
     } = this.state
 
-    const className = classNames(`${wishlist.contentContainer} overflow-y-auto`, {
-      [wishlist.contentContainerMobile]: isMobile,
-      [wishlist.contentContainerDesktop]: !isMobile,
+    const className = classNames(`${styles.contentContainer} overflow-y-auto`, {
+      [styles.contentContainerMobile]: isMobile,
+      [styles.contentContainerDesktop]: !isMobile,
     })
     return (
-      <div className={`${wishlist.addToListContent} z-4 bg-base`}>
+      <div className={`${styles.addToListContent} z-4 bg-base`}>
         <Header
           title={intl.formatMessage({ id: 'wishlist-add-to-list' })}
           onClose={onClose}
@@ -197,7 +197,7 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
   private renderSwitchLists = (): ReactNode => {
     const { lists } = this.state
     return (
-      <div className={`${wishlist.addToListListsToSwitch} flex flex-column`}>
+      <div className={`${styles.addToListListsToSwitch} flex flex-column`}>
         {
           lists.map((list: List, index: number) => (
             <ListItem
