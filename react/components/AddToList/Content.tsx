@@ -65,7 +65,7 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
       lists,
     } = this.state
 
-    const className = classNames(`${styles.contentContainer} overflow-y-auto`, {
+    const className = classNames(styles.contentContainer, 'overflow-y-auto', {
       [styles.contentContainerMobile]: isMobile,
       [styles.contentContainerDesktop]: !isMobile,
     })

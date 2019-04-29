@@ -12,15 +12,15 @@ interface PopoverProps {
 
 export default (props: PopoverProps): JSX.Element => {
   const { children, onOutsideClick, left } = props
-    const className = classNames(`${styles.popover} absolute z-max`, {
-      [`${styles.popoverLeft} left-0 ml4 shadow-3 tl`]: left,
-      'right-0': !left,
-    })
-    return (
-      <OutsideClickHandler onOutsideClick={onOutsideClick}>
-        <div className={className}>
-            {children}
-        </div>
-      </OutsideClickHandler>
-    )
+  const className = classNames(styles.popover, 'absolute z-max', {
+    [`${styles.popoverLeft} left-0 ml4 shadow-3 tl`]: left,
+    'right-0': !left,
+  })
+  return (
+    <OutsideClickHandler onOutsideClick={onOutsideClick}>
+      <div className={className}>
+        {children}
+      </div>
+    </OutsideClickHandler>
+  )
 }
