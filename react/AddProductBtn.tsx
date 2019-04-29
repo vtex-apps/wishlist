@@ -95,7 +95,7 @@ class AddProductBtn extends Component<
 
   private onAddProductClick = (): void => {
     const { isLoading } = this.state
-    if (!isLoading) {
+    if (isLoading) return
       const { client, product, intl } = this.props
       this.setState({ isLoading: true })
       addProductToDefaultList(
