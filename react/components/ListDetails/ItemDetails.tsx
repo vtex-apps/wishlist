@@ -142,28 +142,17 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
       .catch(() => this.isComponentMounted && this.setState({ isLoading: false }))
   }
 
-  private copyProductToList = (listId: string): void => {
+  private copyProductToList = async (listId: string): Promise<any> => {
     const { client, item } = this.props
     this.setState({ isCopying: true })
-    getListDetailed(client, listId)
-      .then((resp: any) => {
-        const list = resp.data.list
-        list.items = append(
-          this.itemWithoutProduct(item),
-          map((i: any) => this.itemWithoutProduct(i), list.items)
-        )
-        updateList(client, listId, list)
-          .then(() => {
-            this.showMessage(list.name, listId)
-          })
-          .catch((error: any) => console.error(error))
-          .finally(() => {
-            if (this.isComponentMounted) {
-              this.setState({ isCopying: false })
-            }
-          })
-      })
-      .catch((err: any) => console.error(err))
+    const { data: { list } } = await getListDetailed(client, listId)
+    list.items = append(
+      this.itemWithoutProduct(item),
+      map((listItem: any) => this.itemWithoutProduct(listItem), list.items)
+    )
+    await updateList(client, listId, list)
+    this.showMessage(list.name, listId)
+    this.setState({ isCopying: false })
   }
 
   private itemWithoutProduct =
