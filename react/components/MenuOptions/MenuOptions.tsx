@@ -11,12 +11,14 @@ interface MenuOptionsProps {
   size?: number
 }
 
+const ICON_SIZE_DEFAULT = 16
+
 class MenuOptions extends Component<MenuOptionsProps, MenuOptionsState> {
   public state: MenuOptionsState = {}
 
   public defaultProps: MenuOptionsProps = {
     options: [],
-    size: 16,
+    size: ICON_SIZE_DEFAULT,
   }
 
   public render(): ReactNode {

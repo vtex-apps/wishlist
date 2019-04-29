@@ -1,10 +1,10 @@
-import { ApolloClient } from 'apollo-client'
-import { append, filter, map, update } from 'ramda'
 import React, { Component, Fragment, ReactNode } from 'react'
-import { withApollo, WithApolloClient } from 'react-apollo'
+
+import { append, filter, map, update } from 'ramda'
+import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { createPortal } from 'react-dom'
 import { FormattedMessage, InjectedIntlProps } from 'react-intl'
-import { injectIntl, IntlShape } from 'react-intl'
+import { injectIntl } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import {
   deleteList,
@@ -24,7 +24,7 @@ import wishlist from '../../wishList.css'
 const DEFAULT_LIST_INDEX = 0
 const OPEN_LISTS_CLASS = wishlist.open
 
-interface ListsStates {
+interface ListsState {
   listSelected: number
   lists: any[]
   loading: boolean
@@ -34,14 +34,12 @@ interface ListsStates {
   showListDetails?: boolean
 }
 
-interface ListsProps {
-  onClose: () => void,
-  intl?: IntlShape,
-  client?: ApolloClient<any>
+interface ListsProps extends InjectedIntlProps, WithApolloClient<any> {
+  onClose: () => void
 }
 
-class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<{}>, ListsStates> {
-  public state: ListsStates = {
+class Lists extends Component<ListsProps, ListsState> {
+  public state: ListsState = {
     listSelected: -1,
     lists: [],
     loading: true,
@@ -79,7 +77,7 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
       lists,
     } = this.state
     const { onClose, intl } = this.props
-    
+
     return !show ? null : createPortal(
       <Screen>
         <Header
@@ -186,4 +184,10 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
   }
 
 }
-export default withRuntimeContext(withApollo<ListsProps, {}>(injectIntl(Lists)))
+
+export default compose(
+  injectIntl,
+  withRuntimeContext,
+  withApollo
+)(Lists)
+

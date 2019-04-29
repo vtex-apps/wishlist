@@ -1,11 +1,12 @@
-import { ApolloClient } from 'apollo-client'
+import React, { Component, ReactNode } from 'react'
+
 import classNames from 'classnames'
 import { append, filter, indexOf, map, path, remove, update } from 'ramda'
-import React, { Component, ReactNode } from 'react'
-import { withApollo, WithApolloClient } from 'react-apollo'
+import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
-import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import { InjectedIntlProps, injectIntl } from 'react-intl'
 import { getListsFromLocaleStorage, updateList } from '../../GraphqlClient'
+
 import CreateList from '../Form/CreateList'
 import Header from '../Header'
 import ListDetails from '../ListDetails'
@@ -18,13 +19,11 @@ import wishlist from '../../wishList.css'
 const DEFAULT_LIST_INDEX = 0
 const QUANTITY_WITH_ONLY_DEFAULT_LIST = 1
 
-interface AddToListContentProps {
+interface AddToListContentProps extends InjectedIntlProps, WithApolloClient<any> {
   product: any
   onClose: () => void
   onAddToListsSuccess: () => void
   onAddToListsFail: () => void
-  intl?: IntlShape
-  client?: ApolloClient<any>
 }
 
 interface AddToListContentState {
@@ -37,7 +36,7 @@ interface AddToListContentState {
   selectedListId: string
 }
 
-class AddToListContent extends Component<AddToListContentProps & InjectedIntlProps & WithApolloClient<{}>, AddToListContentState> {
+class AddToListContent extends Component<AddToListContentProps, AddToListContentState> {
   public state: AddToListContentState = {
     changedLists: [],
     isLoading: true,
@@ -47,14 +46,12 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
 
   public componentDidMount(): void {
     const { client } = this.props
-    if (client) {
-      getListsFromLocaleStorage(client)
-        .then((response: any) => {
-          const lists = map(item => item.data.list, response)
-          this.setState({ isLoading: false, lists })
-        })
-        .catch(() => this.setState({ isLoading: false }))
-    }
+    getListsFromLocaleStorage(client)
+      .then((response: any) => {
+        const lists = map(item => item.data.list, response)
+        this.setState({ isLoading: false, lists })
+      })
+      .catch(() => this.setState({ isLoading: false }))
   }
 
   public render(): ReactNode {
@@ -114,22 +111,20 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
   private addProductTochangedLists = (): void => {
     const { client, onClose, onAddToListsSuccess, onAddToListsFail } = this.props
     const { lists, changedLists } = this.state
-    if (client) {
-      this.setState({ isAdding: true })
-      Promise.all(map(index => {
-        const { id } = lists[index]
-        return updateList(client, id || '', { ...lists[index] })
-      }, changedLists))
-        .then(() => {
-          onClose()
-          setTimeout(onAddToListsSuccess, 500)
-        })
-        .catch(err => {
-          console.error(err)
-          onClose()
-          setTimeout(onAddToListsFail, 500)
-        })
-    }
+    this.setState({ isAdding: true })
+    Promise.all(map(index => {
+      const { id } = lists[index]
+      return updateList(client, id || '', { ...lists[index] })
+    }, changedLists))
+      .then(() => {
+        onClose()
+        setTimeout(onAddToListsSuccess, 500)
+      })
+      .catch(err => {
+        console.error(err)
+        onClose()
+        setTimeout(onAddToListsFail, 500)
+      })
   }
 
   private containsProduct = (list: List): boolean => {
@@ -226,4 +221,7 @@ class AddToListContent extends Component<AddToListContentProps & InjectedIntlPro
 
 }
 
-export default withApollo<AddToListContentProps, {}>(injectIntl(AddToListContent))
+export default compose(
+  withApollo,
+  injectIntl
+)(AddToListContent)

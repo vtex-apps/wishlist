@@ -1,9 +1,9 @@
 import { ApolloClient } from 'apollo-client'
 import React, { Component } from 'react'
-import { withApollo } from 'react-apollo'
+import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
-import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
-import { ExtensionPoint, withRuntimeContext } from 'vtex.render-runtime'
+import { InjectedIntlProps, injectIntl } from 'react-intl'
+import { withRuntimeContext } from 'vtex.render-runtime'
 import { IconHeart } from 'vtex.store-icons'
 import { Spinner, withToast } from 'vtex.styleguide'
 import AddToList from './components/AddToList/index'
@@ -11,13 +11,11 @@ import MyLists from './MyLists'
 
 import { addProductToDefaultList, getListsIdFromCookies } from './GraphqlClient'
 
-interface AddProductBtnProps {
+interface AddProductBtnProps extends InjectedIntlProps, WithApolloClient<any> {
   large?: boolean
   product: Product
   showToast: ({ }) => void
-  client: ApolloClient<any>
-  intl: IntlShape
-  runtime?: any
+  runtime: any
 }
 
 interface AddProductBtnState {
@@ -29,10 +27,7 @@ interface AddProductBtnState {
 const ICON_SIZE_SMALL = 16
 const ICON_SIZE_LARGE = 32
 
-class AddProductBtn extends Component<
-  AddProductBtnProps & InjectedIntlProps,
-  AddProductBtnState
-  > {
+class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   public state: AddProductBtnState = {}
 
   public render() {
@@ -133,10 +128,9 @@ class AddProductBtn extends Component<
   }
 }
 
-export default withRuntimeContext(
-  injectIntl(
-    withToast(
-      withApollo<AddProductBtnProps & InjectedIntlProps, {}>(AddProductBtn)
-    )
-  )
-)
+export default compose(
+  withRuntimeContext,
+  injectIntl,
+  withToast,
+  withApollo
+)(AddProductBtn)

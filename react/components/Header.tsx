@@ -1,4 +1,5 @@
-import React, { Component, ReactNode } from 'react'
+import React, { ReactNode } from 'react'
+
 import { isMobile } from 'react-device-detect'
 import { IconCaretLeft, IconClose, IconPlusLines } from 'vtex.styleguide'
 
@@ -7,19 +8,21 @@ interface HeaderProps {
   onClose: () => void
   action?: () => void
   showIconBack?: boolean
-  children?: ReactNode
+  children?: JSX.Element
 }
 
-class Header extends Component<HeaderProps, {}> {
-  public render(): ReactNode {
-    const { title, onClose, action, children, showIconBack } = this.props
+const ICON_SIZE = 20
+const CLOSE_ICON_SIZE = 23
+
+export default (props: HeaderProps): JSX.Element => {
+  const { title, onClose, action, children, showIconBack } = props
     return (
       <div className="flex flex-row pa4 items-center bb bt b--muted-4">
         <div className="flex items-center pointer" onClick={onClose}>
           {(showIconBack && isMobile) ? (
-            <IconCaretLeft size={20} />
+            <IconCaretLeft size={ICON_SIZE} />
           ) : (
-              <IconClose size={23} />
+              <IconClose size={CLOSE_ICON_SIZE} />
             )}
         </div>
         <span className="t-heading-6 w-100 mh5 flex justify-center">
@@ -31,12 +34,9 @@ class Header extends Component<HeaderProps, {}> {
             className="flex items-center pointer"
             onClick={action}
           >
-            <IconPlusLines size={20} />
+            <IconPlusLines size={ICON_SIZE} />
           </div>
         )}
       </div>
     )
-  }
 }
-
-export default Header

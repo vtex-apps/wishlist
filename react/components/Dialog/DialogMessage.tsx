@@ -1,21 +1,22 @@
 import React, { Component, ReactNode } from 'react'
-import { FormattedMessage, InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
 import { Button } from 'vtex.styleguide'
 import Dialog from './index'
 
-interface DialogMessageProps {
+interface DialogMessageProps extends InjectedIntlProps {
   message: string
   onClose: () => void
   onSuccess: () => void
-  intl?: IntlShape
 }
 
 interface DialogMessageState {
   isLoading?: boolean
 }
 
-class DialogMessage extends Component<DialogMessageProps & InjectedIntlProps, DialogMessageState> {
-  public state: DialogMessageState = {}
+class DialogMessage extends Component<DialogMessageProps, DialogMessageState> {
+  public state: DialogMessageState = {
+    isLoading: false,
+  }
 
   public render(): ReactNode {
     const { message, onClose, onSuccess } = this.props

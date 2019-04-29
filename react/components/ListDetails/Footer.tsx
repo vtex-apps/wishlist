@@ -1,8 +1,13 @@
-import classNames from 'classnames'
-import { map, path } from 'ramda'
 import React, { Component, ReactNode } from 'react'
+
+import { map, path } from 'ramda'
+import { compose } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
-import { FormattedMessage, InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import {
+  FormattedMessage,
+  InjectedIntlProps,
+  injectIntl,
+} from 'react-intl'
 import { withToast } from 'vtex.styleguide'
 
 import BuyButton from 'vtex.store-components/BuyButton'
@@ -10,23 +15,24 @@ import ProductPrice from 'vtex.store-components/ProductPrice'
 
 import wishlist from '../../wishList.css'
 
-interface FooterProps {
+interface FooterProps extends InjectedIntlProps {
   items: any
-  onAddFinish?: () => void
-  showToast?: any
-  intl?: IntlShape
 }
 
 interface FooterState {
   isLoading?: boolean
 }
 
-class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
+class Footer extends Component<FooterProps, FooterState> {
+  public state: FooterState = {
+    isLoading: false,
+  }
+
   public render(): ReactNode {
-    const { items, onAddFinish } = this.props
+    const { items } = this.props
     const totalPrice = this.calculateTotal()
     const itemsToAddToCart = map(this.productShape, items)
-    
+
     return (
       <div className={`${wishlist.ListDetailsFooter} flex flex-column pa4 bt b--muted-4 w-100 items-end`}>
         <div className="tr">
@@ -58,7 +64,6 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
             skuItems={itemsToAddToCart}
             isOneClickBuy={false}
             large={isMobile}
-            onAddFinish={onAddFinish}
           >
             <FormattedMessage id="wishlist-buy-items" />
           </BuyButton>
@@ -133,4 +138,7 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
 
 }
 
-export default withToast(injectIntl(Footer))
+export default compose(
+  withToast,
+  injectIntl
+)(Footer)

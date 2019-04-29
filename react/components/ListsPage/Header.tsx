@@ -1,9 +1,9 @@
 import React, { Component, ReactNode } from 'react'
-import { FormattedMessage, InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
 import { IconPlusLines } from 'vtex.styleguide'
 
 import ApolloClient from 'apollo-client'
-import { withApollo, WithApolloClient } from 'react-apollo'
+import { compose, withApollo, WithApolloClient } from 'react-apollo'
 
 import DialogMessage from '../Dialog/DialogMessage'
 import CreateList from '../Form/CreateList'
@@ -18,19 +18,19 @@ interface HeaderState {
   showDeleteConfirmation?: boolean
 }
 
-interface HeaderProps {
+interface HeaderProps extends InjectedIntlProps, WithApolloClient<any> {
   isDefault?: boolean
   list?: List
-  intl?: IntlShape
+  intl: any
   onListCreated: (list: List) => void
   onListUpdated: (list: List) => void
   onListDeleted: () => void
-  client?: ApolloClient<any>
+  client: ApolloClient<any>
 }
 
 const ICONS_SIZE = 20
 
-class Header extends Component<HeaderProps & InjectedIntlProps & WithApolloClient<any>, HeaderState> {
+class Header extends Component<HeaderProps, HeaderState> {
   public state: HeaderState = {}
   private options: Option[] = [
     {
@@ -70,9 +70,9 @@ class Header extends Component<HeaderProps & InjectedIntlProps & WithApolloClien
           {list.isEditable && (
             <div className="ml5">
               <MenuOptions
-              options={this.options}
-              size={ICONS_SIZE}
-            />
+                options={this.options}
+                size={ICONS_SIZE}
+              />
             </div>
           )}
         </div>
@@ -118,7 +118,7 @@ class Header extends Component<HeaderProps & InjectedIntlProps & WithApolloClien
 
   private handleDeleteList = (): void => {
     const { client, list } = this.props
-    if (client) {
+    if (list && list.id) {
       deleteList(client, list.id)
         .then(() => {
           this.setState({ showDeleteConfirmation: false })
@@ -128,4 +128,7 @@ class Header extends Component<HeaderProps & InjectedIntlProps & WithApolloClien
   }
 }
 
-export default injectIntl(withApollo(Header))
+export default compose(
+  withApollo,
+  injectIntl
+)(Header)

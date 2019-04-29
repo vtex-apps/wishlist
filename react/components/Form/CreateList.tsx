@@ -1,6 +1,6 @@
-import { ApolloClient } from 'apollo-client'
 import React, { Component } from 'react'
-import { withApollo, WithApolloClient } from 'react-apollo'
+
+import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { InjectedIntlProps, injectIntl } from 'react-intl'
 import { createList, saveListIdInLocalStorage } from '../../GraphqlClient'
 import Header from '../Header'
@@ -9,21 +9,16 @@ import ListForm from './ListForm'
 
 import wishlist from '../../wishList.css'
 
-interface CreateListProps {
+interface CreateListProps extends InjectedIntlProps, WithApolloClient<any> {
   onFinishAdding: (list: List) => void
   onClose: () => void
-  intl?: any
-  client?: ApolloClient<any>
 }
 
 interface CreateListState {
   isLoading?: boolean
 }
 
-/**
- * Wishlist element to add product to a list
- */
-class CreateList extends Component<CreateListProps & InjectedIntlProps & WithApolloClient<{}>, CreateListState> {
+class CreateList extends Component<CreateListProps, CreateListState> {
   public state: CreateListState = {}
   private isComponentMounted: boolean = false
 
@@ -60,22 +55,22 @@ class CreateList extends Component<CreateListProps & InjectedIntlProps & WithApo
   private onSubmit = (listData: List): void => {
     const { client } = this.props
     this.setState({ isLoading: true })
-    if (client) {
-      createList(client, { ...listData, items: [], isEditable: true })
-        .then(response => {
-          this.props.onFinishAdding(response.data.createList)
-          saveListIdInLocalStorage(response.data.createList.id)
-          if (this.isComponentMounted) {
-            this.setState({ isLoading: false })
-          }
-        })
-        .catch(err => {
-          console.error(err)
-        })
-    }
-
+    createList(client, { ...listData, items: [], isEditable: true })
+      .then(response => {
+        this.props.onFinishAdding(response.data.createList)
+        saveListIdInLocalStorage(response.data.createList.id)
+        if (this.isComponentMounted) {
+          this.setState({ isLoading: false })
+        }
+      })
+      .catch(err => {
+        console.error(err)
+      })
   }
 
 }
 
-export default withApollo<CreateListProps, {}>(injectIntl(CreateList))
+export default compose(
+  injectIntl,
+  withApollo
+)(CreateList)

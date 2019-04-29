@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from 'react'
+import React from 'react'
 import { isMobile } from 'react-device-detect'
 import BottomBar from '../BottomBar'
 import Popover from '../Popover'
@@ -11,18 +11,14 @@ interface AddToListProps {
   onAddToListsFail: () => void
 }
 
-class AddToList extends Component<AddToListProps, {}> {
-  public render(): ReactNode {
-    const { onClose } = this.props
-    const content = <ListMenuContent {...this.props} />
-    return isMobile ? (
-      <BottomBar onOutsideClick={onClose}>
-        {content}
-      </BottomBar>
-    ) : <Popover onOutsideClick={onClose} left>
-        {content}
-      </Popover>
-  }
+export default (props: AddToListProps): JSX.Element => {
+  const { onClose } = props
+  const content = <ListMenuContent {...props} />
+  return isMobile ? (
+    <BottomBar onOutsideClick={onClose}>
+      {content}
+    </BottomBar>
+  ) : <Popover onOutsideClick={onClose} left>
+      {content}
+    </Popover>
 }
-
-export default AddToList

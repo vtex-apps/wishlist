@@ -1,11 +1,10 @@
 import React, { Component, ReactNode } from 'react'
 
-import ApolloClient from 'apollo-client'
 import classNames from 'classnames'
 import { append, map, path } from 'ramda'
-import { withApollo, WithApolloClient } from 'react-apollo'
+import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
-import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import { InjectedIntlProps, injectIntl } from 'react-intl'
 import { ExtensionPoint, withRuntimeContext } from 'vtex.render-runtime'
 import {
   ButtonWithIcon,
@@ -20,15 +19,13 @@ import { getListDetailed, updateList } from '../../GraphqlClient'
 
 import wishlist from '../../wishList.css'
 
-interface ItemDetailsProps {
+interface ItemDetailsProps extends WithApolloClient<any>, InjectedIntlProps {
   lists?: List[]
   item: any
   onItemSelect: (itemId: string, product: any, isSelected: boolean) => void
   onItemRemove: (id: string) => Promise<any>
-  client?: ApolloClient<any>
-  showToast?: ({ }) => void
-  intl?: IntlShape
-  runtime?: any
+  showToast: ({ }) => void
+  runtime: any
 }
 
 interface ItemDetailsState {
@@ -37,7 +34,7 @@ interface ItemDetailsState {
   isCopying?: boolean
 }
 
-class ItemDetails extends Component<ItemDetailsProps & WithApolloClient<any> & InjectedIntlProps, ItemDetailsState> {
+class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
   public state: ItemDetailsState = {}
   private isComponentMounted: boolean = false
 
@@ -147,28 +144,26 @@ class ItemDetails extends Component<ItemDetailsProps & WithApolloClient<any> & I
 
   private copyProductToList = (listId: string): void => {
     const { client, item } = this.props
-    if (client) {
-      this.setState({ isCopying: true })
-      getListDetailed(client, listId)
-        .then((resp: any) => {
-          const list = resp.data.list
-          list.items = append(
-            this.itemWithoutProduct(item),
-            map((i: any) => this.itemWithoutProduct(i), list.items)
-          )
-          updateList(client, listId, list)
-            .then(() => {
-              this.showMessage(list.name, listId)
-            })
-            .catch((error: any) => console.error(error))
-            .finally(() => {
-              if (this.isComponentMounted) {
-                this.setState({ isCopying: false })
-              }
-            })
-        })
-        .catch((err: any) => console.error(err))
-    }
+    this.setState({ isCopying: true })
+    getListDetailed(client, listId)
+      .then((resp: any) => {
+        const list = resp.data.list
+        list.items = append(
+          this.itemWithoutProduct(item),
+          map((i: any) => this.itemWithoutProduct(i), list.items)
+        )
+        updateList(client, listId, list)
+          .then(() => {
+            this.showMessage(list.name, listId)
+          })
+          .catch((error: any) => console.error(error))
+          .finally(() => {
+            if (this.isComponentMounted) {
+              this.setState({ isCopying: false })
+            }
+          })
+      })
+      .catch((err: any) => console.error(err))
   }
 
   private itemWithoutProduct =
@@ -176,29 +171,26 @@ class ItemDetails extends Component<ItemDetailsProps & WithApolloClient<any> & I
 
   private showMessage = (listName: string, listId: string) => {
     const { showToast, intl, runtime: { navigate } } = this.props
-    if (showToast) {
-      showToast({
-        action: {
-          label: intl.formatMessage({ id: 'wishlist-see' }),
-          onClick: () => navigate({
-            page: 'store.listsWithId',
-            params: { listId },
-          }),
-        },
-        message: intl.formatMessage(
-          { id: 'wishlist-copied' },
-          { listName }
-        ),
-      })
-    }
+    showToast({
+      action: {
+        label: intl.formatMessage({ id: 'wishlist-see' }),
+        onClick: () => navigate({
+          page: 'store.listsWithId',
+          params: { listId },
+        }),
+      },
+      message: intl.formatMessage(
+        { id: 'wishlist-copied' },
+        { listName }
+      ),
+    })
   }
 
 }
 
-export default withToast(
-  withRuntimeContext(
-    injectIntl(
-      withApollo(ItemDetails)
-    )
-  )
-)
+export default compose(
+  withToast,
+  withApollo,
+  injectIntl,
+  withRuntimeContext
+)(ItemDetails)

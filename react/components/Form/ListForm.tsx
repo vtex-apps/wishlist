@@ -6,12 +6,11 @@ import wishlist from '../../wishList.css'
 
 const LIST_NAME_MINIMUM_LENGTH = 1
 
-interface ListFormProps {
+interface ListFormProps extends InjectedIntlProps {
   buttonLabel: string
   onSubmit: (listData: List) => void
   list?: List
   isLoading?: boolean
-  intl?: IntlShape
 }
 
 interface ListFormState {
@@ -21,7 +20,7 @@ interface ListFormState {
   isChanged?: boolean
 }
 
-class ListForm extends Component<ListFormProps & InjectedIntlProps, ListFormState> {
+class ListForm extends Component<ListFormProps, ListFormState> {
   public state: ListFormState = {
     listData: {},
   }

@@ -13,7 +13,7 @@ interface BottomBarProps {
 /**
  * Bottom bar component.
  */
-export default class BottomBar extends Component<BottomBarProps> {
+class BottomBar extends Component<BottomBarProps> {
   public componentDidMount() {
     document.body.classList.add(OPEN_BOTTOM_BAR_CLASS)
   }
@@ -46,3 +46,5 @@ export default class BottomBar extends Component<BottomBarProps> {
     )
   }
 }
+
+export default BottomBar

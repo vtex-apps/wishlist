@@ -1,23 +1,24 @@
-import { map } from 'ramda'
 import React, { Component, Fragment, ReactNode } from 'react'
-import { FormattedMessage, InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+
+import { map } from 'ramda'
+import { compose } from 'react-apollo'
+import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import { Button } from 'vtex.styleguide'
 import ItemDetails from './ItemDetails'
 
 import wishlist from '../../wishList.css'
 
-interface ContentProps {
+interface ContentProps extends InjectedIntlProps {
   items: any
   lists?: any
   hideItemsQuantityLabel?: boolean
   onItemSelect: (itemId: string, product: any, isSelected: boolean) => void
   onItemRemove: (id: string) => Promise<any>
-  intl?: IntlShape
-  runtime?: any
+  runtime: any
 }
 
-class Content extends Component<ContentProps & InjectedIntlProps, {}> {
+class Content extends Component<ContentProps, {}> {
   public render(): ReactNode {
     const { items, hideItemsQuantityLabel } = this.props
     return (
@@ -80,4 +81,7 @@ class Content extends Component<ContentProps & InjectedIntlProps, {}> {
 
 }
 
-export default withRuntimeContext(injectIntl(Content))
+export default compose(
+  withRuntimeContext,
+  injectIntl
+)(Content)

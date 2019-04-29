@@ -2,10 +2,9 @@ import React, { Component, Fragment, ReactNode } from 'react'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import { Spinner } from 'vtex.styleguide'
 
-import ApolloClient from 'apollo-client'
 import { concat, filter, findIndex, map, update } from 'ramda'
-import { withApollo, WithApolloClient } from 'react-apollo'
-import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import { compose, withApollo, WithApolloClient } from 'react-apollo'
+import { InjectedIntlProps, injectIntl } from 'react-intl'
 
 import {
   createList,
@@ -26,13 +25,11 @@ interface ListsPageState {
   isLoading?: boolean
 }
 
-interface ListsPageProps {
-  client: ApolloClient<any>
+interface ListsPageProps extends InjectedIntlProps, WithApolloClient<any> {
   runtime: any
-  intl: IntlShape
 }
 
-class ListsPage extends Component<ListsPageProps & WithApolloClient<any> & InjectedIntlProps, ListsPageState> {
+class ListsPage extends Component<ListsPageProps, ListsPageState> {
   public state: ListsPageState = {
     isLoading: true,
   }
@@ -139,13 +136,14 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any> & Injec
                 items: [],
                 name: intl.formatMessage({ id: 'wishlist-default-list-name' }),
               })
-                .then((r: any) => {
+                .then((responseCreateList: any) => {
+                  const list = responseCreateList.data.createList
                   this.setState({
                     isLoading: false,
-                    lists: [r.data.createList],
-                    selectedListId: r.data.createList.id,
+                    lists: [list],
+                    selectedListId: list.id,
                   })
-                  saveListIdInLocalStorage(r.data.createList.id)
+                  saveListIdInLocalStorage(list.id)
                 })
             } else {
               this.setState({ isLoading: false, lists, selectedListId: params.listId })
@@ -163,4 +161,8 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any> & Injec
   }
 }
 
-export default injectIntl(withRuntimeContext(withApollo(ListsPage)))
+export default compose(
+  injectIntl,
+  withRuntimeContext,
+  withApollo
+)(ListsPage)

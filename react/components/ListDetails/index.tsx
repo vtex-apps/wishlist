@@ -1,8 +1,8 @@
-import { ApolloClient } from 'apollo-client'
-import { append, filter, map } from 'ramda'
 import React, { Component, Fragment, ReactNode } from 'react'
-import { withApollo, WithApolloClient } from 'react-apollo'
-import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+
+import { append, filter, map } from 'ramda'
+import { compose, withApollo, WithApolloClient } from 'react-apollo'
+import { InjectedIntlProps, injectIntl } from 'react-intl'
 import { orderFormConsumer } from 'vtex.store-resources/OrderFormContext'
 import { deleteList, getListDetailed, updateList } from '../../GraphqlClient'
 import DialogMessage from '../Dialog/DialogMessage'
@@ -13,10 +13,6 @@ import MenuOptions from '../MenuOptions/MenuOptions'
 import Content from './Content'
 import Footer from './Footer'
 
-enum Size {
-  large, small,
-}
-
 interface ListDetailState {
   list?: any
   isLoading: boolean
@@ -26,16 +22,14 @@ interface ListDetailState {
   showUpdateList?: boolean
 }
 
-interface ListDetailProps {
+interface ListDetailProps extends InjectedIntlProps, WithApolloClient<any> {
   listId: string
   onClose: (lists?: any) => void
   onDeleted?: (id: string) => void
-  client?: ApolloClient<any>
   orderFormContext?: any
-  intl?: IntlShape
 }
 
-class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApolloClient<{}>, ListDetailState> {
+class ListDetail extends Component<ListDetailProps, ListDetailState> {
   public state: ListDetailState = {
     isLoading: true,
     selectedItems: [],
@@ -45,15 +39,13 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
   public componentDidMount(): void {
     const { listId, client } = this.props
     this.isComponentMounted = true
-    if (client) {
-      getListDetailed(client, listId)
-        .then(response => {
-          if (this.isComponentMounted) {
-            this.setState({ list: response.data.list, isLoading: false })
-          }
-        })
-        .catch(err => console.error(err))
-    }
+    getListDetailed(client, listId)
+      .then(response => {
+        if (this.isComponentMounted) {
+          this.setState({ list: response.data.list, isLoading: false })
+        }
+      })
+      .catch(err => console.error(err))
   }
 
   public componentWillUnmount() {
@@ -185,4 +177,8 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
 
 }
 
-export default withApollo<ListDetailProps, {}>(orderFormConsumer(injectIntl(ListDetail)))
+export default compose(
+  withApollo,
+  orderFormConsumer,
+  injectIntl
+)(ListDetail)

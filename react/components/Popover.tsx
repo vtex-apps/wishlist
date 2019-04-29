@@ -1,18 +1,17 @@
 import classNames from 'classnames'
-import React, { Component, ReactNode } from 'react'
+import React from 'react'
 import OutsideClickHandler from 'react-outside-click-handler'
 
 import wishList from '../wishList.css'
 
 interface PopoverProps {
   onOutsideClick: () => void
-  children?: ReactNode
+  children: JSX.Element
   left?: boolean
 }
 
-class Popover extends Component<PopoverProps, {}> {
-  public render(): ReactNode {
-    const { children, onOutsideClick, left } = this.props
+export default (props: PopoverProps): JSX.Element => {
+  const { children, onOutsideClick, left } = props
     const className = classNames(`${wishList.popover} absolute z-max`, {
       [`${wishList.popoverLeft} left-0 ml4 shadow-3 tl`]: left,
       'right-0': !left,
@@ -24,7 +23,4 @@ class Popover extends Component<PopoverProps, {}> {
         </div>
       </OutsideClickHandler>
     )
-  }
 }
-
-export default Popover

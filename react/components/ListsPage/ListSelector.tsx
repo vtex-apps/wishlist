@@ -7,7 +7,7 @@ import ListItem from '../ListItem'
 interface ListSelectorProps {
   lists: any
   selectedListId: string
-  runtime?: any
+  runtime: any
 }
 
 class ListSelector extends Component<ListSelectorProps, {}> {

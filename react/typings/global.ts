@@ -17,6 +17,7 @@ interface List {
   id?: string
   name?: string
   isPublic?: boolean
+  isEditable?: boolean
   owner?: string
   items?: ListItem[]
 }

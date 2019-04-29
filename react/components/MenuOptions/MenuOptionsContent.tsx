@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 
 import classNames from 'classnames'
 import { map } from 'ramda'
@@ -10,9 +10,8 @@ interface MenuOptionsContentProps {
   onClose: () => void
 }
 
-class MenuOptionsContent extends Component<MenuOptionsContentProps, {}> {
-  public render(): ReactNode {
-    const { onClose, options } = this.props
+export default (props: MenuOptionsContentProps): JSX.Element => {
+  const { onClose, options } = props
     return (
       <Popover onOutsideClick={onClose}>
         <div className="bg-base shadow-3" onClick={onClose}>
@@ -30,7 +29,4 @@ class MenuOptionsContent extends Component<MenuOptionsContentProps, {}> {
         </div>
       </Popover>
     )
-  }
 }
-
-export default MenuOptionsContent

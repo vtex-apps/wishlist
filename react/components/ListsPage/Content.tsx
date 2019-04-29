@@ -4,8 +4,7 @@ import classNames from 'classnames'
 import { append, filter, map, tail } from 'ramda'
 import { Spinner } from 'vtex.styleguide'
 
-import ApolloClient from 'apollo-client'
-import { withApollo, WithApolloClient } from 'react-apollo'
+import { withApollo, WithApolloClient, compose } from 'react-apollo'
 import { getListDetailed, updateList } from '../../GraphqlClient'
 import ListItems from '../ListDetails/Content'
 import Footer from '../ListDetails/Footer'
@@ -13,13 +12,12 @@ import Header from './Header'
 
 import wishlist from '../../wishList.css'
 
-interface ContentProps {
+interface ContentProps extends WithApolloClient<any> {
   listId: string
   lists?: any
   onListCreated: (list: List) => void
   onListUpdated: (list: List) => void
   onListDeleted: () => void
-  client?: ApolloClient<any>
 }
 
 interface ContentState {
@@ -28,7 +26,7 @@ interface ContentState {
   isLoading?: boolean
 }
 
-class Content extends Component<ContentProps & WithApolloClient<any>, ContentState> {
+class Content extends Component<ContentProps, ContentState> {
   public state: ContentState = {
     isLoading: true,
     selectedItems: [],
@@ -132,15 +130,13 @@ class Content extends Component<ContentProps & WithApolloClient<any>, ContentSta
   private fetchListDetails(): void {
     const { client, listId } = this.props
     this.setState({ isLoading: true, list: null })
-    if (client) {
-      getListDetailed(client, listId)
-        .then(response => {
-          if (this.isComponentMounted) {
-            this.setState({ list: response.data.list, isLoading: false })
-          }
-        })
-    }
+    getListDetailed(client, listId)
+      .then(response => {
+        if (this.isComponentMounted) {
+          this.setState({ list: response.data.list, isLoading: false })
+        }
+      })
   }
 }
 
-export default withApollo(Content)
+export default compose(withApollo)(Content)

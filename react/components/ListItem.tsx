@@ -9,7 +9,7 @@ import {
 import DialogMessage from './Dialog/DialogMessage'
 import MenuOptions from './MenuOptions/MenuOptions'
 
-interface ListItemProps {
+interface ListItemProps extends InjectedIntlProps {
   id: number
   list: List
   isDefault: boolean
@@ -21,14 +21,13 @@ interface ListItemProps {
   onSelected?: (id: number, isSelected?: boolean) => void
   onDeleted?: (listId: string) => Promise<any>
   onUpdated?: (index: number) => void
-  intl?: IntlShape
 }
 
 interface ListItemState {
   showDeleteDialog?: boolean
 }
 
-class ListItem extends Component<ListItemProps & InjectedIntlProps, {}> {
+class ListItem extends Component<ListItemProps, {}> {
   public state: ListItemState = {}
 
   private options: Option[] = [
