@@ -3,7 +3,7 @@ import { Spinner } from 'vtex.styleguide'
 
 const SPINNER_SIZE = 20
 
-export default (): ReactNode => {
+const Loading = (): ReactNode => {
   return (
     <div className="flex justify-center pt4">
       <span className="dib c-muted-1">
@@ -12,3 +12,5 @@ export default (): ReactNode => {
     </div>
   )
 }
+
+export default Loading

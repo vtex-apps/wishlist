@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { isMobile } from 'react-device-detect'
 import Dialog from '../Dialog/index'
 import Screen from '../Screen'
@@ -10,7 +10,7 @@ interface FormViewProps {
   children: JSX.Element
 }
 
-export default ({ children, onClose }: FormViewProps): JSX.Element => (
+const FormView = ({ children, onClose }: FormViewProps): JSX.Element => (
   isMobile ? (
     <Screen>
       {children}
@@ -23,3 +23,5 @@ export default ({ children, onClose }: FormViewProps): JSX.Element => (
       </Dialog>
     )
 )
+
+export default FormView

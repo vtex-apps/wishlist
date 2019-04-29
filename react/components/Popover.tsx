@@ -10,7 +10,7 @@ interface PopoverProps {
   left?: boolean
 }
 
-export default (props: PopoverProps): JSX.Element => {
+const Popover = (props: PopoverProps): JSX.Element => {
   const { children, onOutsideClick, left } = props
   const className = classNames(styles.popover, 'absolute z-max', {
     [`${styles.popoverLeft} left-0 ml4 shadow-3 tl`]: left,
@@ -24,3 +24,5 @@ export default (props: PopoverProps): JSX.Element => {
     </OutsideClickHandler>
   )
 }
+
+export default Popover

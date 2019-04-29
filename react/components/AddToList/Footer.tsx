@@ -10,7 +10,7 @@ interface FooterProps {
   onClick: () => void
 }
 
-export default ({ isLoading, changedLists, onClick }: FooterProps): JSX.Element => (
+const Footer = ({ isLoading, changedLists, onClick }: FooterProps): JSX.Element => (
   <div className={styles.applyButton}>
     <Button
       vatiation="primary"
@@ -23,3 +23,5 @@ export default ({ isLoading, changedLists, onClick }: FooterProps): JSX.Element 
     </Button>
   </div>
 )
+
+export default Footer

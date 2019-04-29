@@ -1,8 +1,10 @@
 import React from 'react'
 import { ExtensionPoint } from 'vtex.render-runtime'
 
-export default () => {
+const ContainerWrapper = () => {
   return (
     <ExtensionPoint id="lists" />
   )
 }
+
+export default ContainerWrapper

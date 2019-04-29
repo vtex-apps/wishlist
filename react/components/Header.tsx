@@ -14,7 +14,7 @@ interface HeaderProps {
 const ICON_SIZE = 20
 const CLOSE_ICON_SIZE = 23
 
-export default (props: HeaderProps): JSX.Element => {
+const Header = (props: HeaderProps): JSX.Element => {
   const { title, onClose, action, children, showIconBack } = props
     return (
       <div className="flex flex-row pa4 items-center bb bt b--muted-4">
@@ -40,3 +40,5 @@ export default (props: HeaderProps): JSX.Element => {
       </div>
     )
 }
+
+export default Header

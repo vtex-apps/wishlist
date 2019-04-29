@@ -10,7 +10,7 @@ interface MenuOptionsContentProps {
   onClose: () => void
 }
 
-export default (props: MenuOptionsContentProps): JSX.Element => {
+const MenuOptionsContent = (props: MenuOptionsContentProps): JSX.Element => {
   const { onClose, options } = props
   return (
     <Popover onOutsideClick={onClose}>
@@ -30,3 +30,5 @@ export default (props: MenuOptionsContentProps): JSX.Element => {
     </Popover>
   )
 }
+
+export default MenuOptionsContent

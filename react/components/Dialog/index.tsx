@@ -7,7 +7,7 @@ interface DialogProps {
   children: JSX.Element
 }
 
-export default ({ onClose, children }: DialogProps): JSX.Element => (
+const Dialog = ({ onClose, children }: DialogProps): JSX.Element => (
   createPortal(
     <div className="vh-100 vw-100 fixed top-0 left-0 z-max">
       <div
@@ -24,3 +24,5 @@ export default ({ onClose, children }: DialogProps): JSX.Element => (
     document.body
   )
 )
+
+export default Dialog

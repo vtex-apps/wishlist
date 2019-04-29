@@ -11,7 +11,7 @@ interface AddToListProps {
   onAddToListsFail: () => void
 }
 
-export default (props: AddToListProps): JSX.Element => {
+const AddToList = (props: AddToListProps): JSX.Element => {
   const { onClose } = props
   const content = <ListMenuContent {...props} />
   return isMobile ? (
@@ -22,3 +22,5 @@ export default (props: AddToListProps): JSX.Element => {
       {content}
     </Popover>
 }
+
+export default AddToList
