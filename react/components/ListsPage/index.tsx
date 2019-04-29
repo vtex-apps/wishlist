@@ -106,7 +106,7 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any> & Injec
     this.setState({ lists: concat(lists, [list]) })
   }
 
-  private onListUpdated = (listUpdated: List): void => {
+  private handleListUpdated = (listUpdated: List): void => {
     const { lists } = this.state
     const index = findIndex((list: List) => list.id === listUpdated.id, lists)
     this.setState({
