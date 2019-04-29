@@ -101,7 +101,7 @@ class ListsPage extends Component<ListsPageProps & WithApolloClient<any> & Injec
     )
   }
 
-  private onListCreated = (list: List): void => {
+  private handleListCreated = (list: List): void => {
     const { lists } = this.state
     this.setState({ lists: concat(lists, [list]) })
   }
