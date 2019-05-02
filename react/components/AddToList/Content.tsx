@@ -19,8 +19,10 @@ import styles from '../../wishList.css'
 const DEFAULT_LIST_INDEX = 0
 const QUANTITY_WITH_ONLY_DEFAULT_LIST = 1
 
-interface AddToListContentProps extends InjectedIntlProps, WithApolloClient<any> {
-  product: any
+interface AddToListContentProps
+  extends InjectedIntlProps,
+    WithApolloClient<{}> {
+  product: ListItem
   onClose: () => void
   onAddToListsSuccess: () => void
   onAddToListsFail: () => void
@@ -30,13 +32,16 @@ interface AddToListContentState {
   isLoading: boolean
   isAdding?: boolean
   showCreateList?: boolean
-  lists: any[]
+  lists: List[]
   changedLists: number[]
   showListDetails?: boolean
   selectedListId: string
 }
 
-class AddToListContent extends Component<AddToListContentProps, AddToListContentState> {
+class AddToListContent extends Component<
+  AddToListContentProps,
+  AddToListContentState
+> {
   public state: AddToListContentState = {
     changedLists: [],
     isLoading: true,
@@ -47,7 +52,7 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
   public componentDidMount(): void {
     const { client } = this.props
     getListsFromLocaleStorage(client)
-      .then((response: any) => {
+      .then((response: ResponseList[]) => {
         const lists = map(item => item.data.list, response)
         this.setState({ isLoading: false, lists })
       })
@@ -76,19 +81,17 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
           onClose={onClose}
           action={() => this.setState({ showCreateList: true })}
         />
-        <div className={className}>
-          {this.renderMainContent()}
-        </div>
+        <div className={className}>{this.renderMainContent()}</div>
         {lists && lists.length > QUANTITY_WITH_ONLY_DEFAULT_LIST && (
           <Footer
             changedLists={changedLists}
             isLoading={isAdding}
-            onClick={this.addProductTochangedLists}
+            onClick={this.handleAddProductTochangedLists}
           />
         )}
         {showCreateList && (
           <CreateList
-            onFinishAdding={this.onListCreated}
+            onFinishAdding={this.handleListCreated}
             onClose={() => this.setState({ showCreateList: false })}
           />
         )}
@@ -103,46 +106,59 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
     )
   }
 
-  private onListCreated = (list: any): void => {
+  private handleListCreated = (list: List): void => {
     const { lists } = this.state
     this.setState({ showCreateList: false, lists: append(list, lists) })
   }
 
-  private addProductTochangedLists = (): void => {
-    const { client, onClose, onAddToListsSuccess, onAddToListsFail } = this.props
+  private handleAddProductTochangedLists = (): void => {
+    const {
+      client,
+      onClose,
+      onAddToListsSuccess,
+      onAddToListsFail,
+    } = this.props
     const { lists, changedLists } = this.state
     this.setState({ isAdding: true })
-    Promise.all(map(index => {
-      const { id } = lists[index]
-      return updateList(client, id || '', { ...lists[index] })
-    }, changedLists))
+    Promise.all(
+      map(index => {
+        const { id } = lists[index]
+        return updateList(client, id || '', { ...lists[index] })
+      }, changedLists)
+    )
       .then(() => {
         onClose()
-        setTimeout(onAddToListsSuccess, 500)
+        onAddToListsSuccess()
       })
       .catch(err => {
         console.error(err)
         onClose()
-        setTimeout(onAddToListsFail, 500)
+        onAddToListsFail()
       })
   }
 
   private containsProduct = (list: List): boolean => {
     const { product } = this.props
-    return filter((item: any) =>
-      item.productId === product.productId &&
-      item.skuId === product.skuId, list.items || {})
-      .length > 0
+    return (
+      filter(
+        (item: ListItem) =>
+          item.productId === product.productId && item.skuId === product.skuId,
+        list.items || []
+      ).length > 0
+    )
   }
 
-  private updateChangedLists = (listIndex: number, isSelected?: boolean): void => {
+  private handleUpdateChangedLists = (
+    listIndex: number,
+    isSelected?: boolean
+  ): void => {
     const { changedLists } = this.state
     if (listIndex !== DEFAULT_LIST_INDEX) {
       const index = indexOf(listIndex, changedLists)
-      const listsUpdated = !isSelected ?
-        this.addProductToList(listIndex) :
-        this.removeProductFromList(listIndex)
-      let changedListsUpdated: any = []
+      const listsUpdated = !isSelected
+        ? this.addProductToList(listIndex)
+        : this.removeProductFromList(listIndex)
+      let changedListsUpdated: number[] = []
       if (index !== -1) {
         changedListsUpdated = remove(index, 1, changedLists)
       } else {
@@ -163,7 +179,10 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
 
   private handleOnDeleted = (listId: string): void => {
     const { lists } = this.state
-    const listsWithDeletedList = filter(list => path(['id'], list) !== listId, lists)
+    const listsWithDeletedList = filter(
+      list => path(['id'], list) !== listId,
+      lists
+    )
     this.setState({ lists: listsWithDeletedList })
   }
 
@@ -176,21 +195,28 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
   }
 
   private removeProductFromList = (index: number): List[] => {
-    const { product: { productId, skuId } } = this.props
+    const {
+      product: { productId, skuId },
+    } = this.props
     const { lists } = this.state
     const list = lists[index]
-    const items = filter((item: any) => item.productId !== productId || item.skuId !== skuId, list.items || [])
+    const items = filter(
+      (item: ListItem) => item.productId !== productId || item.skuId !== skuId,
+      list.items || []
+    )
     return update(index, { ...list, items }, lists)
   }
 
-  private handleOnCloseListDetails = (listUpdated?: any): void => {
+  private handleOnCloseListDetails = (listUpdated?: List): void => {
     const { lists } = this.state
-    const listsUpdated = listUpdated ? map(list => {
-      if (list.id === listUpdated.id) {
-        return listUpdated
-      }
-      return list
-    }, lists) : lists
+    const listsUpdated = listUpdated
+      ? map(list => {
+          if (list.id === listUpdated.id) {
+            return listUpdated
+          }
+          return list
+        }, lists)
+      : lists
     this.setState({ showListDetails: false, lists: listsUpdated })
   }
 
@@ -198,18 +224,19 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
     const { lists } = this.state
     return (
       <div className={`${styles.addToListListsToSwitch} flex flex-column`}>
-        {
-          lists.map((list: List, index: number) => (
-            <ListItem
-              key={index}
-              id={index}
-              list={list}
-              isDefault={index === DEFAULT_LIST_INDEX}
-              isSelected={index === DEFAULT_LIST_INDEX || this.containsProduct(list)}
-              onClick={this.handleShowListDetails}
-              onSelected={this.updateChangedLists} />
-          ))
-        }
+        {lists.map((list: List, index: number) => (
+          <ListItem
+            key={index}
+            id={index}
+            list={list}
+            isDefault={index === DEFAULT_LIST_INDEX}
+            isSelected={
+              index === DEFAULT_LIST_INDEX || this.containsProduct(list)
+            }
+            onClick={this.handleShowListDetails}
+            onSelected={this.handleUpdateChangedLists}
+          />
+        ))}
       </div>
     )
   }
@@ -218,7 +245,6 @@ class AddToListContent extends Component<AddToListContentProps, AddToListContent
     const { isLoading } = this.state
     return isLoading ? renderLoading() : this.renderSwitchLists()
   }
-
 }
 
 export default compose(

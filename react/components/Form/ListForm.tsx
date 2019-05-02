@@ -1,5 +1,5 @@
 import React, { Component, FormEvent, Fragment, ReactNode } from 'react'
-import { FormattedMessage, InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
 import { Button, Input, Toggle } from 'vtex.styleguide'
 
 import styles from '../../wishList.css'
@@ -34,19 +34,30 @@ class ListForm extends Component<ListFormProps, ListFormState> {
 
   public render(): ReactNode {
     const { intl, onSubmit, isLoading, buttonLabel } = this.props
-    const { isValid, isChanged, listData: { name, isPublic }, listData } = this.state
+    const {
+      isValid,
+      isChanged,
+      listData: { name, isPublic },
+      listData,
+    } = this.state
     return (
       <Fragment>
         <div className={`${styles.form} w-100 gray f5 pv5 ph5`}>
           <div className={`${styles.nameInputContainer} tl`}>
             <Input
               value={name}
-              placeholder={intl.formatMessage({ id: 'wishlist-list-name-placeholder' })}
+              placeholder={intl.formatMessage({
+                id: 'wishlist-list-name-placeholder',
+              })}
               label={intl.formatMessage({ id: 'wishlist-list-name-label' })}
-              onChange={this.onChangeName}
+              onChange={this.handleChangeName}
             />
           </div>
-          <div className={`${styles.isPublicContainer} flex flex-row justify-between tl mt5`}>
+          <div
+            className={`${
+              styles.isPublicContainer
+            } flex flex-row justify-between tl mt5`}
+          >
             <div className="flex flex-column">
               <span className={`${styles.isPublicLabel} c-on-base mt1 t-small`}>
                 <FormattedMessage id="wishlist-is-public" />
@@ -58,11 +69,15 @@ class ListForm extends Component<ListFormProps, ListFormState> {
             <Toggle
               size="regular"
               checked={!isPublic}
-              onChange={this.onChangePublic}
+              onChange={this.handleChangePublic}
             />
           </div>
         </div>
-        <div className={`${styles.createListButtonContainer} flex flex-row justify-center pb5`}>
+        <div
+          className={`${
+            styles.createListButtonContainer
+          } flex flex-row justify-center pb5`}
+        >
           <Button
             variation="primary"
             size="small"
@@ -77,34 +92,31 @@ class ListForm extends Component<ListFormProps, ListFormState> {
     )
   }
 
-  private onChangeName = (event: FormEvent<HTMLInputElement>): void => {
+  private handleChangeName = (event: FormEvent<HTMLInputElement>): void => {
     const { listData } = this.state
     const { list } = this.props
     const target = event.target as HTMLInputElement
     const name = target.value
     this.setState({
-      isChanged: !list || (list.name !== name),
+      isChanged: !list || list.name !== name,
       isValid: this.isNameValid(name),
       listData: { isPublic: listData.isPublic, name },
     })
   }
 
-  private onChangePublic = (): void => {
+  private handleChangePublic = (): void => {
     const { isPublic, name } = this.state.listData
     const { list } = this.props
-    this.setState(
-      {
-        isChanged: !list || (list.isPublic !== !isPublic),
-        isValid: this.isNameValid(name),
-        listData: { ...this.state.listData, isPublic: !isPublic },
-      }
-    )
+    this.setState({
+      isChanged: !list || list.isPublic !== !isPublic,
+      isValid: this.isNameValid(name),
+      listData: { ...this.state.listData, isPublic: !isPublic },
+    })
   }
 
-  private isNameValid = (name: string | undefined): any => {
-    return (name && name.length >= LIST_NAME_MINIMUM_LENGTH)
+  private isNameValid = (name?: string): boolean => {
+    return name !== undefined && name.length >= LIST_NAME_MINIMUM_LENGTH
   }
-
 }
 
 export default injectIntl(ListForm)

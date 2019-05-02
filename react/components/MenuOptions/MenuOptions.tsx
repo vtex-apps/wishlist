@@ -26,14 +26,14 @@ class MenuOptions extends Component<MenuOptionsProps, MenuOptionsState> {
     const { options, size } = this.props
     return (
       <div className="flex items-center c-action-primary pointer relative">
-        <div
-          onClick={() => this.setState({ showContent: true })}>
+        <div onMouseEnter={() => this.setState({ showContent: true })}>
           <IconOptionsDots size={size} />
         </div>
         {showContent && (
           <MenuOptionsContent
             onClose={() => this.setState({ showContent: false })}
-            options={options} />
+            options={options}
+          />
         )}
       </div>
     )

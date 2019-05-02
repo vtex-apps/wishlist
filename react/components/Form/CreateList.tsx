@@ -9,7 +9,7 @@ import ListForm from './ListForm'
 
 import styles from '../../wishList.css'
 
-interface CreateListProps extends InjectedIntlProps, WithApolloClient<any> {
+interface CreateListProps extends InjectedIntlProps, WithApolloClient<{}> {
   onFinishAdding: (list: List) => void
   onClose: () => void
 }
@@ -30,7 +30,6 @@ class CreateList extends Component<CreateListProps, CreateListState> {
     this.isComponentMounted = false
   }
 
-
   public render() {
     const { onClose, intl } = this.props
     const { isLoading } = this.state
@@ -44,7 +43,7 @@ class CreateList extends Component<CreateListProps, CreateListState> {
           />
           <ListForm
             buttonLabel={intl.formatMessage({ id: 'wishlist-add-button' })}
-            onSubmit={this.onSubmit}
+            onSubmit={this.handleSubmit}
             isLoading={isLoading}
           />
         </div>
@@ -52,11 +51,11 @@ class CreateList extends Component<CreateListProps, CreateListState> {
     )
   }
 
-  private onSubmit = (listData: List): void => {
+  private handleSubmit = (listData: List): void => {
     const { client } = this.props
     this.setState({ isLoading: true })
     createList(client, { ...listData, items: [], isEditable: true })
-      .then(response => {
+      .then((response: ResponseList) => {
         this.props.onFinishAdding(response.data.createList)
         saveListIdInLocalStorage(response.data.createList.id)
         if (this.isComponentMounted) {
@@ -67,7 +66,6 @@ class CreateList extends Component<CreateListProps, CreateListState> {
         console.error(err)
       })
   }
-
 }
 
 export default compose(

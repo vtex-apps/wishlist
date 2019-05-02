@@ -18,9 +18,7 @@ const Popover = (props: PopoverProps): JSX.Element => {
   })
   return (
     <OutsideClickHandler onOutsideClick={onOutsideClick}>
-      <div className={className}>
-        {children}
-      </div>
+      <div className={className}>{children}</div>
     </OutsideClickHandler>
   )
 }

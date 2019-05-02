@@ -6,11 +6,15 @@ import styles from '../../wishList.css'
 
 interface FooterProps {
   isLoading?: boolean
-  changedLists: any[]
+  changedLists: number[]
   onClick: () => void
 }
 
-const Footer = ({ isLoading, changedLists, onClick }: FooterProps): JSX.Element => (
+const Footer = ({
+  isLoading,
+  changedLists,
+  onClick,
+}: FooterProps): JSX.Element => (
   <div className={styles.applyButton}>
     <Button
       vatiation="primary"

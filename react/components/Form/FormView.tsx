@@ -10,18 +10,13 @@ interface FormViewProps {
   children: JSX.Element
 }
 
-const FormView = ({ children, onClose }: FormViewProps): JSX.Element => (
+const FormView = ({ children, onClose }: FormViewProps): JSX.Element =>
   isMobile ? (
-    <Screen>
-      {children}
-    </Screen>
+    <Screen>{children}</Screen>
   ) : (
-      <Dialog onClose={onClose}>
-        <div className={styles.formViewDialog}>
-          {children}
-        </div>
-      </Dialog>
-    )
-)
+    <Dialog onClose={onClose}>
+      <div className={styles.formViewDialog}>{children}</div>
+    </Dialog>
+  )
 
 export default FormView

@@ -38,7 +38,10 @@ class DialogMessage extends Component<DialogMessageProps, DialogMessageState> {
               <Button
                 variation="primary"
                 size="small"
-                onClick={() => { this.setState({ isLoading: true }); onSuccess() }}
+                onClick={() => {
+                  this.setState({ isLoading: true })
+                  onSuccess()
+                }}
                 isLoading={isLoading}
               >
                 <FormattedMessage id="wishlist-dialog-confirm" />

@@ -1,4 +1,3 @@
-
 import { map } from 'ramda'
 import React, { Component } from 'react'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
@@ -11,11 +10,11 @@ import ListForm from './ListForm'
 
 import styles from '../../wishList.css'
 
-interface UpdateListProps extends InjectedIntlProps, WithApolloClient<any> {
+interface UpdateListProps extends InjectedIntlProps, WithApolloClient<{}> {
   list: List
-  onFinishUpdate: (list: any) => void
+  onFinishUpdate: (list: List) => void
   onClose: () => void
-  showToast?: ({ }) => void
+  showToast?: (input: ToastInput) => void
 }
 
 interface UpdateListState {
@@ -34,7 +33,6 @@ class UpdateList extends Component<UpdateListProps, UpdateListState> {
     this.isComponentMounted = false
   }
 
-
   public render() {
     const { onClose, intl, list } = this.props
     const { isLoading } = this.state
@@ -49,7 +47,7 @@ class UpdateList extends Component<UpdateListProps, UpdateListState> {
           <ListForm
             list={list}
             buttonLabel={intl.formatMessage({ id: 'wishlist-save' })}
-            onSubmit={this.onSubmit}
+            onSubmit={this.handleSubmit}
             isLoading={isLoading}
           />
         </div>
@@ -57,36 +55,47 @@ class UpdateList extends Component<UpdateListProps, UpdateListState> {
     )
   }
 
-  private itemsToItemsInput = (items: any): [any] => map(
-    ({ id, productId, skuId, quantity }) => ({ id, productId, skuId, quantity }),
-    items)
+  private itemsToItemsInput = (items: ListItem[] | undefined): ListItem[] =>
+    items
+      ? map(
+          ({ id, productId, skuId, quantity }) => ({
+            id,
+            productId,
+            skuId,
+            quantity,
+          }),
+          items
+        )
+      : []
 
-  private onSubmit = ({ name, isPublic }: List): void => {
-    const { client, list: { id, items }, showToast, intl } = this.props
-    this.setState({ isLoading: true })
-    updateList(
+  private handleSubmit = ({ name, isPublic }: List): void => {
+    const {
       client,
-      id || '',
-      {
-        isPublic,
-        items: this.itemsToItemsInput(items),
-        name,
-      }
-    )
-      .then((response: any) => {
+      list: { id, items },
+      showToast,
+      intl,
+    } = this.props
+    this.setState({ isLoading: true })
+    updateList(client, id || '', {
+      isPublic,
+      items: this.itemsToItemsInput(items),
+      name,
+    })
+      .then((response: ResponseList) => {
         if (this.isComponentMounted) {
           this.setState({ isLoading: false })
         }
         if (showToast) {
-          showToast({ message: intl.formatMessage({ id: 'wishlist-list-updated' }) })
+          showToast({
+            message: intl.formatMessage({ id: 'wishlist-list-updated' }),
+          })
         }
         this.props.onFinishUpdate({ ...response.data.updateList, items })
       })
-      .catch((err: any) => {
+      .catch((err: {}) => {
         console.error(err)
       })
   }
-
 }
 
 export default compose(

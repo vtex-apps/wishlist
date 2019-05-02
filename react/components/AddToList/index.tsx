@@ -5,7 +5,7 @@ import Popover from '../Popover'
 import ListMenuContent from './Content'
 
 interface AddToListProps {
-  product: any
+  product: ListItem
   onClose: () => void
   onAddToListsSuccess: () => void
   onAddToListsFail: () => void
@@ -15,12 +15,12 @@ const AddToList = (props: AddToListProps): JSX.Element => {
   const { onClose } = props
   const content = <ListMenuContent {...props} />
   return isMobile ? (
-    <BottomBar onOutsideClick={onClose}>
-      {content}
-    </BottomBar>
-  ) : <Popover onOutsideClick={onClose} left>
+    <BottomBar onOutsideClick={onClose}>{content}</BottomBar>
+  ) : (
+    <Popover onOutsideClick={onClose} left>
       {content}
     </Popover>
+  )
 }
 
 export default AddToList

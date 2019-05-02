@@ -30,13 +30,12 @@ $RECYCLE.BIN/
 yarn-error.log
 
 # App specific
-node_modules/
+**/node_modules/
 docs/_book/
 .tmp
 .idea
 npm-debug.log
 .build/
 lib
-.eslintrc
 .vscode/
 coverage/

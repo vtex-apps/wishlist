@@ -1,4 +1,3 @@
-import { ApolloClient } from 'apollo-client'
 import React, { Component } from 'react'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
@@ -11,11 +10,11 @@ import MyLists from './MyLists'
 
 import { addProductToDefaultList, getListsIdFromCookies } from './GraphqlClient'
 
-interface AddProductBtnProps extends InjectedIntlProps, WithApolloClient<any> {
+interface AddProductBtnProps extends InjectedIntlProps, WithApolloClient<{}> {
   large?: boolean
-  product: Product
-  showToast: ({ }) => void
-  runtime: any
+  product: ListItem
+  showToast: (toastInput: ToastInput) => void
+  runtime: Runtime
 }
 
 interface AddProductBtnState {
@@ -37,21 +36,23 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
       <div className="relative">
         <div
           className="pa4 pointer hover-bg-light-gray flex items-center"
-          onClick={this.onAddProductClick}
+          role="presentation"
+          onMouseDown={this.handleAddProductClick}
+          onTouchStart={this.handleAddProductClick}
         >
           {isLoading ? (
             <Spinner size={17} />
           ) : (
-              <IconHeart
-                width={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
-                height={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
-              />
-            )}
+            <IconHeart
+              width={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
+              height={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
+            />
+          )}
         </div>
         {showContent && (
           <AddToList
-            onAddToListsFail={this.onAddToListsFail}
-            onAddToListsSuccess={this.onAddToListsSuccess}
+            onAddToListsFail={this.handleAddToListsFail}
+            onAddToListsSuccess={this.handleAddToListsSuccess}
             product={product}
             onClose={() => this.setState({ showContent: false })}
           />
@@ -65,17 +66,22 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
 
   private handleAddProductSuccess = (): void => {
     const [listId] = getListsIdFromCookies()
-    const { showToast, intl, runtime: { navigate } } = this.props
+    const {
+      showToast,
+      intl,
+      runtime: { navigate },
+    } = this.props
     this.setState({ showContent: isMobile, isLoading: false })
 
     if (!isMobile) {
       showToast({
         action: {
           label: intl.formatMessage({ id: 'wishlist-see-lists' }),
-          onClick: () => navigate({
-            page: 'store.listsWithId',
-            params: { listId },
-          }),
+          onClick: () =>
+            navigate({
+              page: 'store.listsWithId',
+              params: { listId },
+            }),
         },
         message: intl.formatMessage({ id: 'wishlist-product-added-to-list' }),
       })
@@ -91,30 +97,35 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     })
   }
 
-  private onAddProductClick = (): void => {
+  private handleAddProductClick = (): void => {
     const { isLoading } = this.state
-    if (isLoading) return
-      const { client, product, intl } = this.props
-      this.setState({ isLoading: true })
-      addProductToDefaultList(
-        intl.formatMessage({ id: 'wishlist-default-list-name' }),
-        client,
-        product
-      )
-        .then(this.handleAddProductSuccess)
-        .catch(this.handleAddProductFailed)
+    if (isLoading) {
+      return
     }
+    const { client, product, intl } = this.props
+    this.setState({ isLoading: true })
+    addProductToDefaultList(
+      intl.formatMessage({ id: 'wishlist-default-list-name' }),
+      client,
+      product
+    )
+      .then(this.handleAddProductSuccess)
+      .catch(this.handleAddProductFailed)
   }
 
-  private onAddToListsFail = (): void => {
+  private handleAddToListsFail = (): void => {
     const { showToast, intl } = this.props
     showToast({
       message: intl.formatMessage({ id: 'wishlist-add-product-fail' }),
     })
   }
 
-  private onAddToListsSuccess = (): void => {
-    const { showToast, intl, runtime: { navigate } } = this.props
+  private handleAddToListsSuccess = (): void => {
+    const {
+      showToast,
+      intl,
+      runtime: { navigate },
+    } = this.props
     showToast({
       action: {
         label: intl.formatMessage({ id: 'wishlist-see-lists' }),

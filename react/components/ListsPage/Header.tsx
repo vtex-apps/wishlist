@@ -2,7 +2,6 @@ import React, { Component, ReactNode } from 'react'
 import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
 import { IconPlusLines } from 'vtex.styleguide'
 
-import ApolloClient from 'apollo-client'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 
 import DialogMessage from '../Dialog/DialogMessage'
@@ -18,14 +17,12 @@ interface HeaderState {
   showDeleteConfirmation?: boolean
 }
 
-interface HeaderProps extends InjectedIntlProps, WithApolloClient<any> {
+interface HeaderProps extends InjectedIntlProps, WithApolloClient<{}> {
   isDefault?: boolean
   list?: List
-  intl: any
   onListCreated: (list: List) => void
   onListUpdated: (list: List) => void
   onListDeleted: () => void
-  client: ApolloClient<any>
 }
 
 const ICONS_SIZE = 20
@@ -35,7 +32,9 @@ class Header extends Component<HeaderProps, HeaderState> {
   private options: Option[] = [
     {
       onClick: () => this.setState({ showUpdateList: true }),
-      title: this.props.intl.formatMessage({ id: 'wishlist-option-configuration' }),
+      title: this.props.intl.formatMessage({
+        id: 'wishlist-option-configuration',
+      }),
     },
     {
       onClick: () => this.setState({ showDeleteConfirmation: true }),
@@ -44,14 +43,16 @@ class Header extends Component<HeaderProps, HeaderState> {
   ]
 
   public render(): ReactNode {
-    const { showcreateList, showUpdateList, showDeleteConfirmation } = this.state
+    const {
+      showcreateList,
+      showUpdateList,
+      showDeleteConfirmation,
+    } = this.state
     const { list, intl } = this.props
 
     return list ? (
       <div className="w-100 ph6 flex items-center">
-        <div className="w-100 t-heading-2">
-          {list.name}
-        </div>
+        <div className="w-100 t-heading-2">{list.name}</div>
         <div className="flex flex-row items-center w-100 justify-end">
           <div className="ttu mh2">
             <span>
@@ -62,41 +63,38 @@ class Header extends Component<HeaderProps, HeaderState> {
             </span>
           </div>
           <div
+            role="button"
+            tabIndex={0}
             className="pointer c-on-base ml5"
-            onClick={() => this.setState({ showcreateList: true })}
+            onKeyPress={this.handleCreateList}
           >
             <IconPlusLines size={ICONS_SIZE} />
           </div>
           {list.isEditable && (
             <div className="ml5">
-              <MenuOptions
-                options={this.options}
-                size={ICONS_SIZE}
-              />
+              <MenuOptions options={this.options} size={ICONS_SIZE} />
             </div>
           )}
         </div>
         {showcreateList && (
           <CreateList
             onClose={() => this.setState({ showcreateList: false })}
-            onFinishAdding={this.onListCreated}
+            onFinishAdding={this.handleListCreated}
           />
         )}
         {showUpdateList && (
           <UpdateList
             list={list}
             onClose={() => this.setState({ showUpdateList: false })}
-            onFinishUpdate={this.onListUpdated}
+            onFinishUpdate={this.handleListUpdated}
           />
         )}
         {showDeleteConfirmation && (
           <DialogMessage
-            message={
-              intl.formatMessage(
-                { id: 'wishlist-delete-confirmation-message' },
-                { listName: list.name }
-              )
-            }
+            message={intl.formatMessage(
+              { id: 'wishlist-delete-confirmation-message' },
+              { listName: list.name }
+            )}
             onClose={() => this.setState({ showDeleteConfirmation: false })}
             onSuccess={this.handleDeleteList}
           />
@@ -105,13 +103,17 @@ class Header extends Component<HeaderProps, HeaderState> {
     ) : null
   }
 
-  private onListCreated = (list: any): void => {
+  private handleCreateList = () => {
+    this.setState({ showcreateList: true })
+  }
+
+  private handleListCreated = (list: List): void => {
     const { onListCreated } = this.props
     this.setState({ showcreateList: false })
     onListCreated(list)
   }
 
-  private onListUpdated = (list: any) => {
+  private handleListUpdated = (list: List) => {
     this.setState({ showUpdateList: false })
     this.props.onListUpdated(list)
   }
@@ -119,11 +121,10 @@ class Header extends Component<HeaderProps, HeaderState> {
   private handleDeleteList = (): void => {
     const { client, list } = this.props
     if (list && list.id) {
-      deleteList(client, list.id)
-        .then(() => {
-          this.setState({ showDeleteConfirmation: false })
-          this.props.onListDeleted()
-        })
+      deleteList(client, list.id).then(() => {
+        this.setState({ showDeleteConfirmation: false })
+        this.props.onListDeleted()
+      })
     }
   }
 }

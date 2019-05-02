@@ -1,11 +1,7 @@
 import classNames from 'classnames'
 import React, { Component, ReactNode } from 'react'
-import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
-import {
-  Checkbox,
-  IconVisibilityOff,
-  IconVisibilityOn
-} from 'vtex.styleguide'
+import { InjectedIntlProps, injectIntl } from 'react-intl'
+import { Checkbox, IconVisibilityOff, IconVisibilityOn } from 'vtex.styleguide'
 import DialogMessage from './Dialog/DialogMessage'
 import MenuOptions from './MenuOptions/MenuOptions'
 
@@ -19,7 +15,7 @@ interface ListItemProps extends InjectedIntlProps {
   hideBorders?: boolean
   onClick?: (id: number) => void
   onSelected?: (id: number, isSelected?: boolean) => void
-  onDeleted?: (listId: string) => Promise<any>
+  onDeleted?: (listId: string) => Promise<void>
   onUpdated?: (index: number) => void
 }
 
@@ -33,8 +29,11 @@ class ListItem extends Component<ListItemProps, {}> {
   private options: Option[] = [
     {
       disabled: this.props.isDefault,
-      onClick: () => this.props.onUpdated && this.props.onUpdated(this.props.id),
-      title: this.props.intl.formatMessage({ id: 'wishlist-option-configuration' }),
+      onClick: () =>
+        this.props.onUpdated && this.props.onUpdated(this.props.id),
+      title: this.props.intl.formatMessage({
+        id: 'wishlist-option-configuration',
+      }),
     },
     {
       disabled: this.props.isDefault,
@@ -78,19 +77,19 @@ class ListItem extends Component<ListItemProps, {}> {
       <div className={className}>
         <div
           className="w-100 flex pointer"
-          onClick={() => onClick && onClick(id)}
+          role="presentation"
+          onMouseDown={() => onClick && onClick(id)}
+          onTouchStart={() => onClick && onClick(id)}
         >
-          <div className="flex items-center ml2">{isPublic ?
-            <IconVisibilityOn />
-            :
-            <IconVisibilityOff />
-          }
+          <div className="flex items-center ml2">
+            {isPublic ? <IconVisibilityOn /> : <IconVisibilityOff />}
           </div>
           <span className="w-100 mh4 mv1">{name}</span>
         </div>
-        {!hideAction && (showMenuOptions ? (
-          <MenuOptions options={this.options} />
-        ) : (
+        {!hideAction &&
+          (showMenuOptions ? (
+            <MenuOptions options={this.options} />
+          ) : (
             !isDefault && (
               <div className="flex items-center c-action-primary">
                 <Checkbox
@@ -102,16 +101,24 @@ class ListItem extends Component<ListItemProps, {}> {
           ))}
         {showDeleteDialog && (
           <DialogMessage
-            message={
-              intl.formatMessage(
-                { id: 'wishlist-delete-confirmation-message' },
-                { listName: name }
-              )
-            }
+            message={intl.formatMessage(
+              { id: 'wishlist-delete-confirmation-message' },
+              { listName: name }
+            )}
             onClose={() => this.setState({ showDeleteDialog: false })}
-            onSuccess={() => onDeleted && onDeleted(listId || '')
-              .then(() => this.isComponentMounted && this.setState({ showDeleteDialog: false }))
-              .catch(() => this.isComponentMounted && this.setState({ showDeleteDialog: false }))
+            onSuccess={() =>
+              onDeleted &&
+              onDeleted(listId || '')
+                .then(
+                  () =>
+                    this.isComponentMounted &&
+                    this.setState({ showDeleteDialog: false })
+                )
+                .catch(
+                  () =>
+                    this.isComponentMounted &&
+                    this.setState({ showDeleteDialog: false })
+                )
             }
           />
         )}

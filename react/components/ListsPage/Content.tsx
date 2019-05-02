@@ -12,17 +12,17 @@ import Header from './Header'
 
 import styles from '../../wishList.css'
 
-interface ContentProps extends WithApolloClient<any> {
+interface ContentProps extends WithApolloClient<{}> {
   listId: string
-  lists?: any
+  lists?: List[]
   onListCreated: (list: List) => void
   onListUpdated: (list: List) => void
   onListDeleted: () => void
 }
 
 interface ContentState {
-  list?: any
-  selectedItems: any
+  list?: List
+  selectedItems: ListItemWithProduct[]
   isLoading?: boolean
 }
 
@@ -42,7 +42,7 @@ class Content extends Component<ContentProps, ContentState> {
     this.fetchListDetails()
   }
 
-  public componentDidUpdate(prevProps: any): void {
+  public componentDidUpdate(prevProps: ContentProps): void {
     if (this.props.listId !== prevProps.listId) {
       this.fetchListDetails()
     }
@@ -51,10 +51,15 @@ class Content extends Component<ContentProps, ContentState> {
   public render(): ReactNode {
     const { list, selectedItems, isLoading } = this.state
     const { listId, lists } = this.props
-    const className = classNames('ba b--muted-4 mt6 relative overflow-auto w-100 h-100', {
-      'pb10': selectedItems && selectedItems.length > 0,
-    })
-    const listsAsOptions = lists ? filter((e: any) => e.id !== listId, tail(lists)) : null
+    const className = classNames(
+      'ba b--muted-4 mt6 relative overflow-auto w-100 h-100',
+      {
+        pb10: selectedItems && selectedItems.length > 0,
+      }
+    )
+    const listsAsOptions = lists
+      ? filter((e: List) => e.id !== listId, tail(lists))
+      : null
 
     return (
       <div className="h-100 flex flex-column">
@@ -63,79 +68,104 @@ class Content extends Component<ContentProps, ContentState> {
             <Spinner />
           </div>
         ) : (
-            <Fragment>
-              <Header
-                list={{ ...list, id: listId }}
-                onListCreated={this.props.onListCreated}
-                onListUpdated={this.props.onListUpdated}
-                onListDeleted={this.props.onListDeleted}
-              />
-              <div className={className}>
-                <div className={`${styles.listPageItemsContainer} overflow-auto w-100`}>
-                  <div className="w-100">
-                    <ListItems
-                      lists={listsAsOptions}
-                      hideItemsQuantityLabel
-                      items={list ? list.items : []}
-                      onItemSelect={this.onItemSelect}
-                      onItemRemove={this.onItemRemove}
-                    />
+          <Fragment>
+            <Header
+              list={{ ...list, id: listId }}
+              onListCreated={this.props.onListCreated}
+              onListUpdated={this.props.onListUpdated}
+              onListDeleted={this.props.onListDeleted}
+            />
+            <div className={className}>
+              <div
+                className={`${
+                  styles.listPageItemsContainer
+                } overflow-auto w-100`}
+              >
+                <div className="w-100">
+                  <ListItems
+                    lists={listsAsOptions}
+                    hideItemsQuantityLabel
+                    items={list ? list.items : []}
+                    onItemSelect={this.handleItemSelect}
+                    onItemRemove={this.handleItemRemove}
+                  />
+                </div>
+              </div>
+              {selectedItems.length > 0 && (
+                <div className="absolute bottom-0 left-0 w-100">
+                  <div className="bg-base">
+                    <Footer items={selectedItems} />
                   </div>
                 </div>
-                {selectedItems.length > 0 && (
-                  <div className="absolute bottom-0 left-0 w-100">
-                    <div className="bg-base">
-                      <Footer
-                        items={selectedItems}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </Fragment>
-          )
-        }
+              )}
+            </div>
+          </Fragment>
+        )}
       </div>
     )
   }
 
-  private onItemSelect = (itemId: string, product: any, isSelected: boolean): void => {
+  private handleItemSelect = (
+    itemId: string,
+    product: Product,
+    isSelected: boolean
+  ): void => {
     const { selectedItems } = this.state
     if (isSelected) {
-      this.setState({ selectedItems: append({ itemId, product }, selectedItems) })
+      this.setState({
+        selectedItems: append({ itemId, product }, selectedItems),
+      })
     } else {
-      this.setState({ selectedItems: filter(({ itemId: id }) => id !== itemId, selectedItems) })
+      this.setState({
+        selectedItems: filter(({ itemId: id }) => id !== itemId, selectedItems),
+      })
     }
   }
 
-  private itemWithoutProduct =
-    ({ id, productId, skuId, quantity }: any): any => ({ id, productId, skuId, quantity })
+  private itemWithoutProduct = ({
+    id,
+    productId,
+    skuId,
+    quantity,
+  }: ListItem): ListItem => ({ id, productId, skuId, quantity })
 
-  private onItemRemove = (itemId: string): Promise<any> => {
+  private handleItemRemove = (itemId: string): Promise<void> => {
     const { client, listId } = this.props
     const { list, selectedItems } = this.state
-    const listUpdated = { ...list, items: filter(({ id }) => id !== itemId, list ? list.items : []) }
-    const itemsUpdated = map(item => this.itemWithoutProduct(item), listUpdated.items)
-    return updateList(client, listId, { ...list, items: itemsUpdated })
-      .then(() => {
+    const listUpdated = {
+      ...list,
+      items: filter(
+        ({ id }: ListItem) => id !== itemId,
+        list && list.items ? list.items : []
+      ),
+    }
+    const itemsUpdated = map(
+      item => this.itemWithoutProduct(item),
+      listUpdated.items
+    )
+    return updateList(client, listId, { ...list, items: itemsUpdated }).then(
+      () => {
         if (this.isComponentMounted) {
           this.setState({
             list: listUpdated,
-            selectedItems: filter(({ itemId: id }) => id !== itemId, selectedItems),
+            selectedItems: filter(
+              ({ itemId: id }) => id !== itemId,
+              selectedItems
+            ),
           })
         }
-      })
+      }
+    )
   }
 
   private fetchListDetails(): void {
     const { client, listId } = this.props
-    this.setState({ isLoading: true, list: null })
-    getListDetailed(client, listId)
-      .then(response => {
-        if (this.isComponentMounted) {
-          this.setState({ list: response.data.list, isLoading: false })
-        }
-      })
+    this.setState({ isLoading: true, list: {} })
+    getListDetailed(client, listId).then(response => {
+      if (this.isComponentMounted) {
+        this.setState({ list: response.data.list, isLoading: false })
+      }
+    })
   }
 }
 

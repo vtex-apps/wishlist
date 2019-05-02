@@ -5,9 +5,9 @@ import { withRuntimeContext } from 'vtex.render-runtime'
 import ListItem from '../ListItem'
 
 interface ListSelectorProps {
-  lists: any
+  lists: List[]
   selectedListId: string
-  runtime: any
+  runtime: Runtime
 }
 
 class ListSelector extends Component<ListSelectorProps, {}> {
@@ -15,35 +15,36 @@ class ListSelector extends Component<ListSelectorProps, {}> {
     return (
       <div className="flex flex-column w5 h-100">
         <div className="bl b--rebel-pink bw2 pa4 b">
-          <FormattedMessage
-            id="wishlist-my-lists"
-          />
+          <FormattedMessage id="wishlist-my-lists" />
         </div>
-        <div className="h-100 overflow-auto">
-          {this.renderLists()}
-        </div>
+        <div className="h-100 overflow-auto">{this.renderLists()}</div>
       </div>
     )
   }
 
   private renderLists = (): ReactNode => {
     const { lists, selectedListId } = this.props
-    return lists ? lists.map((list: List, index: number) => (
-      <ListItem
-        key={list.id}
-        id={index}
-        list={list}
-        isDefault={false}
-        hideAction
-        hideBorders
-        isSelected={list.id === selectedListId}
-        onClick={this.handleOnListSelect}
-      />
-    )) : null
+    return lists
+      ? lists.map((list: List, index: number) => (
+          <ListItem
+            key={list.id}
+            id={index}
+            list={list}
+            isDefault={false}
+            hideAction
+            hideBorders
+            isSelected={list.id === selectedListId}
+            onClick={this.handleOnListSelect}
+          />
+        ))
+      : null
   }
 
   private handleOnListSelect = (id: number): void => {
-    const { runtime: { navigate }, lists } = this.props
+    const {
+      runtime: { navigate },
+      lists,
+    } = this.props
     navigate({
       page: 'store.listsWithId',
       params: { listId: lists[id].id },
