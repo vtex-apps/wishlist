@@ -11,18 +11,6 @@
     "component": "ListsPage",
     "required": ["product-summary"]
   },
-  "store.listsWithId": {
-    "component": "ContainerWrapper",
-    "required": [
-      "lists"
-    ],
-    "before": [
-      "header.full"
-    ],
-    "after": [
-      "footer"
-    ]
-  },
   "store.lists": {
     "component": "ContainerWrapper",
     "required": [

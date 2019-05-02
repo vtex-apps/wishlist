@@ -79,7 +79,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
           label: intl.formatMessage({ id: 'wishlist-see-lists' }),
           onClick: () =>
             navigate({
-              page: 'store.listsWithId',
+              page: 'store.lists',
               query: `listId=${listId}`,
             }),
         },

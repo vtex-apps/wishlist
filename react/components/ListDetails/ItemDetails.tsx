@@ -196,7 +196,7 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
         label: intl.formatMessage({ id: 'wishlist-see' }),
         onClick: () =>
           navigate({
-            page: 'store.listsWithId',
+            page: 'store.lists',
             query: `listId=${listId}`,
           }),
       },
