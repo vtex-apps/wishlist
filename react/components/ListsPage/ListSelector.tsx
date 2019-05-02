@@ -42,13 +42,10 @@ class ListSelector extends Component<ListSelectorProps, {}> {
 
   private handleOnListSelect = (id: number): void => {
     const {
-      runtime: { navigate },
+      runtime: { setQuery },
       lists,
     } = this.props
-    navigate({
-      page: 'store.listsWithId',
-      params: { listId: lists[id].id },
-    })
+    setQuery({ listId: lists[id].id }, { merge: false, replace: true })
   }
 }
 

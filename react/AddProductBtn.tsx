@@ -80,7 +80,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
           onClick: () =>
             navigate({
               page: 'store.listsWithId',
-              params: { listId },
+              query: `listId=${listId}`,
             }),
         },
         message: intl.formatMessage({ id: 'wishlist-product-added-to-list' }),

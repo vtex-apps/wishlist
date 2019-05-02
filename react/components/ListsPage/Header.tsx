@@ -1,13 +1,17 @@
 import React, { Component, ReactNode } from 'react'
 import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
-import { IconPlusLines } from 'vtex.styleguide'
+import {
+  ActionMenu,
+  ButtonWithIcon,
+  IconOptionsDots,
+  IconPlusLines,
+} from 'vtex.styleguide'
 
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 
 import DialogMessage from '../Dialog/DialogMessage'
 import CreateList from '../Form/CreateList'
 import UpdateList from '../Form/UpdateList'
-import MenuOptions from '../MenuOptions/MenuOptions'
 
 import { deleteList } from '../../GraphqlClient'
 
@@ -29,16 +33,16 @@ const ICONS_SIZE = 20
 
 class Header extends Component<HeaderProps, HeaderState> {
   public state: HeaderState = {}
-  private options: Option[] = [
+  private options = [
     {
       onClick: () => this.setState({ showUpdateList: true }),
-      title: this.props.intl.formatMessage({
+      label: this.props.intl.formatMessage({
         id: 'wishlist-option-configuration',
       }),
     },
     {
       onClick: () => this.setState({ showDeleteConfirmation: true }),
-      title: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
+      label: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
     },
   ]
 
@@ -49,6 +53,7 @@ class Header extends Component<HeaderProps, HeaderState> {
       showDeleteConfirmation,
     } = this.state
     const { list, intl } = this.props
+    const plusIcon = <IconPlusLines size={ICONS_SIZE} />
 
     return list ? (
       <div className="w-100 ph6 flex items-center">
@@ -62,17 +67,21 @@ class Header extends Component<HeaderProps, HeaderState> {
               />
             </span>
           </div>
-          <div
-            role="button"
-            tabIndex={0}
-            className="pointer c-on-base ml5"
-            onKeyPress={this.handleCreateList}
-          >
-            <IconPlusLines size={ICONS_SIZE} />
-          </div>
+          <ButtonWithIcon
+            variation="tertiary"
+            icon={plusIcon}
+            onClick={this.handleCreateList}
+          />
           {list.isEditable && (
             <div className="ml5">
-              <MenuOptions options={this.options} size={ICONS_SIZE} />
+              <ActionMenu
+                hideCaretIcon
+                options={this.options}
+                buttonProps={{
+                  variation: 'tertiary',
+                  icon: <IconOptionsDots size={ICONS_SIZE} />,
+                }}
+              />
             </div>
           )}
         </div>

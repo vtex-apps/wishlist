@@ -43,13 +43,15 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
 
   public componentDidUpdate(prevProps: ListsPageProps): void {
     const {
-      runtime: {
-        route: { params },
-      },
+      runtime: { query },
       client,
     } = this.props
-    if (client && prevProps.runtime.route.params.listId !== params.listId) {
-      this.setState({ selectedListId: params.listId })
+    if (
+      client &&
+      prevProps.runtime.query &&
+      prevProps.runtime.query.listId !== query.listId
+    ) {
+      this.setState({ selectedListId: query.listId })
       getListsFromLocaleStorage(client)
         .then((response: ResponseList[]) => {
           const lists = map(item => item.data.list, response)
@@ -122,16 +124,14 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     this.setState({ lists: listsUpdate })
     navigate({
       page: 'store.lists',
-      params: { listId: lists[0].id },
+      query: `listId=${lists[0].id}`,
     })
   }
 
   private fetchLists = (): void => {
     const {
       client,
-      runtime: {
-        route: { params },
-      },
+      runtime: { query },
       intl,
     } = this.props
 
@@ -157,7 +157,7 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
             this.setState({
               isLoading: false,
               lists,
-              selectedListId: params.listId,
+              selectedListId: query ? query.listId : lists[0].id,
             })
           }
         }

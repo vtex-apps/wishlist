@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from 'react'
-import { IconOptionsDots } from 'vtex.styleguide'
+import { ButtonWithIcon, IconOptionsDots } from 'vtex.styleguide'
 import MenuOptionsContent from './MenuOptionsContent'
 
 interface MenuOptionsState {
@@ -24,11 +24,14 @@ class MenuOptions extends Component<MenuOptionsProps, MenuOptionsState> {
   public render(): ReactNode {
     const { showContent } = this.state
     const { options, size } = this.props
+    const optionDotsIcon = <IconOptionsDots size={size} />
     return (
       <div className="flex items-center c-action-primary pointer relative">
-        <div onMouseEnter={() => this.setState({ showContent: true })}>
-          <IconOptionsDots size={size} />
-        </div>
+        <ButtonWithIcon
+          variation="tertiary"
+          icon={optionDotsIcon}
+          onClick={() => this.setState({ showContent: true })}
+        />
         {showContent && (
           <MenuOptionsContent
             onClose={() => this.setState({ showContent: false })}

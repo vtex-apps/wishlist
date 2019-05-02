@@ -59,15 +59,24 @@ interface NavigateInput {
   params?: {
     listId?: string
   }
+  query?: string
+}
+
+interface Query {
+  listId?: string
+}
+
+interface Options {
+  merge?: boolean
+  replace?: boolean
 }
 
 interface Runtime {
   navigate: (navigateInput: NavigateInput) => void
-  route: {
-    params: {
-      listId: string
-    }
+  query: {
+    listId?: string
   }
+  setQuery: (query: Query, options: Options) => void
 }
 
 interface Option {

@@ -197,7 +197,7 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
         onClick: () =>
           navigate({
             page: 'store.listsWithId',
-            params: { listId },
+            query: `listId=${listId}`,
           }),
       },
       message: intl.formatMessage({ id: 'wishlist-copied' }, { listName }),
