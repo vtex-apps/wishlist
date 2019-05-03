@@ -41,7 +41,7 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
     const { listId, client } = this.props
     this.isComponentMounted = true
     getListDetailed(client, listId)
-      .then<ResponseList>((response: ResponseList) => {
+      .then((response: ResponseList) => {
         if (this.isComponentMounted) {
           this.setState({ list: response.data.list, isLoading: false })
         }
@@ -108,7 +108,7 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
 
     return (
       <Fragment>
-        <Header title={name} onClose={this.handleOnClose} showIconBack>
+        <Header title={list.name} onClose={this.handleOnClose} showIconBack>
           <MenuOptions options={options} />
         </Header>
         <Content
@@ -116,9 +116,7 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
           onItemSelect={this.handleItemSelectedChange}
           onItemRemove={this.handleItemRemove}
         />
-        {list.items && list.items.length > 0 && (
-          <Footer items={selectedItems} />
-        )}
+        {selectedItems.length > 0 && <Footer items={selectedItems} />}
       </Fragment>
     )
   }
