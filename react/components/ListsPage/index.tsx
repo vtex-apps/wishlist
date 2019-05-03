@@ -118,7 +118,7 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     })
   }
 
-  private onListDeleted = (): void => {
+  private handleListDeleted = (): void => {
     const { lists, selectedListId } = this.state
     const {
       runtime: { navigate },

@@ -189,16 +189,12 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
     const {
       showToast,
       intl,
-      runtime: { navigate },
+      runtime: { setQuery },
     } = this.props
     showToast({
       action: {
         label: intl.formatMessage({ id: 'wishlist-see' }),
-        onClick: () =>
-          navigate({
-            page: 'store.lists',
-            query: `listId=${listId}`,
-          }),
+        onClick: () => setQuery({ listId }, { merge: false, replace: true }),
       },
       message: intl.formatMessage({ id: 'wishlist-copied' }, { listName }),
     })
