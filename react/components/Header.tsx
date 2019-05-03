@@ -20,8 +20,10 @@ const Header = (props: HeaderProps): JSX.Element => {
     <div className="flex flex-row pa4 items-center bb bt b--muted-4">
       <div
         className="flex items-center pointer"
-        role="presentation"
+        role="button"
+        tabIndex={0}
         onClick={onClose}
+        onKeyPress={onClose}
       >
         {showIconBack && isMobile ? (
           <IconCaretLeft size={ICON_SIZE} />
@@ -34,9 +36,10 @@ const Header = (props: HeaderProps): JSX.Element => {
       {action && (
         <div
           className="flex items-center pointer"
-          role="presentation"
-          onTouchStart={action}
-          onMouseDown={action}
+          role="button"
+          tabIndex={0}
+          onClick={action}
+          onKeyPress={action}
         >
           <IconPlusLines size={ICON_SIZE} />
         </div>

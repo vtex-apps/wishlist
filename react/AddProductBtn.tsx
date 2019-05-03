@@ -4,7 +4,7 @@ import { isMobile } from 'react-device-detect'
 import { InjectedIntlProps, injectIntl } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import { IconHeart } from 'vtex.store-icons'
-import { Spinner, withToast } from 'vtex.styleguide'
+import { ButtonWithIcon, withToast } from 'vtex.styleguide'
 import AddToList from './components/AddToList/index'
 import MyLists from './MyLists'
 
@@ -34,21 +34,18 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     const { showContent, showLists, isLoading } = this.state
     return (
       <div className="relative">
-        <div
-          className="pa4 pointer hover-bg-light-gray flex items-center"
-          role="presentation"
-          onMouseDown={this.handleAddProductClick}
-          onTouchStart={this.handleAddProductClick}
-        >
-          {isLoading ? (
-            <Spinner size={17} />
-          ) : (
+        <ButtonWithIcon
+          variation="tertiary"
+          onClick={this.handleAddProductClick}
+          isLoading={isLoading}
+          icon={
             <IconHeart
+              color="c-muted-3"
               width={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
               height={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
             />
-          )}
-        </div>
+          }
+        />
         {showContent && (
           <AddToList
             onAddToListsFail={this.handleAddToListsFail}

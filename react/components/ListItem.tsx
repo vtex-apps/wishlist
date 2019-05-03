@@ -79,9 +79,11 @@ class ListItem extends Component<ListItemProps, {}> {
     return (
       <div className={className}>
         <div
+          tabIndex={0}
+          role="button"
           className="w-100 flex pointer"
-          role="presentation"
           onClick={() => onClick && onClick(id)}
+          onKeyPress={() => onClick && onClick(id)}
         >
           <div className="flex items-center ml2">
             {isPublic ? <IconVisibilityOn /> : <IconVisibilityOff />}
@@ -91,17 +93,15 @@ class ListItem extends Component<ListItemProps, {}> {
         {!hideAction &&
           (showMenuOptions
             ? !isDefault && (
-                <div role="presentation" onClick={e => e.stopPropagation()}>
-                  <ActionMenu
-                    options={this.options}
-                    hideCaretIcon
-                    buttonProps={{
-                      variation: 'tertiary',
-                      icon: <IconOptionsDots color="c-action-primary" />,
-                      size: 'small',
-                    }}
-                  />
-                </div>
+                <ActionMenu
+                  options={this.options}
+                  hideCaretIcon
+                  buttonProps={{
+                    variation: 'tertiary',
+                    icon: <IconOptionsDots color="c-action-primary" />,
+                    size: 'small',
+                  }}
+                />
               )
             : !isDefault && (
                 <div className="flex items-center c-action-primary">

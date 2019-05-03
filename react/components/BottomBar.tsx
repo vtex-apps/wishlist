@@ -1,4 +1,4 @@
-import React, { Component, MouseEvent, ReactNode, TouchEvent } from 'react'
+import React, { Component, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 
 import styles from '../wishList.css'
@@ -7,9 +7,7 @@ const OPEN_BOTTOM_BAR_CLASS = styles.open
 
 interface BottomBarProps {
   children: ReactNode
-  onOutsideClick: (
-    e: MouseEvent<HTMLElement> | TouchEvent<HTMLDivElement>
-  ) => void
+  onOutsideClick: () => void
 }
 
 /**
@@ -28,14 +26,12 @@ class BottomBar extends Component<BottomBarProps> {
     const { children, onOutsideClick } = this.props
 
     return createPortal(
-      <div
-        role="presentation"
-        className="fixed top-0 left-0 z-999 vh-100 vw-100 flex flex-column"
-        onClick={e => e.stopPropagation()}
-      >
+      <div className="fixed top-0 left-0 z-999 vh-100 vw-100 flex flex-column">
         <div
-          role="presentation"
-          onClick={e => onOutsideClick(e)}
+          tabIndex={0}
+          role="button"
+          onClick={() => onOutsideClick()}
+          onKeyPress={() => onOutsideClick()}
           className="h-100 w-100 bg-base--inverted z-4 o-40"
         />
         <div className="w-100">{children}</div>
