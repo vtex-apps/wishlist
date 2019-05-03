@@ -130,8 +130,8 @@ class AddToListContent extends Component<
         onClose()
         onAddToListsSuccess()
       })
-      .catch(err => {
-        console.error(err)
+      .catch(error => {
+        console.error(error)
         onClose()
         onAddToListsFail()
       })

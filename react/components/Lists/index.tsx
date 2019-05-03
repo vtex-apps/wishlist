@@ -158,7 +158,7 @@ class Lists extends Component<ListsProps, ListsState> {
           })
         }
       })
-      .catch(err => console.error('something went wrong', err))
+      .catch(error => console.error(error))
   }
 
   private handleUpdateList = (index: number): void => {

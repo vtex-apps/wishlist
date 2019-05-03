@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 
+import { isMobile } from 'react-device-detect'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { InjectedIntlProps, injectIntl } from 'react-intl'
 import { withToast } from 'vtex.styleguide'
@@ -57,25 +58,31 @@ class CreateList extends Component<CreateListProps, CreateListState> {
   }
 
   private handleSubmit = (listData: List): void => {
-    const { client, showToast, intl } = this.props
+    const { client } = this.props
     this.setState({ isLoading: true })
     createList(client, { ...listData, items: [], isEditable: true })
       .then((response: ResponseList) => {
-        showToast({
-          action: {
-            label: intl.formatMessage({ id: 'wishlist-see' }),
-            onClick: () => this.redirectToList(response.data.createList.id),
-          },
-          message: intl.formatMessage({ id: 'wishlist-list-created' }),
-        })
+        this.showMessage(response.data.createList.id)
         this.props.onFinishAdding(response.data.createList)
         saveListIdInLocalStorage(response.data.createList.id)
         if (this.isComponentMounted) {
           this.setState({ isLoading: false })
         }
       })
-      .catch(err => {
-        console.error(err)
+      .catch(error => {
+        console.error(error)
+      })
+  }
+
+  private showMessage = (id: string | undefined): void => {
+    const { showToast, intl } = this.props
+    !isMobile &&
+      showToast({
+        action: {
+          label: intl.formatMessage({ id: 'wishlist-see' }),
+          onClick: () => this.redirectToList(id),
+        },
+        message: intl.formatMessage({ id: 'wishlist-list-created' }),
       })
   }
 
