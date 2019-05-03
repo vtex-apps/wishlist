@@ -85,13 +85,16 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
         ) : (
           <Fragment>
             <div className="h-100 mr6">
-              <ListSelector {...this.state} selectedListId={selectedListId} />
+              <ListSelector
+                {...this.state}
+                selectedListId={selectedListId}
+                onListCreated={this.handleListCreated}
+              />
             </div>
             <div className="w-100">
               <Content
                 listId={selectedListId}
                 lists={lists}
-                onListCreated={this.handleListCreated}
                 onListUpdated={this.handleListUpdated}
                 onListDeleted={this.handleListDeleted}
               />

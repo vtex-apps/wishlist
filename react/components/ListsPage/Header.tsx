@@ -1,16 +1,10 @@
 import React, { Component, ReactNode } from 'react'
 import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
-import {
-  ActionMenu,
-  ButtonWithIcon,
-  IconOptionsDots,
-  IconPlusLines,
-} from 'vtex.styleguide'
+import { ActionMenu, IconOptionsDots } from 'vtex.styleguide'
 
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 
 import DialogMessage from '../Dialog/DialogMessage'
-import CreateList from '../Form/CreateList'
 import UpdateList from '../Form/UpdateList'
 
 import { deleteList } from '../../GraphqlClient'
@@ -24,7 +18,6 @@ interface HeaderState {
 interface HeaderProps extends InjectedIntlProps, WithApolloClient<{}> {
   isDefault?: boolean
   list?: List
-  onListCreated: (list: List) => void
   onListUpdated: (list: List) => void
   onListDeleted: () => void
 }
@@ -47,13 +40,8 @@ class Header extends Component<HeaderProps, HeaderState> {
   ]
 
   public render(): ReactNode {
-    const {
-      showcreateList,
-      showUpdateList,
-      showDeleteConfirmation,
-    } = this.state
+    const { showUpdateList, showDeleteConfirmation } = this.state
     const { list, intl } = this.props
-    const plusIcon = <IconPlusLines size={ICONS_SIZE} />
 
     return list ? (
       <div className="w-100 ph6 flex items-center">
@@ -67,13 +55,8 @@ class Header extends Component<HeaderProps, HeaderState> {
               />
             </span>
           </div>
-          <ButtonWithIcon
-            variation="tertiary"
-            icon={plusIcon}
-            onClick={this.handleCreateList}
-          />
           {list.isEditable && (
-            <div className="ml5">
+            <div className="ml3">
               <ActionMenu
                 hideCaretIcon
                 options={this.options}
@@ -85,12 +68,6 @@ class Header extends Component<HeaderProps, HeaderState> {
             </div>
           )}
         </div>
-        {showcreateList && (
-          <CreateList
-            onClose={() => this.setState({ showcreateList: false })}
-            onFinishAdding={this.handleListCreated}
-          />
-        )}
         {showUpdateList && (
           <UpdateList
             list={list}
@@ -110,16 +87,6 @@ class Header extends Component<HeaderProps, HeaderState> {
         )}
       </div>
     ) : null
-  }
-
-  private handleCreateList = () => {
-    this.setState({ showcreateList: true })
-  }
-
-  private handleListCreated = (list: List): void => {
-    const { onListCreated } = this.props
-    this.setState({ showcreateList: false })
-    onListCreated(list)
   }
 
   private handleListUpdated = (list: List) => {
