@@ -1,4 +1,5 @@
 import React, { Component, Fragment, ReactNode } from 'react'
+import { ActionMenu, IconOptionsDots } from 'vtex.styleguide'
 
 import { append, filter, map } from 'ramda'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
@@ -8,7 +9,6 @@ import DialogMessage from '../Dialog/DialogMessage'
 import UpdateList from '../Form/UpdateList'
 import Header from '../Header'
 import renderLoading from '../Loading'
-import MenuOptions from '../MenuOptions/MenuOptions'
 import Content from './Content'
 import Footer from './Footer'
 
@@ -91,25 +91,33 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
   private renderContent = (): ReactNode => {
     const { list, selectedItems, isLoading } = this.state
 
-    const options: Option[] = [
+    const options = [
       {
-        disabled: !isLoading && !list.isEditable,
         onClick: () => this.setState({ showUpdateList: true }),
-        title: this.props.intl.formatMessage({
+        label: this.props.intl.formatMessage({
           id: 'wishlist-option-configuration',
         }),
       },
       {
-        disabled: !this.state.isLoading && !list.isEditable,
         onClick: () => this.setState({ showDeleteConfirmation: true }),
-        title: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
+        label: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
       },
     ]
 
     return (
       <Fragment>
         <Header title={list.name} onClose={this.handleOnClose} showIconBack>
-          <MenuOptions options={options} />
+          {!isLoading && list.isEditable && (
+            <ActionMenu
+              options={options}
+              hideCaretIcon
+              buttonProps={{
+                variation: 'tertiary',
+                size: 'small',
+                icon: <IconOptionsDots />,
+              }}
+            />
+          )}
         </Header>
         <Content
           items={list.items}

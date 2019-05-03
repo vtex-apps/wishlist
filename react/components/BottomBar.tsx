@@ -30,14 +30,12 @@ class BottomBar extends Component<BottomBarProps> {
     return createPortal(
       <div
         role="presentation"
-        className="fixed top-0 left-0 z-9999 vh-100 vw-100 flex flex-column"
-        onMouseDown={(e: MouseEvent<HTMLElement>) => e.stopPropagation()}
-        onTouchStart={(e: TouchEvent<HTMLDivElement>) => e.stopPropagation()}
+        className="fixed top-0 left-0 z-999 vh-100 vw-100 flex flex-column"
+        onClick={e => e.stopPropagation()}
       >
         <div
           role="presentation"
-          onMouseDown={(e: MouseEvent<HTMLElement>) => onOutsideClick(e)}
-          onTouchStart={(e: TouchEvent<HTMLDivElement>) => onOutsideClick(e)}
+          onClick={e => onOutsideClick(e)}
           className="h-100 w-100 bg-base--inverted z-4 o-40"
         />
         <div className="w-100">{children}</div>

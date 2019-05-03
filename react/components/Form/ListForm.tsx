@@ -45,7 +45,7 @@ class ListForm extends Component<ListFormProps, ListFormState> {
         <div className={`${styles.form} w-100 gray f5 pv5 ph5`}>
           <div className={`${styles.nameInputContainer} tl`}>
             <Input
-              value={name}
+              value={name || ''}
               placeholder={intl.formatMessage({
                 id: 'wishlist-list-name-placeholder',
               })}
