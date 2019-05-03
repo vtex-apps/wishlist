@@ -1,12 +1,16 @@
 import React, { ReactNode } from 'react'
 import { Spinner } from 'vtex.styleguide'
 
-export default (): ReactNode => {
+const SPINNER_SIZE = 20
+
+const Loading = (): ReactNode => {
   return (
     <div className="flex justify-center pt4">
       <span className="dib c-muted-1">
-        <Spinner color="currentColor" size={20} />
+        <Spinner color="currentColor" size={SPINNER_SIZE} />
       </span>
     </div>
   )
 }
+
+export default Loading

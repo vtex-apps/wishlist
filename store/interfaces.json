@@ -1,10 +1,29 @@
 {
-  "add-to-list": {
+  "addon-summary-btn.add-to-list": {
     "component": "AddProductBtn",
-    "required": ["my-lists", "product-summary"]
+    "required": ["lists", "product-summary"]
   },
-  "my-lists": {
-    "component": "MyLists",
+  "addon-details-btn.add-to-list": {
+    "component": "AddProductBtn",
+    "required": ["lists", "product-summary"]
+  },
+  "lists": {
+    "component": "ListsPage",
     "required": ["product-summary"]
+  },
+  "store.lists": {
+    "component": "ContainerWrapper",
+    "required": [
+      "lists"
+    ],
+    "before": [
+      "header.full"
+    ],
+    "after": [
+      "footer"
+    ]
+  },
+  "footer": {
+     "component": "Footer"
   }
 }

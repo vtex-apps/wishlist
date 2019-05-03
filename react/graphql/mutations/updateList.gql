@@ -3,6 +3,7 @@ mutation updateList($id: ID!, $list: ListInput) {
     id
     name
     isPublic
+    isEditable
     owner
     items {
       id

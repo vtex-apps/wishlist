@@ -1,68 +1,53 @@
-import { ApolloClient } from 'apollo-client'
-import { append, filter, map } from 'ramda'
 import React, { Component, Fragment, ReactNode } from 'react'
-import { withApollo, WithApolloClient } from 'react-apollo'
-import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
-import { orderFormConsumer } from 'vtex.store-resources/OrderFormContext'
+import { ActionMenu, IconOptionsDots } from 'vtex.styleguide'
+
+import { append, filter, map } from 'ramda'
+import { compose, withApollo, WithApolloClient } from 'react-apollo'
+import { InjectedIntlProps, injectIntl } from 'react-intl'
 import { deleteList, getListDetailed, updateList } from '../../GraphqlClient'
-import Dialog from '../Dialog'
+import DialogMessage from '../Dialog/DialogMessage'
 import UpdateList from '../Form/UpdateList'
 import Header from '../Header'
 import renderLoading from '../Loading'
-import MenuOptions from '../MenuOptions/MenuOptions'
 import Content from './Content'
 import Footer from './Footer'
 
-enum Size {
-  large, small,
-}
-
 interface ListDetailState {
-  list?: any
+  list: List
   isLoading: boolean
   isAddingToCart?: boolean
-  selectedItems: any
+  selectedItems: ListItemWithProduct[]
   showDeleteConfirmation?: boolean
   showUpdateList?: boolean
 }
 
-interface ListDetailProps {
+interface ListDetailProps
+  extends InjectedIntlProps,
+    WithApolloClient<ResponseList> {
   listId: string
-  onClose: (lists?: any) => void
+  onClose: (lists?: List[]) => void
   onDeleted?: (id: string) => void
-  client?: ApolloClient<any>
-  orderFormContext?: any
-  intl?: IntlShape
 }
 
-class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApolloClient<{}>, ListDetailState> {
+class ListDetail extends Component<ListDetailProps, ListDetailState> {
   public state: ListDetailState = {
+    list: {},
     isLoading: true,
     selectedItems: [],
   }
   private isComponentMounted: boolean = false
 
-  private options: Option[] = [
-    {
-      onClick: () => this.setState({ showUpdateList: true }),
-      title: this.props.intl.formatMessage({ id: 'wishlist-option-configuration' }),
-    },
-    {
-      onClick: () => this.setState({ showDeleteConfirmation: true }),
-      title: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
-    },
-  ]
-
   public componentDidMount(): void {
     const { listId, client } = this.props
     this.isComponentMounted = true
-    if (client) {
-      getListDetailed(client, listId)
-        .then(response => {
+    getListDetailed(client, listId)
+      .then((response: ResponseList) => {
+        if (this.isComponentMounted) {
           this.setState({ list: response.data.list, isLoading: false })
-        })
-        .catch(err => console.error(err))
-    }
+        }
+        return response
+      })
+      .catch((err: {}) => console.error(err))
   }
 
   public componentWillUnmount() {
@@ -70,19 +55,22 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
   }
 
   public render(): ReactNode {
-    const { list, isLoading, showDeleteConfirmation, showUpdateList } = this.state
+    const {
+      list,
+      isLoading,
+      showDeleteConfirmation,
+      showUpdateList,
+    } = this.state
     const { intl, listId } = this.props
     return (
       <div className="fixed top-0 left-0 vw-100 vh-100 flex flex-column z-4 bg-base">
         {isLoading ? renderLoading() : this.renderContent()}
         {showDeleteConfirmation && (
-          <Dialog
-            message={
-              intl.formatMessage(
-                { id: 'wishlist-delete-confirmation-message' },
-                { listName: list.name }
-              )
-            }
+          <DialogMessage
+            message={intl.formatMessage(
+              { id: 'wishlist-delete-confirmation-message' },
+              { listName: list.name }
+            )}
             onClose={() => this.setState({ showDeleteConfirmation: false })}
             onSuccess={this.handleDeleteList}
           />
@@ -92,7 +80,7 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
             <UpdateList
               onClose={() => this.setState({ showUpdateList: false })}
               list={{ ...list, id: listId }}
-              onFinishUpdate={this.onFinishUpdate}
+              onFinishUpdate={this.handleFinishUpdate}
             />
           </div>
         )}
@@ -101,70 +89,110 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
   }
 
   private renderContent = (): ReactNode => {
-    const { list: { items, name }, selectedItems } = this.state
+    const { list, selectedItems, isLoading } = this.state
+
+    const options = [
+      {
+        onClick: () => this.setState({ showUpdateList: true }),
+        label: this.props.intl.formatMessage({
+          id: 'wishlist-option-configuration',
+        }),
+      },
+      {
+        onClick: () => this.setState({ showDeleteConfirmation: true }),
+        label: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
+      },
+    ]
+
     return (
       <Fragment>
-        <Header
-          title={name}
-          onClose={this.handleOnClose}
-          showIconBack
-        >
-          <MenuOptions options={this.options} size={Size.large} />
+        <Header title={list.name} onClose={this.handleOnClose} showIconBack>
+          {!isLoading && list.isEditable && (
+            <ActionMenu
+              options={options}
+              hideCaretIcon
+              buttonProps={{
+                variation: 'tertiary',
+                size: 'small',
+                icon: <IconOptionsDots size={20} />,
+              }}
+            />
+          )}
         </Header>
         <Content
-          items={items}
-          onItemSelect={this.onItemSelectedChange}
-          onItemRemove={this.onItemRemove}
+          items={list.items}
+          onItemSelect={this.handleItemSelectedChange}
+          onItemRemove={this.handleItemRemove}
         />
-        {items.length > 0 && (
-          <Footer
-            items={selectedItems}
-          />
-        )}
+        {selectedItems.length > 0 && <Footer items={selectedItems} />}
       </Fragment>
     )
   }
 
-  private onItemSelectedChange = (itemId: string, product: any, isSelected: boolean) => {
+  private handleItemSelectedChange = (
+    itemId: string,
+    product: {},
+    isSelected: boolean
+  ) => {
     const { selectedItems } = this.state
     if (isSelected) {
-      this.setState({ selectedItems: append({ itemId, product }, selectedItems) })
+      this.setState({
+        selectedItems: append({ itemId, product }, selectedItems),
+      })
     } else {
-      this.setState({ selectedItems: filter(({ itemId: id }) => id !== itemId, selectedItems) })
+      this.setState({
+        selectedItems: filter(({ itemId: id }) => id !== itemId, selectedItems),
+      })
     }
   }
 
-  private itemWithoutProduct =
-    ({ id, productId, skuId, quantity }: any): any => ({ id, productId, skuId, quantity })
+  private itemWithoutProduct = ({
+    id,
+    productId,
+    skuId,
+    quantity,
+  }: ListItem): ListItem => ({ id, productId, skuId, quantity })
 
-  private onItemRemove = (itemId: string): Promise<any> => {
+  private handleItemRemove = (itemId: string): void => {
     const { client, listId } = this.props
-    const { list, list: { items }, selectedItems } = this.state
-    const listUpdated = { ...list, items: filter(({ id }) => id !== itemId, items) }
-    const itemsUpdated = map(item => this.itemWithoutProduct(item), listUpdated.items)
-    return updateList(client, listId, { ...list, items: itemsUpdated })
-      .then(() => {
-        if (this.isComponentMounted) {
-          this.setState({
-            list: listUpdated,
-            selectedItems: filter(({ itemId: id }) => id !== itemId, selectedItems),
-          })
-        }
-      })
+    const { list, selectedItems } = this.state
+
+    const listUpdated = {
+      ...list,
+      items: filter(({ id }: ListItem) => id !== itemId, list.items || []),
+    }
+    const itemsUpdated = map(
+      item => this.itemWithoutProduct(item),
+      listUpdated.items
+    )
+
+    updateList(client, listId, { ...list, items: itemsUpdated }).then(() => {
+      if (this.isComponentMounted) {
+        this.setState({
+          list: listUpdated,
+          selectedItems: filter(
+            ({ itemId: id }) => id !== itemId,
+            selectedItems
+          ),
+        })
+      }
+    })
   }
 
-  private onFinishUpdate = (list: List): void => {
+  private handleFinishUpdate = (list: List): void => {
     this.setState({ list, showUpdateList: false })
   }
 
   private handleOnClose = (): void => {
     const { list } = this.state
     const { onClose } = this.props
-    const currentList = {
-      ...list,
-      items: map(item => this.itemWithoutProduct(item), list.items)
+    if (list) {
+      const currentList: List = {
+        ...list,
+        items: map(item => this.itemWithoutProduct(item), list.items || []),
+      }
+      onClose([currentList])
     }
-    onClose(currentList)
   }
 
   private handleDeleteList = (): void => {
@@ -178,7 +206,9 @@ class ListDetail extends Component<ListDetailProps & InjectedIntlProps & WithApo
       })
       .catch(error => console.error(error))
   }
-
 }
 
-export default withApollo<ListDetailProps, {}>(orderFormConsumer(injectIntl(ListDetail)))
+export default compose(
+  withApollo,
+  injectIntl
+)(ListDetail)

@@ -1,3 +1,3 @@
-import Lists from  './components/Lists/'
+import Lists from './components/Lists/'
 
 export default Lists

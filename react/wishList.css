@@ -1,3 +1,19 @@
+:global(.vtex-lists-page) :global(.vtex-store__template) {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.listsPage {
+}
+
+.listPageItemsContainer {
+  max-height: 100%;
+}
+
+.listPage {
+}
+
 .applyButton > button {
   border-radius: 0px;
   padding-bottom: 0.5625em;
@@ -5,15 +21,40 @@
 }
 
 .contentContainer {
+}
+
+.contentContainerMobile {
   max-height: 40vh;
+}
+
+.contentContainerDesktop {
+  max-height: 16vh;
 }
 
 .popover {
   top: 100%;
 }
 
+.popoverLeft {
+  width: 322px;
+}
+
 .open {
   overflow: hidden;
+}
+
+.formViewDialog {
+  min-width: 480px;
+}
+
+.footerDesktop {
+  margin-left: 256px;
+}
+
+.summaryContainer {}
+
+.summaryContainerLarge {
+  height: 200px;
 }
 
 .addToListContent {

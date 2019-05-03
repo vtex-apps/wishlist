@@ -1,28 +1,28 @@
-import { ApolloClient } from 'apollo-client'
 import React, { Component } from 'react'
-import { withApollo, WithApolloClient } from 'react-apollo'
+
+import { isMobile } from 'react-device-detect'
+import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { InjectedIntlProps, injectIntl } from 'react-intl'
-import { createList } from '../../GraphqlClient'
+import { withRuntimeContext } from 'vtex.render-runtime'
+
+import { createList, saveListIdInLocalStorage } from '../../GraphqlClient'
 import Header from '../Header'
+import FormView from './FormView'
 import ListForm from './ListForm'
 
-import wishlist from '../../wishList.css'
+import styles from '../../wishList.css'
 
-interface CreateListProps {
+interface CreateListProps extends InjectedIntlProps, WithApolloClient<{}> {
   onFinishAdding: (list: List) => void
   onClose: () => void
-  intl?: any
-  client?: ApolloClient<any>
+  runtime: Runtime
 }
 
 interface CreateListState {
   isLoading?: boolean
 }
 
-/**
- * Wishlist element to add product to a list
- */
-class CreateList extends Component<CreateListProps & InjectedIntlProps & WithApolloClient<{}>, CreateListState> {
+class CreateList extends Component<CreateListProps, CreateListState> {
   public state: CreateListState = {}
   private isComponentMounted: boolean = false
 
@@ -34,44 +34,54 @@ class CreateList extends Component<CreateListProps & InjectedIntlProps & WithApo
     this.isComponentMounted = false
   }
 
-
   public render() {
     const { onClose, intl } = this.props
     const { isLoading } = this.state
     return (
-      <div className={`${wishlist.createList} vh-100 fixed top-0 left-0 w-100 bg-base z-4`}>
-        <Header
-          title={intl.formatMessage({ id: 'wishlist-new' })}
-          onClose={onClose}
-          showIconBack
-        />
-        <ListForm
-          buttonLabel={intl.formatMessage({ id: 'wishlist-add-button' })}
-          onSubmit={this.onSubmit}
-          isLoading={isLoading}
-        />
-      </div>
+      <FormView onClose={onClose}>
+        <div className={`${styles.createList} bg-base h-100`}>
+          <Header
+            title={intl.formatMessage({ id: 'wishlist-new' })}
+            onClose={onClose}
+            showIconBack
+          />
+          <ListForm
+            buttonLabel={intl.formatMessage({ id: 'wishlist-add-button' })}
+            onSubmit={this.handleSubmit}
+            isLoading={isLoading}
+          />
+        </div>
+      </FormView>
     )
   }
 
-  private onSubmit = (listData: List): void => {
+  private handleSubmit = (listData: List): void => {
     const { client } = this.props
     this.setState({ isLoading: true })
-    if (client) {
-      createList(client, { ...listData, items: [] })
-        .then(response => {
-          this.props.onFinishAdding(response.data.createList)
-          if (this.isComponentMounted) {
-            this.setState({ isLoading: false })
-          }
-        })
-        .catch(err => {
-          console.error(err)
-        })
-    }
-
+    createList(client, { ...listData, items: [], isEditable: true })
+      .then((response: ResponseList) => {
+        !isMobile && this.redirectToList(response.data.createList.id)
+        this.props.onFinishAdding(response.data.createList)
+        saveListIdInLocalStorage(response.data.createList.id)
+        if (this.isComponentMounted) {
+          this.setState({ isLoading: false })
+        }
+      })
+      .catch(error => {
+        console.error(error)
+      })
   }
 
+  private redirectToList = (id: string | undefined): void => {
+    const {
+      runtime: { setQuery },
+    } = this.props
+    setQuery({ listId: id }, { merge: false, replace: true })
+  }
 }
 
-export default withApollo<CreateListProps, {}>(injectIntl(CreateList))
+export default compose(
+  injectIntl,
+  withApollo,
+  withRuntimeContext
+)(CreateList)

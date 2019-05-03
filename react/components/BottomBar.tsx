@@ -1,19 +1,19 @@
-import React, { Component, MouseEvent, ReactNode } from 'react'
+import React, { Component, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 
-import wishlist from '../wishList.css'
+import styles from '../wishList.css'
 
-const OPEN_BOTTOM_BAR_CLASS = wishlist.open
+const OPEN_BOTTOM_BAR_CLASS = styles.open
 
 interface BottomBarProps {
-  children: ReactNode,
-  onOutsideClick: (e: MouseEvent<HTMLElement>) => void
+  children: ReactNode
+  onOutsideClick: () => void
 }
 
 /**
  * Bottom bar component.
  */
-export default class BottomBar extends Component<BottomBarProps> {
+class BottomBar extends Component<BottomBarProps> {
   public componentDidMount() {
     document.body.classList.add(OPEN_BOTTOM_BAR_CLASS)
   }
@@ -23,26 +23,28 @@ export default class BottomBar extends Component<BottomBarProps> {
   }
 
   public render(): ReactNode {
-    const {
-      children,
-      onOutsideClick,
-    } = this.props
+    const { children, onOutsideClick } = this.props
 
     return createPortal(
-      <div
-        className="fixed top-0 left-0 z-9999 vh-100 vw-100 flex flex-column"
-        onMouseDown={(e: any) => e.stopPropagation()}
-        onTouchStart={(e: any) => e.stopPropagation()}
-      >
+      <div className="fixed top-0 left-0 z-999 vh-100 vw-100 flex flex-column">
         <div
-          onClick={onOutsideClick}
+          tabIndex={0}
+          role="button"
+          onClick={() => onOutsideClick()}
+          onKeyPress={this.handleKeyPress}
           className="h-100 w-100 bg-base--inverted z-4 o-40"
         />
-        <div className="w-100">
-          {children}
-        </div>
-      </ div>,
+        <div className="w-100">{children}</div>
+      </div>,
       document.body
     )
   }
+
+  private handleKeyPress = (e: React.KeyboardEvent<{}>) => {
+    if (e.key == 'Enter') {
+      this.props.onOutsideClick()
+    }
+  }
 }
+
+export default BottomBar

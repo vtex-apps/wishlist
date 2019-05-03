@@ -1,39 +1,54 @@
-import { map, path } from 'ramda'
 import React, { Component, ReactNode } from 'react'
-import { FormattedMessage, InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
-import BuyButton from 'vtex.store-components/BuyButton'
-import ProductPrice from 'vtex.store-components/ProductPrice'
+
+import { map, path, head } from 'ramda'
+import { compose } from 'react-apollo'
+import { isMobile } from 'react-device-detect'
+import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
 import { withToast } from 'vtex.styleguide'
 
-import wishlist from '../../wishList.css'
+import BuyButton from 'vtex.store-components/BuyButton'
+import ProductPrice from 'vtex.store-components/ProductPrice'
 
-interface FooterProps {
-  items: any
-  showToast: any
-  intl: IntlShape
+import styles from '../../wishList.css'
+
+interface FooterProps extends InjectedIntlProps {
+  items: ListItemWithProduct[]
 }
 
 interface FooterState {
   isLoading?: boolean
 }
 
-class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
+class Footer extends Component<FooterProps, FooterState> {
+  public state: FooterState = {
+    isLoading: false,
+  }
+
   public render(): ReactNode {
     const { items } = this.props
     const totalPrice = this.calculateTotal()
     const itemsToAddToCart = map(this.productShape, items)
+
     return (
-      <div className={`${wishlist.ListDetailsFooter} flex-column pa4 bt b--muted-4`}>
+      <div
+        className={`${
+          styles.ListDetailsFooter
+        } flex flex-column pa4 bt b--muted-4 w-100 items-end`}
+      >
         <div className="tr">
-          <span className={`${wishlist.quantityOfSelectedItemsLabel} ml2`}>
+          <span className={`${styles.quantityOfSelectedItemsLabel} ml2`}>
             <FormattedMessage
               id="wishlist-quantity-selected-items"
               values={{ selectedItemsQuantity: <b>{items.length}</b> }}
             />
           </span>
         </div>
-        <div className={`${wishlist.pricesContainer} pv4 flex flex-row justify-end b`}>
-          <span className={`${wishlist.totalPriceLabel} mr2`}>
+        <div
+          className={`${
+            styles.pricesContainer
+          } pv4 flex flex-row justify-end b`}
+        >
+          <span className={`${styles.totalPriceLabel} mr2`}>
             <FormattedMessage
               id="wishlist-total"
               values={{ selectedItemsQuantity: <b>{items.length}</b> }}
@@ -46,13 +61,13 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
             showListPrice={false}
           />
         </div>
-        <div className={wishlist.buySelectedItemsBtnContainer}>
+        <div className={styles.buySelectedItemsBtnContainer}>
           <BuyButton
             available={items.length > 0}
             isAvailable
             skuItems={itemsToAddToCart}
             isOneClickBuy={false}
-            large
+            large={isMobile}
           >
             <FormattedMessage id="wishlist-buy-items" />
           </BuyButton>
@@ -61,10 +76,16 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
     )
   }
 
-  private findAvailableProduct = (item: any): any =>
-    item.sellers.find(({ commertialOffer }: any) => commertialOffer.AvailableQuantity > 0)
+  private findAvailableProduct = (item: Item): boolean =>
+    item.sellers.find(
+      (seller: Seller) =>
+        seller !== undefined &&
+        seller.commertialOffer !== undefined &&
+        seller.commertialOffer.AvailableQuantity !== undefined &&
+        seller.commertialOffer.AvailableQuantity > 0
+    ) !== undefined
 
-  private normalizeProduct = (product: any): any => {
+  private normalizeProduct = (product: Product): Product | null => {
     if (!product) {
       return null
     }
@@ -88,43 +109,42 @@ class Footer extends Component<FooterProps & InjectedIntlProps, FooterState> {
     return normalizedProduct
   }
 
-  private productShape = (item: any): any => {
+  private productShape = (item: ListItemWithProduct): Product | undefined => {
     const product = this.normalizeProduct(item.product)
-    return (path(['sku', 'itemId'], product) && {
-      brand: product.brand,
-      detailUrl: `/${product.linkText}/p`,
-      imageUrl: path(['sku', 'image', 'imageUrl'], product),
-      listPrice: path(
-        ['sku', 'seller', 'commertialOffer', 'ListPrice'],
-        product
-      ),
-      name: product.productName,
-      price: path(
-        ['sku', 'seller', 'commertialOffer', 'Price'],
-        product
-      ),
-      quantity: 1,
-      seller: path(['sku', 'seller', 'sellerId'], product),
-      skuId: path(['sku', 'itemId'], product),
-      variant: path(['sku', 'name'], product),
-    })
+    return product
+      ? path(['sku', 'itemId'], product) && {
+          brand: product.brand,
+          detailUrl: `/${product.linkText}/p`,
+          imageUrl: path(['sku', 'image', 'imageUrl'], product),
+          listPrice: path(
+            ['sku', 'seller', 'commertialOffer', 'ListPrice'],
+            product
+          ),
+          name: product.productName,
+          price: path(['sku', 'seller', 'commertialOffer', 'Price'], product),
+          quantity: 1,
+          seller: path(['sku', 'seller', 'sellerId'], product),
+          skuId: path(['sku', 'itemId'], product),
+          variant: path(['sku', 'name'], product),
+        }
+      : undefined
   }
 
   private calculateTotal = (): number => {
     const { items } = this.props
-    return map(({ product: { items: [item] } }) => {
-      const {
-        sellers: [
-          {
-            commertialOffer: { Price },
-          },
-        ],
-      } = item
-      return Price
-    }, items)
-      .reduce((a, b) => a + b, 0)
+    if (items) {
+      return map(({ product: { items } }) => {
+        if (items && head(items)) {
+          return items[0].sellers[0].commertialOffer.Price
+        }
+        return 0
+      }, items).reduce((a, b) => a + b, 0)
+    }
+    return 0
   }
-
 }
 
-export default withToast(injectIntl(Footer))
+export default compose(
+  withToast,
+  injectIntl
+)(Footer)

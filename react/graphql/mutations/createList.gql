@@ -1,13 +1,15 @@
-mutation createList($name: String!, $isPublic: Boolean, $items: [ListItemInput]) {
+mutation createList($name: String!, $isPublic: Boolean, $isEditable: Boolean, $items: [ListItemInput]) {
   createList(list: {
     name: $name,
     isPublic: $isPublic
     items: $items
+    isEditable: $isEditable
   }) {
     id
     name
     owner
     isPublic
+    isEditable
     items {
       id
       quantity

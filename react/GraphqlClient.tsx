@@ -8,15 +8,23 @@ import getListDetailedQuery from './graphql/queries/getListDetails.gql'
 
 const WISHLIST_STORAKE_KEY = 'vtexwishlists'
 
-const getListsIdFromCookies = () => {
+export const getListsIdFromCookies = () => {
   const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
-  return (lists && lists.split(',').map((id: string) => id.replace('\"', '').replace('\"', ''))) || []
+  return (
+    (lists &&
+      lists
+        .split(',')
+        .map((id: string) => id.replace('"', '').replace('"', ''))) ||
+    []
+  )
 }
 
-export const saveListIdInLocalStorage = (id: string): void => {
-  const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
-  const newLists = lists ? lists + ',' + id : id
-  localStorage.setItem(WISHLIST_STORAKE_KEY, newLists)
+export const saveListIdInLocalStorage = (id: string | undefined): void => {
+  if (id) {
+    const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
+    const newLists = lists ? lists + ',' + id : id
+    localStorage.setItem(WISHLIST_STORAKE_KEY, newLists)
+  }
 }
 
 export const removeListIdFromLocalStorage = (listId: string): void => {
@@ -25,7 +33,10 @@ export const removeListIdFromLocalStorage = (listId: string): void => {
   localStorage.setItem(WISHLIST_STORAKE_KEY, listsIdWithoutRemoved.toString())
 }
 
-export const getList = (client: ApolloClient<any>, id: string): Promise<any> => {
+export const getList = (
+  client: ApolloClient<ResponseList>,
+  id: string
+): Promise<ResponseList> => {
   return client.query({
     fetchPolicy: 'network-only',
     query: getListQuery,
@@ -33,7 +44,11 @@ export const getList = (client: ApolloClient<any>, id: string): Promise<any> => 
   })
 }
 
-export const updateList = (client: ApolloClient<any>, id: string, { name, isPublic, items }: List): Promise<any> => {
+export const updateList = (
+  client: ApolloClient<ResponseList>,
+  id: string,
+  { name, isPublic, items }: List
+): Promise<ResponseList> => {
   return client.mutate({
     mutation: updateListMutation,
     variables: {
@@ -47,7 +62,10 @@ export const updateList = (client: ApolloClient<any>, id: string, { name, isPubl
   })
 }
 
-export const createList = (client: ApolloClient<any>, list: any): Promise<any> =>
+export const createList = (
+  client: ApolloClient<ResponseList>,
+  list: List
+): Promise<ResponseList> =>
   client.mutate({
     mutation: createListMutation,
     variables: {
@@ -55,30 +73,34 @@ export const createList = (client: ApolloClient<any>, list: any): Promise<any> =
     },
   })
 
-export const addProductToDefaultList = (listName: any, client: ApolloClient<any>, product: any) => {
+export const addProductToDefaultList = (
+  listName: string,
+  client: ApolloClient<ResponseList>,
+  product: ListItem
+): Promise<ResponseList> => {
   const listsId = getListsIdFromCookies()
   if (listsId && listsId.length) {
-    return getList(client, listsId[0]).then((response: any) => {
+    return getList(client, listsId[0]).then((response: ResponseList) => {
       const list = response.data.list
-      return updateList(
-        client,
-        listsId[0],
-        {
-          items: append(product, list.items),
-          name: list.name,
-        }
-      )
+      return updateList(client, listsId[0], {
+        items: append(product, list.items || []),
+        name: list.name,
+      })
     })
   }
   return createList(client, {
+    isEditable: false,
     items: [product],
     name: listName,
-  }).then((response: any) =>
+  }).then((response: ResponseList) => {
     saveListIdInLocalStorage(path(['data', 'createList', 'id'], response) || '')
-  )
+    return response
+  })
 }
 
-export const getListsFromLocaleStorage = (client: ApolloClient<any>): Promise<any> => {
+export const getListsFromLocaleStorage = (
+  client: ApolloClient<ResponseList>
+): Promise<ResponseList[]> => {
   const listsId = getListsIdFromCookies() || []
   return Promise.all(
     map((id: string) => {
@@ -87,19 +109,26 @@ export const getListsFromLocaleStorage = (client: ApolloClient<any>): Promise<an
   )
 }
 
-export const deleteList = (client: ApolloClient<any>, listId: string): Promise<any> => {
-  return client.mutate({
-    mutation: deleteListMutation,
-    variables: {
-      id: listId,
-    },
-  }).then(() => removeListIdFromLocalStorage(listId))
+export const deleteList = (
+  client: ApolloClient<ResponseList>,
+  listId: string
+): Promise<void> => {
+  return client
+    .mutate({
+      mutation: deleteListMutation,
+      variables: {
+        id: listId,
+      },
+    })
+    .then(() => removeListIdFromLocalStorage(listId))
 }
 
-export const getListDetailed = (client: ApolloClient<any>, listId: string): Promise<any> => (
+export const getListDetailed = (
+  client: ApolloClient<ResponseList>,
+  listId: string
+): Promise<ResponseList> =>
   client.query({
     fetchPolicy: 'network-only',
     query: getListDetailedQuery,
     variables: { id: listId },
   })
-)

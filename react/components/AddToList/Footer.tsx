@@ -1,32 +1,31 @@
-import React, { Component, ReactNode } from "react"
-import { FormattedMessage, InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import React from 'react'
+import { FormattedMessage } from 'react-intl'
 import { Button } from 'vtex.styleguide'
-import wishlist from '../../wishList.css'
+
+import styles from '../../wishList.css'
 
 interface FooterProps {
-  intl: IntlShape
   isLoading?: boolean
-  changedLists: any[]
+  changedLists: number[]
   onClick: () => void
 }
 
-class Footer extends Component<FooterProps & InjectedIntlProps, {}> {
-  public render(): ReactNode {
-    const { intl, isLoading, changedLists, onClick } = this.props
-    return (
-      <div className={wishlist.applyButton}>
-        <Button
-          vatiation="primary"
-          disabled={!changedLists.length}
-          block
-          onClick={onClick}
-          isLoading={isLoading}
-        >
-          <FormattedMessage id="wishlist-apply" />
-        </Button>
-      </div>
-    )
-  }
-}
+const Footer = ({
+  isLoading,
+  changedLists,
+  onClick,
+}: FooterProps): JSX.Element => (
+  <div className={styles.applyButton}>
+    <Button
+      vatiation="primary"
+      disabled={!changedLists.length}
+      block
+      onClick={onClick}
+      isLoading={isLoading}
+    >
+      <FormattedMessage id="wishlist-apply" />
+    </Button>
+  </div>
+)
 
-export default injectIntl(Footer)
+export default Footer

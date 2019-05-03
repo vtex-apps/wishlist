@@ -1,16 +1,12 @@
-import { ApolloClient } from 'apollo-client'
-import { append, filter, map, update } from 'ramda'
 import React, { Component, Fragment, ReactNode } from 'react'
-import { withApollo, WithApolloClient } from 'react-apollo'
+
+import { append, filter, map, update } from 'ramda'
+import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { createPortal } from 'react-dom'
-import { FormattedMessage, InjectedIntlProps } from 'react-intl'
-import { injectIntl, IntlShape } from 'react-intl'
+import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
+
 import { withRuntimeContext } from 'vtex.render-runtime'
-import {
-  deleteList,
-  getListsFromLocaleStorage,
-  saveListIdInLocalStorage
-} from '../../GraphqlClient'
+import { deleteList, getListsFromLocaleStorage } from '../../GraphqlClient'
 
 import CreateList from '../Form/CreateList'
 import UpdateList from '../Form/UpdateList'
@@ -18,15 +14,16 @@ import Header from '../Header'
 import ListDetails from '../ListDetails/index'
 import ListItem from '../ListItem'
 import renderLoading from '../Loading'
+import Screen from '../Screen'
 
-import wishlist from '../../wishList.css'
+import styles from '../../wishList.css'
 
 const DEFAULT_LIST_INDEX = 0
-const OPEN_LISTS_CLASS = wishlist.open
+const OPEN_LISTS_CLASS = styles.open
 
-interface ListsStates {
+interface ListsState {
   listSelected: number
-  lists: any[]
+  lists: List[]
   loading: boolean
   show: boolean
   showCreateList?: boolean
@@ -34,14 +31,12 @@ interface ListsStates {
   showListDetails?: boolean
 }
 
-interface ListsProps {
-  onClose: () => void,
-  intl?: IntlShape,
-  client?: ApolloClient<any>
+interface ListsProps extends InjectedIntlProps, WithApolloClient<{}> {
+  onClose: () => void
 }
 
-class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<{}>, ListsStates> {
-  public state: ListsStates = {
+class Lists extends Component<ListsProps, ListsState> {
+  public state: ListsState = {
     listSelected: -1,
     lists: [],
     loading: true,
@@ -79,11 +74,11 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
       lists,
     } = this.state
     const { onClose, intl } = this.props
-    if (!show) { return null }
-    return createPortal(
-      (
-        <Fragment>
-          <div className="vw-100 vh-100 z-4 fixed bg-white top-0">
+
+    return !show
+      ? null
+      : createPortal(
+          <Screen>
             <Header
               title={intl.formatMessage({ id: 'wishlist-my-lists' })}
               onClose={onClose}
@@ -94,18 +89,18 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
               <div className="fixed vw-100 top-0 bg-base">
                 <CreateList
                   onClose={() => this.setState({ showCreateList: false })}
-                  onFinishAdding={this.onListCreated}
+                  onFinishAdding={this.handleListCreated}
                 />
               </div>
             )}
             {showUpdateList && (
-              <div className="fixed vw-100 top-0 left-0 bg-base">
+              <Screen>
                 <UpdateList
                   onClose={() => this.setState({ showUpdateList: false })}
                   list={lists[listSelected]}
-                  onFinishUpdate={this.onListUpdated}
+                  onFinishUpdate={this.handleListUpdated}
                 />
-              </div>
+              </Screen>
             )}
             {showListDetails && (
               <div className="fixed vw-100 top-0 left-0 bg-base">
@@ -116,44 +111,42 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
                 />
               </div>
             )}
-          </div>
-
-        </Fragment>
-      ),
-      document.body
-    )
+          </Screen>,
+          document.body
+        )
   }
 
   private renderLists = (): ReactNode => {
     const { lists } = this.state
     return (
       <Fragment>
-        {lists.length ?
-          (
-            <div className="bb b--muted-4">
-              {lists.map((list, key) => (
-                <ListItem
-                  key={key}
-                  list={list}
-                  id={key}
-                  isDefault={key === DEFAULT_LIST_INDEX}
-                  onClick={() => this.setState({ showListDetails: true, listSelected: key })}
-                  showMenuOptions
-                  onDeleted={this.handleDeleteList}
-                  onUpdated={this.handleUpdateList}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="tc pv4 c-muted-2">
-              <FormattedMessage id="wishlist-no-list-created" />
-            </div>
-          )}
+        {lists.length ? (
+          <div className="bb b--muted-4">
+            {lists.map((list, key) => (
+              <ListItem
+                key={key}
+                list={list}
+                id={key}
+                isDefault={key === DEFAULT_LIST_INDEX}
+                onClick={() =>
+                  this.setState({ showListDetails: true, listSelected: key })
+                }
+                showMenuOptions
+                onDeleted={this.handleDeleteList}
+                onUpdated={this.handleUpdateList}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="tc pv4 c-muted-2">
+            <FormattedMessage id="wishlist-no-list-created" />
+          </div>
+        )}
       </Fragment>
     )
   }
 
-  private handleDeleteList = (listId: string): Promise<any> => {
+  private handleDeleteList = (listId: string): Promise<void> => {
     const { lists } = this.state
     const { client } = this.props
     return deleteList(client, listId)
@@ -165,28 +158,34 @@ class Lists extends Component<ListsProps & InjectedIntlProps & WithApolloClient<
           })
         }
       })
-      .catch(err => console.error('something went wrong', err))
+      .catch(error => console.error(error))
   }
 
   private handleUpdateList = (index: number): void => {
     this.setState({ listSelected: index, showUpdateList: true })
   }
 
-  private onListCreated = (list: any): void => {
+  private handleListCreated = (list: List): void => {
     const { lists } = this.state
-    saveListIdInLocalStorage(list.id)
     this.setState({ showCreateList: false, lists: append(list, lists) })
   }
 
-  private onListUpdated = (list: any): void => {
+  private handleListUpdated = (list: List): void => {
     const { lists, listSelected } = this.state
-    this.setState({ lists: update(listSelected, list, lists), showUpdateList: false })
+    this.setState({
+      lists: update(listSelected, list, lists),
+      showUpdateList: false,
+    })
   }
 
   private renderContent = (): ReactNode => {
     const { loading } = this.state
     return loading ? renderLoading() : this.renderLists()
   }
-
 }
-export default withRuntimeContext(withApollo<ListsProps, {}>(injectIntl(Lists)))
+
+export default compose(
+  injectIntl,
+  withRuntimeContext,
+  withApollo
+)(Lists)

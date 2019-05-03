@@ -1,42 +1,47 @@
 import classNames from 'classnames'
 import React, { Component, ReactNode } from 'react'
-import { InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+import { InjectedIntlProps, injectIntl } from 'react-intl'
 import {
+  ActionMenu,
   Checkbox,
+  IconOptionsDots,
   IconVisibilityOff,
-  IconVisibilityOn
+  IconVisibilityOn,
 } from 'vtex.styleguide'
-import Dialog from './Dialog'
-import MenuOptions from './MenuOptions/MenuOptions'
+import DialogMessage from './Dialog/DialogMessage'
 
-interface ListItemProps {
+interface ListItemProps extends InjectedIntlProps {
   id: number
   list: List
   isDefault: boolean
   isSelected?: boolean
-  showMenuOptions?: boolean,
+  showMenuOptions?: boolean
+  hideAction?: boolean
+  hideBorders?: boolean
   onClick?: (id: number) => void
   onSelected?: (id: number, isSelected?: boolean) => void
-  onDeleted?: (listId: string) => Promise<any>
+  onDeleted?: (listId: string) => Promise<void>
   onUpdated?: (index: number) => void
-  intl?: IntlShape
 }
 
 interface ListItemState {
   showDeleteDialog?: boolean
 }
 
-class ListItem extends Component<ListItemProps & InjectedIntlProps, {}> {
+class ListItem extends Component<ListItemProps, {}> {
   public state: ListItemState = {}
 
-  private options: Option[] = [
+  private options = [
     {
-      onClick: () => this.props.onUpdated && this.props.onUpdated(this.props.id),
-      title: this.props.intl.formatMessage({ id: 'wishlist-option-configuration' }),
+      onClick: () =>
+        this.props.onUpdated && this.props.onUpdated(this.props.id),
+      label: this.props.intl.formatMessage({
+        id: 'wishlist-option-configuration',
+      }),
     },
     {
       onClick: () => this.setState({ showDeleteDialog: true }),
-      title: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
+      label: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
     },
   ]
 
@@ -57,58 +62,92 @@ class ListItem extends Component<ListItemProps & InjectedIntlProps, {}> {
       isSelected,
       isDefault,
       showMenuOptions,
+      hideAction,
+      hideBorders,
       intl,
       onClick,
       onDeleted,
       onSelected,
     } = this.props
     const { showDeleteDialog } = this.state
-    const className = classNames('w-100 bt b--muted-4 flex flex-row pv3 ph4 c-muted-3', {
-      'bg-muted-5': isDefault,
+    const className = classNames('w-100 flex flex-row items-center ph4 pv3', {
+      'bg-action-secondary': isDefault,
+      'bt b--muted-4': !hideBorders,
+      'c-emphasis': hideBorders && isSelected,
+      'c-muted-2': !isSelected || !hideBorders,
+    })
+    const nameClassName = classNames('w-100 mh4 mv1', {
+      'flex justify-center pv1': isDefault,
     })
     return (
       <div className={className}>
         <div
-          className="w-100 flex"
+          tabIndex={0}
+          role="button"
+          className="w-100 flex pointer"
           onClick={() => onClick && onClick(id)}
+          onKeyPress={this.handleKeyPress}
         >
-          <div className="flex items-center ml2">{isPublic ?
-            <IconVisibilityOn />
-            :
-            <IconVisibilityOff />
-          }
-          </div>
-          <span className="w-100 mh4 mv1 c-muted-1">{name}</span>
-        </div>
-        {showMenuOptions ? (
-          <MenuOptions options={this.options} />
-        ) : (
-            !isDefault && (
-              <div className="flex items-center c-action-primary">
-                <Checkbox
-                  checked={isSelected}
-                  onChange={() => onSelected && onSelected(id, isSelected)}
-                />
-              </div>
-            )
+          {!isDefault && (
+            <div className="flex items-center ml2">
+              {isPublic ? <IconVisibilityOn /> : <IconVisibilityOff />}
+            </div>
           )}
-        {showDeleteDialog && (
-          <Dialog
-            message={
-              intl.formatMessage(
-                { id: 'wishlist-delete-confirmation-message' },
-                { listName: name }
+          <span className={nameClassName}>{name}</span>
+        </div>
+        {!hideAction &&
+          (showMenuOptions
+            ? !isDefault && (
+                <ActionMenu
+                  options={this.options}
+                  hideCaretIcon
+                  buttonProps={{
+                    variation: 'tertiary',
+                    icon: <IconOptionsDots color="c-action-primary" />,
+                    size: 'small',
+                  }}
+                />
               )
-            }
+            : !isDefault && (
+                <div className="flex items-center c-action-primary">
+                  <Checkbox
+                    checked={isSelected}
+                    onChange={() => onSelected && onSelected(id, isSelected)}
+                  />
+                </div>
+              ))}
+        {showDeleteDialog && (
+          <DialogMessage
+            message={intl.formatMessage(
+              { id: 'wishlist-delete-confirmation-message' },
+              { listName: name }
+            )}
             onClose={() => this.setState({ showDeleteDialog: false })}
-            onSuccess={() => onDeleted && onDeleted(listId || '')
-              .then(() => this.isComponentMounted && this.setState({ showDeleteDialog: false }))
-              .catch(() => this.isComponentMounted && this.setState({ showDeleteDialog: false }))
+            onSuccess={() =>
+              onDeleted &&
+              onDeleted(listId || '')
+                .then(
+                  () =>
+                    this.isComponentMounted &&
+                    this.setState({ showDeleteDialog: false })
+                )
+                .catch(
+                  () =>
+                    this.isComponentMounted &&
+                    this.setState({ showDeleteDialog: false })
+                )
             }
           />
         )}
       </div>
     )
+  }
+
+  private handleKeyPress = (e: React.KeyboardEvent<{}>) => {
+    const { onClick, id } = this.props
+    if (e.key == 'Enter') {
+      onClick && onClick(id)
+    }
   }
 }
 

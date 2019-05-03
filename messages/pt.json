@@ -13,14 +13,14 @@
   "wishlist-see-lists": "VER LISTAS",
   "wishlist-product-added-to-list": "Item adicionado à lista",
   "wishlist-no-list-created": "Você tem nenhuma lista criada",
-  "wishlist-default-list-name": "Listas com todos os itens salvos",
+  "wishlist-default-list-name": "Todos os itens",
   "wishlist-option-delete": "Excluir",
   "wishlist-dialog-confirm": "sim",
   "wishlist-dialog-cancel": "não",
   "wishlist-delete-confirmation-message": "Você tem certeza que deseja excluir a lista {listName}?",
   "wishlist-option-configuration": "Editar",
   "wishlist-save": "Salvar",
-  "wishlist-buy-items": "Comprar itens selecionados",
+  "wishlist-buy-items": "Adicionar ao carrinho",
   "wishlist-quantity-selected-items": "{selectedItemsQuantity} itens selecionados",
   "wishlist-total": "Total",
   "wishlist-list-empty": "Esta lista está vazia",
@@ -28,5 +28,10 @@
   "wishlist-list-updated": "Sua lista foi editada",
   "wishlist-quantity-of-items": "{itemsQuantity} items nesta lista",
   "wishlist-add-to-cart-success": "Itens adicionados ao carrinho",
-  "wishlist-add-to-cart-fail": "Itens não foram adicionados ao carrinho"
+  "wishlist-add-to-cart-fail": "Itens não foram adicionados ao carrinho",
+  "wishlist-quantity-products": "{productsQuantity} produtos",
+  "wishlist-copy-to": "Copiar para",
+  "wishlist-copied": "Item copiado para {listName}",
+  "wishlist-see": "Ver",
+  "wishlist-list-created": "Lista criada"
 }

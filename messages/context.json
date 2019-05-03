@@ -28,5 +28,10 @@
   "wishlist-list-updated": "wishlist-list-updated",
   "wishlist-quantity-of-items": "wishlist-quantity-of-items",
   "wishlist-add-to-cart-success": "wishlist-add-to-cart-success",
-  "wishlist-add-to-cart-fail": "wishlist-add-to-cart-fail"
+  "wishlist-add-to-cart-fail": "wishlist-add-to-cart-fail",
+  "wishlist-quantity-products": "wishlist-quantity-products",
+  "wishlist-copy-to": "wishlist-copy-to",
+  "wishlist-copied": "wishlist-copied",
+  "wishlist-see": "wishlist-see",
+  "wishlist-list-created": "wishlist-list-created"
 }

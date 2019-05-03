@@ -1,6 +1,8 @@
 query getListDetails($id: ID) {
   list(id: $id) {
     name
+    isEditable
+    isPublic
     items {
       id
       productId

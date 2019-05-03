@@ -1,61 +1,74 @@
-import { map } from 'ramda'
 import React, { Component, Fragment, ReactNode } from 'react'
-import { FormattedMessage, InjectedIntlProps, injectIntl, IntlShape } from 'react-intl'
+
+import { map } from 'ramda'
+import { compose } from 'react-apollo'
+import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import { Button } from 'vtex.styleguide'
 import ItemDetails from './ItemDetails'
 
-import wishlist from '../../wishList.css'
+import styles from '../../wishList.css'
 
-interface ContentProps {
-  items: any
-  onItemSelect: (itemId: string, product: any, isSelected: boolean) => void
-  onItemRemove: (id: string) => Promise<any>
-  intl: IntlShape
-  runtime?: any
+interface ContentProps extends InjectedIntlProps {
+  items: ListItem[]
+  lists?: List[]
+  hideItemsQuantityLabel?: boolean
+  onItemSelect: (itemId: string, product: ListItem, isSelected: boolean) => void
+  onItemRemove: (id: string) => Promise<void>
+  runtime: Runtime
 }
 
-class Content extends Component<ContentProps & InjectedIntlProps, {}> {
+class Content extends Component<ContentProps, {}> {
   public render(): ReactNode {
-    const { items } = this.props
+    const { items, hideItemsQuantityLabel } = this.props
     return (
-      <div className={`${wishlist.listDetailsContent} h-100 overflow-y-scroll flex flex-column`}>
-        {
-          items.length > 0 ? (
-            <div>
+      <div
+        className={`${
+          styles.listDetailsContent
+        } h-100 overflow-y-auto flex flex-column`}
+      >
+        {items.length > 0 ? (
+          <div>
+            {!hideItemsQuantityLabel && (
               <div className="h3 flex items-center justify-center c-muted-1">
                 <span>
                   <FormattedMessage
-                  id="wishlist-quantity-of-items"
-                  values={{itemsQuantity: items.length}}
+                    id="wishlist-quantity-of-items"
+                    values={{ itemsQuantity: items.length }}
                   />
                 </span>
               </div>
-              {this.renderItems()}
-            </div>
-          )
-            : this.renderListEmpty()
-        }
+            )}
+            {this.renderItems()}
+          </div>
+        ) : (
+          this.renderListEmpty()
+        )}
       </div>
     )
   }
 
-  private redirectToGallery = (): void => {
-    const { runtime: { navigate } } = this.props
+  private handleRedirectToGallery = (): void => {
+    const {
+      runtime: { navigate },
+    } = this.props
     navigate({
-      fallbackToWindowLocation: false,
       to: '/',
     })
   }
-  
+
   private renderListEmpty = (): ReactNode => {
     return (
-      <div className={`${wishlist.listEmptyContainer} flex flex-column w-100 h-100 items-center mt8 c-muted-2`}>
-        <div className={wishlist.listEmptyLabel}>
-            <FormattedMessage id="wishlist-list-empty" />
+      <div
+        className={`${
+          styles.listEmptyContainer
+        } flex flex-column w-100 h-100 items-center mv8 c-muted-2`}
+      >
+        <div className={styles.listEmptyLabel}>
+          <FormattedMessage id="wishlist-list-empty" />
         </div>
-        <div className={`${wishlist.goToAddProductsButtonContainer} mt8`}>
-          <Button variation="primary" onClick={this.redirectToGallery}>
+        <div className={`${styles.goToAddProductsButtonContainer} mt8`}>
+          <Button variation="primary" onClick={this.handleRedirectToGallery}>
             <FormattedMessage id="wishlist-add-itens" />
           </Button>
         </div>
@@ -64,16 +77,26 @@ class Content extends Component<ContentProps & InjectedIntlProps, {}> {
   }
 
   private renderItems = (): ReactNode => {
-    const { items } = this.props
+    const { items, lists } = this.props
     return (
       <Fragment>
-        {map(item => (
-          <ItemDetails {...this.props} item={item} key={item.id} />
-        ), items)}
+        {map(
+          item => (
+            <ItemDetails
+              {...this.props}
+              item={item}
+              lists={lists}
+              key={item.id}
+            />
+          ),
+          items
+        )}
       </Fragment>
     )
   }
-
 }
 
-export default withRuntimeContext(injectIntl(Content))
+export default compose(
+  withRuntimeContext,
+  injectIntl
+)(Content)
