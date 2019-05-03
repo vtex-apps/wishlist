@@ -71,10 +71,13 @@ class ListItem extends Component<ListItemProps, {}> {
     } = this.props
     const { showDeleteDialog } = this.state
     const className = classNames('w-100 flex flex-row items-center ph4 pv3', {
-      'bg-muted-5': isDefault,
+      'bg-action-secondary': isDefault,
       'bt b--muted-4': !hideBorders,
       'c-emphasis': hideBorders && isSelected,
       'c-muted-2': !isSelected || !hideBorders,
+    })
+    const nameClassName = classNames('w-100 mh4 mv1', {
+      'flex justify-center pv1': isDefault,
     })
     return (
       <div className={className}>
@@ -85,10 +88,12 @@ class ListItem extends Component<ListItemProps, {}> {
           onClick={() => onClick && onClick(id)}
           onKeyPress={this.handleKeyPress}
         >
-          <div className="flex items-center ml2">
-            {isPublic ? <IconVisibilityOn /> : <IconVisibilityOff />}
-          </div>
-          <span className="w-100 mh4 mv1">{name}</span>
+          {!isDefault && (
+            <div className="flex items-center ml2">
+              {isPublic ? <IconVisibilityOn /> : <IconVisibilityOff />}
+            </div>
+          )}
+          <span className={nameClassName}>{name}</span>
         </div>
         {!hideAction &&
           (showMenuOptions

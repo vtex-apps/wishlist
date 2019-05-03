@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react'
 
 import { isMobile } from 'react-device-detect'
 import { IconCaretLeft, IconClose, IconPlusLines } from 'vtex.styleguide'
+import classNames from 'classnames'
 
 interface HeaderProps {
   title?: string
@@ -22,10 +23,13 @@ const handleKeyPress = (e: React.KeyboardEvent<{}>, onClick: () => void) => {
 
 const Header = (props: HeaderProps): JSX.Element => {
   const { title, onClose, action, children, showIconBack } = props
+  const className = classNames('flex items-center pointer', {
+    ml3: children,
+  })
   return (
     <div className="flex flex-row pa4 items-center bb bt b--muted-4">
       <div
-        className="flex items-center pointer"
+        className={className}
         role="button"
         tabIndex={0}
         onClick={onClose}
@@ -37,7 +41,9 @@ const Header = (props: HeaderProps): JSX.Element => {
           <IconClose size={CLOSE_ICON_SIZE} />
         )}
       </div>
-      <span className="t-heading-6 w-100 mh5 flex justify-center">{title}</span>
+      <span className="t-heading-6 w-100 mh5 pv3 flex justify-center">
+        {title}
+      </span>
       {children}
       {action && (
         <div

@@ -20,7 +20,7 @@
   "wishlist-delete-confirmation-message": "Are you sure that you wish delete the list {listName}?",
   "wishlist-option-configuration": "Edit",
   "wishlist-save": "Save",
-  "wishlist-buy-items": "Buy selected items",
+  "wishlist-buy-items": "Add to the cart",
   "wishlist-quantity-selected-items": "{selectedItemsQuantity} selected items",
   "wishlist-total": "Total",
   "wishlist-list-empty": "This list is empty",

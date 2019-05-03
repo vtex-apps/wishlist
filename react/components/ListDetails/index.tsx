@@ -114,7 +114,7 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
               buttonProps={{
                 variation: 'tertiary',
                 size: 'small',
-                icon: <IconOptionsDots />,
+                icon: <IconOptionsDots size={20} />,
               }}
             />
           )}
