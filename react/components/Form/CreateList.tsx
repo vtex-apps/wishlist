@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import { isMobile } from 'react-device-detect'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { InjectedIntlProps, injectIntl } from 'react-intl'
-import { withToast } from 'vtex.styleguide'
 import { withRuntimeContext } from 'vtex.render-runtime'
 
 import { createList, saveListIdInLocalStorage } from '../../GraphqlClient'
@@ -16,7 +15,6 @@ import styles from '../../wishList.css'
 interface CreateListProps extends InjectedIntlProps, WithApolloClient<{}> {
   onFinishAdding: (list: List) => void
   onClose: () => void
-  showToast: (toastInput: ToastInput) => void
   runtime: Runtime
 }
 
@@ -62,7 +60,7 @@ class CreateList extends Component<CreateListProps, CreateListState> {
     this.setState({ isLoading: true })
     createList(client, { ...listData, items: [], isEditable: true })
       .then((response: ResponseList) => {
-        this.showMessage(response.data.createList.id)
+        !isMobile && this.redirectToList(response.data.createList.id)
         this.props.onFinishAdding(response.data.createList)
         saveListIdInLocalStorage(response.data.createList.id)
         if (this.isComponentMounted) {
@@ -71,18 +69,6 @@ class CreateList extends Component<CreateListProps, CreateListState> {
       })
       .catch(error => {
         console.error(error)
-      })
-  }
-
-  private showMessage = (id: string | undefined): void => {
-    const { showToast, intl } = this.props
-    !isMobile &&
-      showToast({
-        action: {
-          label: intl.formatMessage({ id: 'wishlist-see' }),
-          onClick: () => this.redirectToList(id),
-        },
-        message: intl.formatMessage({ id: 'wishlist-list-created' }),
       })
   }
 
@@ -97,6 +83,5 @@ class CreateList extends Component<CreateListProps, CreateListState> {
 export default compose(
   injectIntl,
   withApollo,
-  withToast,
   withRuntimeContext
 )(CreateList)

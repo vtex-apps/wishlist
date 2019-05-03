@@ -160,7 +160,7 @@ class Content extends Component<ContentProps, ContentState> {
 
   private fetchListDetails(): void {
     const { client, listId } = this.props
-    this.setState({ isLoading: true, list: {} })
+    this.setState({ isLoading: true, list: {}, selectedItems: [] })
     getListDetailed(client, listId).then(response => {
       if (this.isComponentMounted) {
         this.setState({ list: response.data.list, isLoading: false })
