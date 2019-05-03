@@ -83,7 +83,7 @@ class ListItem extends Component<ListItemProps, {}> {
           role="button"
           className="w-100 flex pointer"
           onClick={() => onClick && onClick(id)}
-          onKeyPress={() => onClick && onClick(id)}
+          onKeyPress={this.handleKeyPress}
         >
           <div className="flex items-center ml2">
             {isPublic ? <IconVisibilityOn /> : <IconVisibilityOff />}
@@ -136,6 +136,13 @@ class ListItem extends Component<ListItemProps, {}> {
         )}
       </div>
     )
+  }
+
+  private handleKeyPress = (e: React.KeyboardEvent<{}>) => {
+    const { onClick, id } = this.props
+    if (e.key == 'Enter') {
+      onClick && onClick(id)
+    }
   }
 }
 

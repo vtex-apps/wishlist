@@ -31,13 +31,19 @@ class BottomBar extends Component<BottomBarProps> {
           tabIndex={0}
           role="button"
           onClick={() => onOutsideClick()}
-          onKeyPress={() => onOutsideClick()}
+          onKeyPress={this.handleKeyPress}
           className="h-100 w-100 bg-base--inverted z-4 o-40"
         />
         <div className="w-100">{children}</div>
       </div>,
       document.body
     )
+  }
+
+  private handleKeyPress = (e: React.KeyboardEvent<{}>) => {
+    if (e.key == 'Enter') {
+      this.props.onOutsideClick()
+    }
   }
 }
 

@@ -14,6 +14,12 @@ interface HeaderProps {
 const ICON_SIZE = 20
 const CLOSE_ICON_SIZE = 23
 
+const handleKeyPress = (e: React.KeyboardEvent<{}>, onClick: () => void) => {
+  if (e.key == 'Enter') {
+    onClick()
+  }
+}
+
 const Header = (props: HeaderProps): JSX.Element => {
   const { title, onClose, action, children, showIconBack } = props
   return (
@@ -23,7 +29,7 @@ const Header = (props: HeaderProps): JSX.Element => {
         role="button"
         tabIndex={0}
         onClick={onClose}
-        onKeyPress={onClose}
+        onKeyPress={e => handleKeyPress(e, onClose)}
       >
         {showIconBack && isMobile ? (
           <IconCaretLeft size={ICON_SIZE} />
@@ -39,7 +45,7 @@ const Header = (props: HeaderProps): JSX.Element => {
           role="button"
           tabIndex={0}
           onClick={action}
-          onKeyPress={action}
+          onKeyPress={e => handleKeyPress(e, action)}
         >
           <IconPlusLines size={ICON_SIZE} />
         </div>

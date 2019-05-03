@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { InjectedIntlProps, injectIntl } from 'react-intl'
+import { withToast } from 'vtex.styleguide'
+import { withRuntimeContext } from 'vtex.render-runtime'
+
 import { createList, saveListIdInLocalStorage } from '../../GraphqlClient'
 import Header from '../Header'
 import FormView from './FormView'
@@ -12,6 +15,8 @@ import styles from '../../wishList.css'
 interface CreateListProps extends InjectedIntlProps, WithApolloClient<{}> {
   onFinishAdding: (list: List) => void
   onClose: () => void
+  showToast: (toastInput: ToastInput) => void
+  runtime: Runtime
 }
 
 interface CreateListState {
@@ -52,10 +57,17 @@ class CreateList extends Component<CreateListProps, CreateListState> {
   }
 
   private handleSubmit = (listData: List): void => {
-    const { client } = this.props
+    const { client, showToast, intl } = this.props
     this.setState({ isLoading: true })
     createList(client, { ...listData, items: [], isEditable: true })
       .then((response: ResponseList) => {
+        showToast({
+          action: {
+            label: intl.formatMessage({ id: 'wishlist-see' }),
+            onClick: () => this.redirectToList(response.data.createList.id),
+          },
+          message: intl.formatMessage({ id: 'wishlist-list-created' }),
+        })
         this.props.onFinishAdding(response.data.createList)
         saveListIdInLocalStorage(response.data.createList.id)
         if (this.isComponentMounted) {
@@ -66,9 +78,18 @@ class CreateList extends Component<CreateListProps, CreateListState> {
         console.error(err)
       })
   }
+
+  private redirectToList = (id: string | undefined): void => {
+    const {
+      runtime: { setQuery },
+    } = this.props
+    setQuery({ listId: id }, { merge: false, replace: true })
+  }
 }
 
 export default compose(
   injectIntl,
-  withApollo
+  withApollo,
+  withToast,
+  withRuntimeContext
 )(CreateList)

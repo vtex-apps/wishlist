@@ -32,5 +32,6 @@
   "wishlist-quantity-products": "{productsQuantity} products",
   "wishlist-copy-to": "Copy to",
   "wishlist-copied": "Item copied to {listName}",
-  "wishlist-see": "See"
+  "wishlist-see": "See",
+  "wishlist-list-created": "List created"
 }
