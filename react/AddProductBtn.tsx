@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import classNames from 'classnames'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
 import { InjectedIntlProps, injectIntl } from 'react-intl'
@@ -32,8 +33,13 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   public render() {
     const { product, large } = this.props
     const { showContent, showLists, isLoading } = this.state
+    
+    const classAddProductBtn = classNames('relative', {
+      "ph7 pv7": large,
+    })
+
     return (
-      <div className="relative">
+      <div className={classAddProductBtn}>
         <ButtonWithIcon
           variation="tertiary"
           onClick={this.handleAddProductClick}
@@ -41,8 +47,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
           icon={
             <IconHeart
               color="c-muted-3"
-              width={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
-              height={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
+              size={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
             />
           }
         />

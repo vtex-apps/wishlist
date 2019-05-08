@@ -6,6 +6,8 @@
  and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Fix heart's position and size, and align products menu's button.
 
 ## [0.1.0] - 2019-05-03
 ### Added

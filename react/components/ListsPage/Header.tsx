@@ -44,7 +44,7 @@ class Header extends Component<HeaderProps, HeaderState> {
     const { list, intl } = this.props
 
     return list ? (
-      <div className="w-100 ph6 flex items-center">
+      <div className="w-100 flex items-center">
         <div className="w-100 t-heading-2">{list.name}</div>
         <div className="flex flex-row items-center w-100 justify-end">
           <div className="ttu mh2">
