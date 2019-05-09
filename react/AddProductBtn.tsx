@@ -33,13 +33,13 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   public render() {
     const { product, large } = this.props
     const { showContent, showLists, isLoading } = this.state
-    
-    const classAddProductBtn = classNames('relative', {
-      "ph7 pv7": large,
+
+    const addProductBtnClasses = classNames('relative', {
+      'ph6 pv7': large
     })
 
     return (
-      <div className={classAddProductBtn}>
+      <div className={addProductBtnClasses}>
         <ButtonWithIcon
           variation="tertiary"
           onClick={this.handleAddProductClick}
