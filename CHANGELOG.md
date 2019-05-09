@@ -7,7 +7,10 @@
 
 ## [Unreleased]
 
-## [0.1.1-beta] - 2019-05-09
+## [0.1.1] - 2019-05-09
+### Changed
+- Heart's position and size.
+- Product's button style.
 
 ## [0.1.0] - 2019-05-03
 ### Added
