@@ -7,6 +7,8 @@
 
 ## [Unreleased]
 
+## [0.1.1-beta] - 2019-05-09
+
 ## [0.1.0] - 2019-05-03
 ### Added
 - `wishlist` in the desktop mode.
