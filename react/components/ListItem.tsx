@@ -28,6 +28,8 @@ interface ListItemState {
   showDeleteDialog?: boolean
 }
 
+const ICON_SIZE = 20
+
 class ListItem extends Component<ListItemProps, {}> {
   public state: ListItemState = {}
 
@@ -79,7 +81,7 @@ class ListItem extends Component<ListItemProps, {}> {
       ph4: !showMenuOptions,
     })
     const nameClassName = classNames('w-100 mh4 mv1', {
-      'flex justify-center pv1': isDefault,
+      'flex justify-center pv2': isDefault,
     })
     return (
       <div className={className}>
@@ -105,7 +107,7 @@ class ListItem extends Component<ListItemProps, {}> {
                   hideCaretIcon
                   buttonProps={{
                     variation: 'tertiary',
-                    icon: <IconOptionsDots size={20} />,
+                    icon: <IconOptionsDots size={ICON_SIZE} />,
                     size: 'small',
                   }}
                 />
