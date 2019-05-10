@@ -72,7 +72,7 @@ class ListItem extends Component<ListItemProps, {}> {
       onSelected,
     } = this.props
     const { showDeleteDialog } = this.state
-    const className = classNames('w-100 flex flex-row items-center pv3', {
+    const className = classNames('w-100 flex flex-row items-center pv4', {
       'bg-action-secondary': isDefault,
       'bt b--muted-4': !hideBorders,
       'c-emphasis': hideBorders && isSelected,
