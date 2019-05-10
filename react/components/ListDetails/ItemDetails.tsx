@@ -9,9 +9,9 @@ import { ExtensionPoint, withRuntimeContext } from 'vtex.render-runtime'
 import {
   ButtonWithIcon,
   Checkbox,
-  Dropdown,
   IconDelete,
   withToast,
+  ActionMenu
 } from 'vtex.styleguide'
 import renderLoading from '../Loading'
 
@@ -70,26 +70,27 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
           {isLoading ? (
             <div className="mr4">{renderLoading()}</div>
           ) : (
-            <ButtonWithIcon
-              icon={deleteIcon}
-              variation="tertiary"
-              onClick={this.handleItemRemove}
-            />
+            <div className="ph3">
+              <ButtonWithIcon
+                icon={deleteIcon}
+                variation="tertiary"
+                onClick={this.handleItemRemove}
+              />
+            </div>
           )}
           <div className="mt2 mr3">
             {lists &&
               (isCopying ? (
                 renderLoading()
               ) : (
-                <Dropdown
-                  variation="inline"
-                  size="large"
-                  placeholder={intl.formatMessage({ id: 'wishlist-copy-to' })}
-                  options={this.dropdownOptionsShape(lists)}
-                  disabled={!(lists && lists.length > 0)}
-                  onChange={(_: {}, value: string) =>
-                    this.copyProductToList(value)
-                  }
+                <ActionMenu
+                  label={intl.formatMessage({ id: 'wishlist-copy-to' })}
+                  options={this.getActionMenuOptions(lists)}
+                  buttonProps={{
+                    variation: 'tertiary',
+                    size: 'small',
+                    disabled: !(lists && lists.length > 0),
+                  }}
                 />
               ))}
           </div>
@@ -112,9 +113,11 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
     )
   }
 
-  private dropdownOptionsShape = (lists: List[]): DropDownItem[] => {
-    return map(({ id, name }) => ({ value: id, label: name }), lists)
-  }
+  private getActionMenuOptions = (lists: List[]) : ActionMenuItem[] =>
+    lists.map(({ id, name }) => ({
+      label: name,
+      onClick: () => this.copyProductToList(String(id)),
+    }))
 
   private normalizeProduct = (product: Product | undefined): {} | null => {
     if (!product) {
