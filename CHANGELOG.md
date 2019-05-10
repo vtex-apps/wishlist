@@ -7,7 +7,7 @@
 
 ## [Unreleased]
 ### Fixed
-- Removed `Copy to` option in the dropdown of the item in wish list.
+- Removed `Copy to` option in the dropdown of the product in wish list.
 
 ## [0.1.3] - 2019-05-13
 
