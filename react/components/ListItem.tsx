@@ -70,11 +70,13 @@ class ListItem extends Component<ListItemProps, {}> {
       onSelected,
     } = this.props
     const { showDeleteDialog } = this.state
-    const className = classNames('w-100 flex flex-row items-center ph4 pv3', {
+    const className = classNames('w-100 flex flex-row items-center pv3', {
       'bg-action-secondary': isDefault,
       'bt b--muted-4': !hideBorders,
       'c-emphasis': hideBorders && isSelected,
       'c-muted-2': !isSelected || !hideBorders,
+      pl4: showMenuOptions,
+      ph4: !showMenuOptions,
     })
     const nameClassName = classNames('w-100 mh4 mv1', {
       'flex justify-center pv1': isDefault,
@@ -103,7 +105,7 @@ class ListItem extends Component<ListItemProps, {}> {
                   hideCaretIcon
                   buttonProps={{
                     variation: 'tertiary',
-                    icon: <IconOptionsDots color="c-action-primary" />,
+                    icon: <IconOptionsDots size={20} />,
                     size: 'small',
                   }}
                 />
