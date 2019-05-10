@@ -26,8 +26,15 @@ const Header = (props: HeaderProps): JSX.Element => {
   const className = classNames('flex items-center pointer', {
     ml3: children,
   })
+  const containerStyle = classNames(
+    'flex flex-row pa4 items-center bb bt b--muted-4',
+    {
+      pl6: children,
+      ph6: !children,
+    }
+  )
   return (
-    <div className="flex flex-row pa4 items-center bb bt b--muted-4">
+    <div className={containerStyle}>
       <div
         className={className}
         role="button"

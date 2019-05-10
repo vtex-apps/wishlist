@@ -28,6 +28,8 @@ interface ListItemState {
   showDeleteDialog?: boolean
 }
 
+const ICON_SIZE = 20
+
 class ListItem extends Component<ListItemProps, {}> {
   public state: ListItemState = {}
 
@@ -72,7 +74,7 @@ class ListItem extends Component<ListItemProps, {}> {
     const { showDeleteDialog } = this.state
     const className = classNames('w-100 flex flex-row items-center ph4 pv3', {
       'bg-action-secondary': isDefault,
-      'bt b--muted-4': !hideBorders,
+      'bt b--muted-4 pl6': !hideBorders,
       'c-emphasis': hideBorders && isSelected,
       'c-muted-2': !isSelected || !hideBorders,
     })
@@ -103,13 +105,13 @@ class ListItem extends Component<ListItemProps, {}> {
                   hideCaretIcon
                   buttonProps={{
                     variation: 'tertiary',
-                    icon: <IconOptionsDots color="c-action-primary" />,
+                    icon: <IconOptionsDots size={ICON_SIZE} />,
                     size: 'small',
                   }}
                 />
               )
             : !isDefault && (
-                <div className="flex items-center c-action-primary">
+                <div className="flex items-center c-action-primary pr5">
                   <Checkbox
                     checked={isSelected}
                     onChange={() => onSelected && onSelected(id, isSelected)}
