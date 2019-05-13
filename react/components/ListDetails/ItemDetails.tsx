@@ -81,7 +81,7 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
           <div className="mt2 mr3">
             {lists &&
               (isCopying ? (
-                renderLoading()
+                <div className="mr4">{renderLoading()}</div>
               ) : (
                 <ActionMenu
                   label={intl.formatMessage({ id: 'wishlist-copy-to' })}
