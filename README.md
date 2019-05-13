@@ -25,7 +25,7 @@ See our [LTS policy](https://github.com/vtex-apps/awesome-io#lts-policy) for mor
 
 ## Usage
 
-To use this component, it's just necessary to install it in your store, using the following command:
+In order to use this app, install it on your store with:
 
 `vtex install vtex.wishlist`
 
