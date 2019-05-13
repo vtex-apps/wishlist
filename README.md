@@ -29,7 +29,7 @@ In order to use this app, install it on your store with:
 
 `vtex install vtex.wishlist`
 
-After that, the `ProductSummary` and the `ProductDetails` will have the button to add the product to the lists.
+After that, Wishlist's _Add to List_ button will be displayed on `ProductSummary` and `ProductDetails`.
 
 
 #### Configuration
