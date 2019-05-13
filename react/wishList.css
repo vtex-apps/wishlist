@@ -47,10 +47,6 @@
   min-width: 480px;
 }
 
-.footerDesktop {
-  margin-left: 256px;
-}
-
 .summaryContainer {}
 
 .summaryContainerLarge {
@@ -84,7 +80,7 @@
 .form {
 }
 
-.updateList{
+.updateList {
 }
 
 .listEmptyContainer {
