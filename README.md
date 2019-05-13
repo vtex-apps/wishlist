@@ -2,7 +2,7 @@
 
 ## Description
 
-The Wishlist is a canonical app that any VTEX store can use. This app is responsible for managing the costumer's lists of products.
+The Wishlist is a native app that any VTEX store can use. This app is responsible for managing the customer's lists of products.
 
 :loudspeaker: **Disclaimer:** Don't fork this project; use, contribute, or open issue with your feature request.
 
