@@ -6,6 +6,8 @@
  and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.1.2] - 2019-05-13
 ### Fixed
 - Size of the options dots icon in the action menu of the list item in mobile mode.
 - Default list's height in mobile mode.
