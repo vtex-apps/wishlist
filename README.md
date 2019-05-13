@@ -19,6 +19,7 @@ See our [LTS policy](https://github.com/vtex-apps/awesome-io#lts-policy) for mor
 - [Usage](#usage)
   - [Styles API](#styles-api)
     - [CSS namespaces](#css-namespaces)
+- [Data](#data)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [Tests](#tests)
@@ -90,6 +91,27 @@ To use this CSS API, you must add the `styles` builder and create an app styling
 | `pricesContainer`                | Label of the total price of the selected items from a list         | [ListDetails/Footer](/react/components/ListDetails/Footer.tsx)                                                                                                                                                                                        |
 | `quantityOfSelectedItemsLabel`                | Label for the quantity of selected items in a list         | [ListDetails/Footer](/react/components/ListDetails/Footer.tsx)                                                                                                                                                                                        |
 | `ListDetailsFooter`                | Container of the list details' footer         | [ListDetails/Footer](/react/components/ListDetails/Footer.tsx)                                                                                                                                                                                      |
+
+## Data
+
+The lists' informations are submitted to Master Data on the Entities:
+
+`WL`
+| Field  | Type | Configuration | Description    |
+| --------- | -------------- | ---- | ------------- |
+| name      |  `Varchar 50` | Public to read and public to write | List's name    |
+| owner     |  `Varchar 50` |  Allow null, public to read, public to write, public to filter and searchable | The e-mail of the list's owner |
+| isPublic  |  `Boolean` |  Allow null, public to read and public to write | Flag to indicate the list visibility |
+| isEditable|  `Boolean` | Allow null, public to read and public to write | Flag to indicate if the list's basic information |
+| items     |  `Text` | Allow null, public to read and public to write  | Set of the DocumentId of the items added to the list |
+
+`LP`
+
+| Field | Type | Configuration | Description |
+| ----- | ---- | ------------- | ----------- |
+| productId | `Varchar 50`     | Public to read and public to write | Id of the product |
+| skuId		| `Varchar 50`     | Public to read and public to write | SKU id of the product |
+| quantity  | `Integer`        |  Public to read and public to write | Quantity of the product 
 
 
 ## Troubleshooting
