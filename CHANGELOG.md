@@ -6,6 +6,8 @@
  and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.1.4] - 2019-05-13
 ### Fixed
 - Removed `Copy to` option in the dropdown of the product in wish list.
 
