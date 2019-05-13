@@ -6,6 +6,8 @@
  and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Increased click area for checkbox of product in wish list.
 
 ## [0.1.4] - 2019-05-13
 ### Fixed
