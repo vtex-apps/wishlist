@@ -4,7 +4,7 @@ import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
 import { InjectedIntlProps, injectIntl } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
-import { IconHeart } from 'vtex.store-icons'
+import { Icon } from 'vtex.store-icons'
 import { ButtonWithIcon, withToast } from 'vtex.styleguide'
 import AddToList from './components/AddToList/index'
 import MyLists from './MyLists'
@@ -12,6 +12,7 @@ import MyLists from './MyLists'
 import { addProductToDefaultList, getListsIdFromCookies } from './GraphqlClient'
 
 interface AddProductBtnProps extends InjectedIntlProps, WithApolloClient<{}> {
+  iconId?: string
   large?: boolean
   product: ListItem
   showToast: (toastInput: ToastInput) => void
@@ -29,13 +30,16 @@ const ICON_SIZE_LARGE = 32
 
 class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   public state: AddProductBtnState = {}
+  public static defaultProps = {
+    iconId: 'mpa-heart',
+  }
 
   public render() {
-    const { product, large } = this.props
+    const { product, large, iconId } = this.props
     const { showContent, showLists, isLoading } = this.state
 
     const addProductBtnClasses = classNames('relative', {
-      'ph6 pv7': large
+      'ph6 pv7': large,
     })
 
     return (
@@ -45,7 +49,8 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
           onClick={this.handleAddProductClick}
           isLoading={isLoading}
           icon={
-            <IconHeart
+            <Icon
+              id={iconId}
               color="c-muted-3"
               size={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
             />
