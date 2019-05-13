@@ -99,7 +99,7 @@ interface ListItemWithProduct {
   product: Product
 }
 
-interface DropDownItem {
-  value?: string
+interface ActionMenuItem {
   label?: string
+  onClick: () => void
 }
