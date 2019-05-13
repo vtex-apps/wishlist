@@ -7,6 +7,13 @@
 
 ## [Unreleased]
 
+## [0.1.3] - 2019-05-13
+
+## [0.1.2] - 2019-05-13
+### Fixed
+- Size of the options dots icon in the action menu of the list item in mobile mode.
+- Default list's height in mobile mode.
+
 ## [0.1.1] - 2019-05-09
 ### Changed
 - Heart's position and size.
