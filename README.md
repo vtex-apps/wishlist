@@ -97,6 +97,7 @@ To use this CSS API, you must add the `styles` builder and create an app styling
 The lists' informations are submitted to Master Data on the Entities:
 
 `WL`
+
 | Field  | Type | Configuration | Description    |
 | --------- | -------------- | ---- | ------------- |
 | name      |  `Varchar 50` | Public to read and public to write | List's name    |
