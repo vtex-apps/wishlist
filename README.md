@@ -35,7 +35,21 @@ After that, Wishlist's _Add to List_ button will be displayed on `ProductSummary
 
 #### Configuration
 
-This app has no configuration yet.
+`AddProductBtn`
+
+| Prop name               | Type      | Description                                                       | Default Value |
+| ----------------------- | --------- | ----------------------------------------------------------------- | ------------- |
+| `product`                 | `Product`  | Informations about the product that will be added to lists | `undefined`         |
+| `large`                  | `Boolean`  | Flag that indicates if the should be large or not  | false         |
+| `iconId`     | `String` | Id of the icon from [Store Icons](https://github.com/vtex-apps/store-icons) that should appear in the button  | false         |
+
+`Product`
+
+| Prop name               | Type      | Description                                                       | Default Value |
+| ----------------------- | --------- | ----------------------------------------------------------------- | ------------- |
+| `productId`                 | `String`  | Id of the product | `undefined`         |
+| `skuId`                  | `String`  | SKU id of the product  | `undefined`         |
+| `quantity`     | `Number` | Quantity of the product  | `undefined`         |
 
 
 ### Styles API
@@ -97,8 +111,9 @@ To use this CSS API, you must add the `styles` builder and create an app styling
 The lists' informations are submitted to Master Data on the Entities:
 
 `WL`
+
 | Field  | Type | Configuration | Description    |
-| --------- | -------------- | ---- | ------------- |
+| :-------: | :------------: | :--: | :-----------: |
 | name      |  `Varchar 50` | Public to read and public to write | List's name    |
 | owner     |  `Varchar 50` |  Allow null, public to read, public to write, public to filter and searchable | The e-mail of the list's owner |
 | isPublic  |  `Boolean` |  Allow null, public to read and public to write | Flag to indicate the list visibility |
@@ -125,4 +140,3 @@ Check it out [how to contribute](https://github.com/vtex-apps/awesome-io#contrib
 ## Tests
 
 :construction: :construction:  Not implemented yet :construction: :construction: 
-
