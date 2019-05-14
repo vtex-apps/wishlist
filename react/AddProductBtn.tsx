@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, ReactNode } from 'react'
 import classNames from 'classnames'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
@@ -12,7 +12,7 @@ import MyLists from './MyLists'
 import { addProductToDefaultList, getListsIdFromCookies } from './GraphqlClient'
 
 interface AddProductBtnProps extends InjectedIntlProps, WithApolloClient<{}> {
-  iconId?: string
+  icon?: ReactNode
   large?: boolean
   product: ListItem
   showToast: (toastInput: ToastInput) => void
@@ -30,12 +30,9 @@ const ICON_SIZE_LARGE = 32
 
 class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   public state: AddProductBtnState = {}
-  public static defaultProps = {
-    iconId: 'mpa-heart',
-  }
 
   public render() {
-    const { product, large, iconId } = this.props
+    const { product, large, icon } = this.props
     const { showContent, showLists, isLoading } = this.state
 
     const addProductBtnClasses = classNames('relative', {
@@ -49,11 +46,13 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
           onClick={this.handleAddProductClick}
           isLoading={isLoading}
           icon={
-            <Icon
-              id={iconId}
-              color="c-muted-3"
-              size={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
-            />
+            icon || (
+              <Icon
+                id="mpa-heart"
+                color="c-muted-3"
+                size={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
+              />
+            )
           }
         />
         {showContent && (
