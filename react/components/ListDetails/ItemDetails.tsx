@@ -60,11 +60,13 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
 
     return (
       <div className="relative">
-        <div className="absolute top-0 left-0 ml5 mt6 pl2">
-          <Checkbox
-            checked={isSelected}
-            onChange={this.handleItemSelectedChange}
-          />
+        <div className="absolute ml4 mt4">
+          <label className="db pa3">
+            <Checkbox
+              checked={isSelected}
+              onChange={this.handleItemSelectedChange}
+            />
+          </label>
         </div>
         <div className="absolute top-0 right-0 flex flex-column items-end">
           {isLoading ? (

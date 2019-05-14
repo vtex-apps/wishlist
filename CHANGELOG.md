@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+## [0.1.5] - 2019-05-13
+### Changed
+- Increased click area for checkbox of product in wish list.
+
 ## [0.1.4] - 2019-05-13
 ### Fixed
 - Removed `Copy to` option in the dropdown of the product in wish list.
