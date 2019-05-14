@@ -121,7 +121,7 @@ class Lists extends Component<ListsProps, ListsState> {
     return (
       <Fragment>
         {lists.length ? (
-          <div className="bb b--muted-4">
+          <div className="bb b--muted-4 h-100 overflow-auto">
             {lists.map((list, key) => (
               <ListItem
                 key={key}
