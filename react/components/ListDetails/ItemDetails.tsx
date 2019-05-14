@@ -61,7 +61,7 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
     return (
       <div className="relative">
         <div className="absolute ml4 mt4">
-          <label className="db ph3 pv3">
+          <label className="db pa3">
             <Checkbox
               checked={isSelected}
               onChange={this.handleItemSelectedChange}
