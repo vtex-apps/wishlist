@@ -15,7 +15,7 @@ const Footer = ({
   changedLists,
   onClick,
 }: FooterProps): JSX.Element => (
-  <div className={styles.applyButton}>
+  <div className={styles.confirmSelectedListsBtn}>
     <Button
       vatiation="primary"
       disabled={!changedLists.length}
