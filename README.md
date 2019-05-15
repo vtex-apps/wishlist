@@ -64,6 +64,7 @@ In order to use this app, you should follow the steps bellow.
 The lists' information are submitted to Master Data on two entities. One entity with the acronym `WL` to store list's basic informations and another, acronym `LP`, to store the lists' items. Bellow we have the configuration that these entetities should follow.
 
 **Acronym name:** `WL`
+
 | Field  | Type | Configuration | Description    |
 | --------- | -------------- | ---- | ------------- |
 | name      |  `Varchar 50` | Public to read and public to write | List's name    |
@@ -136,7 +137,7 @@ This app has an interface that describes what rules must be implemented by a blo
 | ----------------------- | --------- | ----------------------------------------------------------------- | ------------- |
 | `product`                 | `Product`  | Informations about the product that will be added to lists | `undefined`         |
 | `large`                  | `Boolean`  | Flag that indicates if the should be large or not  | false         |
-| `icon`     | `ReactChild` | The icon that should appear in the _Add to List_ button  | Heart Icon         |
+| `icon`     | `ReactChild` | The icon that should appear in the _Add to List_ button  | [`IconHeart`](https://github.com/vtex-apps/store-icons)         |
 
 `Product`
 
