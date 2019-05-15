@@ -7,6 +7,10 @@
     "component": "AddProductBtn",
     "required": ["lists", "product-summary"]
   },
+  "add-to-list-btn": {
+    "component": "AddProductBtn",
+    "required": ["lists", "product-summary"]
+  },
   "lists": {
     "component": "ListsPage",
     "required": ["product-summary"]
