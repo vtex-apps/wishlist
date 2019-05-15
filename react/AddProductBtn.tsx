@@ -4,7 +4,7 @@ import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
 import { InjectedIntlProps, injectIntl } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
-import { Icon } from 'vtex.store-icons'
+import { IconHeart } from 'vtex.store-icons'
 import { ButtonWithIcon, withToast } from 'vtex.styleguide'
 import AddToList from './components/AddToList/index'
 import MyLists from './MyLists'
@@ -47,8 +47,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
           isLoading={isLoading}
           icon={
             icon || (
-              <Icon
-                id="mpa-heart"
+              <IconHeart
                 color="c-muted-3"
                 size={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
               />
