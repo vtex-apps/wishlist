@@ -14,7 +14,7 @@
 .listPage {
 }
 
-.applyButton > button {
+.confirmSelectedListsBtn > button {
   border-radius: 0px;
   padding-bottom: 0.5625em;
   padding-top: 0.5625em;
@@ -45,10 +45,6 @@
 
 .formViewDialog {
   min-width: 480px;
-}
-
-.footerDesktop {
-  margin-left: 256px;
 }
 
 .summaryContainer {}
@@ -84,7 +80,7 @@
 .form {
 }
 
-.updateList{
+.updateList {
 }
 
 .listEmptyContainer {
