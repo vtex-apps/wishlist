@@ -6,6 +6,8 @@
  and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.1.6] - 2019-05-15
 ### Added
 - Add `iconId` in the `AddProductBtn`'s props to customize the button's icon.
 

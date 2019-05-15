@@ -2,7 +2,7 @@
   "vendor": "vtex",
   "name": "wishlist",
   "title": "Wishlist",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "defaultLocale": "pt-BR",
   "builders": {
     "react": "3.x",
