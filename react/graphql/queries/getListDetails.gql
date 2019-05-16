@@ -1,5 +1,5 @@
 query getListDetails($id: ID) {
-  list(id: $id) {
+  list(id: $id) @context(provider: "vtex.store-graphql") {
     name
     isEditable
     isPublic
@@ -10,42 +10,42 @@ query getListDetails($id: ID) {
       quantity
       product {
         productId
-    productName
-    description
-    categories
-    link
-    linkText
-    brand
-    items {
-      name
-      itemId
-      referenceId {
-        Value
-      }
-      images {
-        imageUrl
-        imageTag
-      }
-      sellers {
-        sellerId
-        commertialOffer {
-          Installments {
+        productName
+        description
+        categories
+        link
+        linkText
+        brand
+        items {
+          name
+          itemId
+          referenceId {
             Value
-            InterestRate
-            TotalValuePlusInterestRate
-            NumberOfInstallments
-            Name
           }
-          AvailableQuantity
-          Price
-          ListPrice
+          images {
+            imageUrl
+            imageTag
+          }
+          sellers {
+            sellerId
+            commertialOffer {
+              Installments {
+                Value
+                InterestRate
+                TotalValuePlusInterestRate
+                NumberOfInstallments
+                Name
+              }
+              AvailableQuantity
+              Price
+              ListPrice
+            }
+          }
         }
-      }
-    }
-    productClusters {
-      id
-      name
-    }
+        productClusters {
+          id
+          name
+        }
       }
     }
   }

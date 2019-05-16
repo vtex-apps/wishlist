@@ -1,10 +1,17 @@
-mutation createList($name: String!, $isPublic: Boolean, $isEditable: Boolean, $items: [ListItemInput]) {
-  createList(list: {
-    name: $name,
-    isPublic: $isPublic
-    items: $items
-    isEditable: $isEditable
-  }) {
+mutation createList(
+  $name: String!
+  $isPublic: Boolean
+  $isEditable: Boolean
+  $items: [ListItemInput]
+) {
+  createList(
+    list: {
+      name: $name
+      isPublic: $isPublic
+      items: $items
+      isEditable: $isEditable
+    }
+  ) @context(provider: "vtex.store-graphql") {
     id
     name
     owner

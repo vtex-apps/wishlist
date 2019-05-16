@@ -1,5 +1,5 @@
 mutation deleteList($id: ID!) {
-    deleteList(id: $id) {
-        id
-    }
+  deleteList(id: $id) @context(provider: "vtex.store-graphql") {
+    id
+  }
 }

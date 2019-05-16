@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+## [0.1.8] - 2019-05-16
+### Fixed
+- Include `@context` directive in GraphQL queries and mutations.
+
 ## [0.1.7] - 2019-05-16
 ### Fixed
 - Removed button `add item to cart` in wish list.
