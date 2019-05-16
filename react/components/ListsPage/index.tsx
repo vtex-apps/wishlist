@@ -5,6 +5,7 @@ import { Spinner } from 'vtex.styleguide'
 import { concat, filter, findIndex, map, update } from 'ramda'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { InjectedIntlProps, injectIntl } from 'react-intl'
+import messages from '../../constants/messages'
 
 import {
   createList,
@@ -146,7 +147,7 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
             createList(client, {
               isEditable: false,
               items: [],
-              name: intl.formatMessage({ id: 'wishlist-default-list-name' }),
+              name: intl.formatMessage(messages.listNameDefault),
             }).then((responseCreateList: ResponseList) => {
               const list = responseCreateList.data.createList
               this.setState({

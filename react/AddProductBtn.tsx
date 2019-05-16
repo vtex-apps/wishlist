@@ -6,6 +6,7 @@ import { InjectedIntlProps, injectIntl } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import { IconHeart } from 'vtex.store-icons'
 import { ButtonWithIcon, withToast } from 'vtex.styleguide'
+import messages from './constants/messages'
 import AddToList from './components/AddToList/index'
 import MyLists from './MyLists'
 
@@ -81,14 +82,14 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     if (!isMobile) {
       showToast({
         action: {
-          label: intl.formatMessage({ id: 'wishlist-see-lists' }),
+          label: intl.formatMessage(messages.seeLists),
           onClick: () =>
             navigate({
               page: 'store.lists',
               query: `listId=${listId}`,
             }),
         },
-        message: intl.formatMessage({ id: 'wishlist-product-added-to-list' }),
+        message: intl.formatMessage(messages.productAddedToList),
       })
     }
   }
@@ -98,7 +99,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     this.setState({ isLoading: false })
     console.error(error)
     this.props.showToast({
-      message: intl.formatMessage({ id: 'wishlist-add-product-fail' }),
+      message: intl.formatMessage(messages.addProductFail),
     })
   }
 
@@ -110,7 +111,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     const { client, product, intl } = this.props
     this.setState({ isLoading: true })
     addProductToDefaultList(
-      intl.formatMessage({ id: 'wishlist-default-list-name' }),
+      intl.formatMessage(messages.listNameDefault),
       client,
       product
     )
@@ -121,7 +122,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   private handleAddToListsFail = (): void => {
     const { showToast, intl } = this.props
     showToast({
-      message: intl.formatMessage({ id: 'wishlist-add-product-fail' }),
+      message: intl.formatMessage(messages.addProductFail),
     })
   }
 
@@ -133,7 +134,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     } = this.props
     showToast({
       action: {
-        label: intl.formatMessage({ id: 'wishlist-see-lists' }),
+        label: intl.formatMessage(messages.seeLists),
         onClick: () => {
           if (isMobile) {
             this.setState({ showLists: true })
@@ -142,7 +143,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
           }
         },
       },
-      message: intl.formatMessage({ id: 'wishlist-product-added-to-list' }),
+      message: intl.formatMessage(messages.productAddedToList),
     })
   }
 }

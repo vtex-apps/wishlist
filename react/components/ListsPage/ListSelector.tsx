@@ -3,6 +3,7 @@ import { FormattedMessage } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import { ButtonWithIcon, IconPlusLines } from 'vtex.styleguide'
 import CreateList from '../Form/CreateList'
+import messages from '../../constants/messages'
 
 import ListItem from '../ListItem'
 
@@ -32,7 +33,7 @@ class ListSelector extends Component<ListSelectorProps, ListSelectorState> {
       <div className="flex flex-column w5 h-100">
         <div className="bl b--rebel-pink bw2 pa4 b flex items-center flex-row">
           <div className="w-100">
-            <FormattedMessage id="wishlist-my-lists" />
+            <FormattedMessage {...messages.myLists} />
           </div>
           <ButtonWithIcon
             variation="tertiary"

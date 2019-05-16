@@ -9,6 +9,7 @@ import {
   IconVisibilityOn,
 } from 'vtex.styleguide'
 import DialogMessage from './Dialog/DialogMessage'
+import messages from '../constants/messages'
 
 interface ListItemProps extends InjectedIntlProps {
   id: number
@@ -37,13 +38,11 @@ class ListItem extends Component<ListItemProps, {}> {
     {
       onClick: () =>
         this.props.onUpdated && this.props.onUpdated(this.props.id),
-      label: this.props.intl.formatMessage({
-        id: 'wishlist-option-configuration',
-      }),
+      label: this.props.intl.formatMessage(messages.optionConfiguration),
     },
     {
       onClick: () => this.setState({ showDeleteDialog: true }),
-      label: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
+      label: this.props.intl.formatMessage(messages.optionDelete),
     },
   ]
 
@@ -122,10 +121,9 @@ class ListItem extends Component<ListItemProps, {}> {
               ))}
         {showDeleteDialog && (
           <DialogMessage
-            message={intl.formatMessage(
-              { id: 'wishlist-delete-confirmation-message' },
-              { listName: name }
-            )}
+            message={intl.formatMessage(messages.messageDeleteConfirmation, {
+              listName: name,
+            })}
             onClose={() => this.setState({ showDeleteDialog: false })}
             onSuccess={() =>
               onDeleted &&

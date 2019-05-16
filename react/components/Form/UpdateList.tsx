@@ -7,6 +7,7 @@ import { updateList } from '../../GraphqlClient'
 import Header from '../Header'
 import FormView from './FormView'
 import ListForm from './ListForm'
+import messages from '../../constants/messages'
 
 import styles from '../../wishList.css'
 
@@ -40,13 +41,13 @@ class UpdateList extends Component<UpdateListProps, UpdateListState> {
       <FormView onClose={onClose}>
         <div className={`${styles.updateList}`}>
           <Header
-            title={intl.formatMessage({ id: 'wishlist-option-configuration' })}
+            title={intl.formatMessage(messages.optionConfiguration)}
             onClose={onClose}
             showIconBack
           />
           <ListForm
             list={list}
-            buttonLabel={intl.formatMessage({ id: 'wishlist-save' })}
+            buttonLabel={intl.formatMessage(messages.save)}
             onSubmit={this.handleSubmit}
             isLoading={isLoading}
           />
@@ -87,7 +88,7 @@ class UpdateList extends Component<UpdateListProps, UpdateListState> {
         }
         if (showToast) {
           showToast({
-            message: intl.formatMessage({ id: 'wishlist-list-updated' }),
+            message: intl.formatMessage(messages.listUpdate),
           })
         }
         this.props.onFinishUpdate({ ...response.data.updateList, items })

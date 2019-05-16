@@ -15,6 +15,7 @@ import ListDetails from '../ListDetails/index'
 import ListItem from '../ListItem'
 import renderLoading from '../Loading'
 import Screen from '../Screen'
+import messages from '../../constants/messages'
 
 import styles from '../../wishList.css'
 
@@ -80,7 +81,7 @@ class Lists extends Component<ListsProps, ListsState> {
       : createPortal(
           <Screen>
             <Header
-              title={intl.formatMessage({ id: 'wishlist-my-lists' })}
+              title={intl.formatMessage(messages.myLists)}
               onClose={onClose}
               action={() => this.setState({ showCreateList: true })}
             />
@@ -139,7 +140,7 @@ class Lists extends Component<ListsProps, ListsState> {
           </div>
         ) : (
           <div className="tc pv4 c-muted-2">
-            <FormattedMessage id="wishlist-no-list-created" />
+            <FormattedMessage {...messages.noListCreated} />
           </div>
         )}
       </Fragment>

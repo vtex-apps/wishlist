@@ -11,9 +11,10 @@ import {
   Checkbox,
   IconDelete,
   withToast,
-  ActionMenu
+  ActionMenu,
 } from 'vtex.styleguide'
 import renderLoading from '../Loading'
+import messages from '../../constants/messages'
 
 import { getListDetailed, updateList } from '../../GraphqlClient'
 
@@ -86,7 +87,7 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
                 <div className="mr4">{renderLoading()}</div>
               ) : (
                 <ActionMenu
-                  label={intl.formatMessage({ id: 'wishlist-copy-to' })}
+                  label={intl.formatMessage(messages.copyTo)}
                   options={this.getActionMenuOptions(lists)}
                   buttonProps={{
                     variation: 'tertiary',
@@ -115,7 +116,7 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
     )
   }
 
-  private getActionMenuOptions = (lists: List[]) : ActionMenuItem[] =>
+  private getActionMenuOptions = (lists: List[]): ActionMenuItem[] =>
     lists.map(({ id, name }) => ({
       label: name,
       onClick: () => this.copyProductToList(String(id)),
@@ -198,10 +199,10 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
     } = this.props
     showToast({
       action: {
-        label: intl.formatMessage({ id: 'wishlist-see' }),
+        label: intl.formatMessage(messages.see),
         onClick: () => setQuery({ listId }, { merge: false, replace: true }),
       },
-      message: intl.formatMessage({ id: 'wishlist-copied' }, { listName }),
+      message: intl.formatMessage(messages.copied, { listName }),
     })
   }
 }

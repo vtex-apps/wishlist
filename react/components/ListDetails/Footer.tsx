@@ -5,6 +5,7 @@ import { compose } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
 import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
 import { withToast } from 'vtex.styleguide'
+import messages from '../../constants/messages'
 
 import BuyButton from 'vtex.store-components/BuyButton'
 import ProductPrice from 'vtex.store-components/ProductPrice'
@@ -38,7 +39,7 @@ class Footer extends Component<FooterProps, FooterState> {
         <div className="tr">
           <span className={`${styles.quantityOfSelectedItemsLabel} ml2`}>
             <FormattedMessage
-              id="wishlist-quantity-selected-items"
+              id={messages.selectedItemsQuantity.id}
               values={{ selectedItemsQuantity: <b>{items.length}</b> }}
             />
           </span>
@@ -50,7 +51,7 @@ class Footer extends Component<FooterProps, FooterState> {
         >
           <span className={`${styles.totalPriceLabel} mr2`}>
             <FormattedMessage
-              id="wishlist-total"
+              id={messages.total.id}
               values={{ selectedItemsQuantity: <b>{items.length}</b> }}
             />
           </span>
@@ -69,7 +70,7 @@ class Footer extends Component<FooterProps, FooterState> {
             isOneClickBuy={false}
             large={isMobile}
           >
-            <FormattedMessage id="wishlist-buy-items" />
+            <FormattedMessage {...messages.buyItems} />
           </BuyButton>
         </div>
       </div>

@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+## [0.1.9] - 2019-05-16
+### Changed
+- Use `defineMessages` instead of using id directly.
+
 ## [0.1.8] - 2019-05-16
 ### Fixed
 - Include `@context` directive in GraphQL queries and mutations.
