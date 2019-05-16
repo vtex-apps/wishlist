@@ -6,6 +6,8 @@
  and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.1.8] - 2019-05-16
 ### Fixed
 - Include `@context` directive in GraphQL queries and mutations.
 
