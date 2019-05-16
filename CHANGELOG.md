@@ -6,6 +6,8 @@
  and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.1.7] - 2019-05-16
 ### Fixed
 - Removed button `add item to cart` in wish list.
 - Adjusted screen scroll in wish list.
