@@ -7,6 +7,11 @@
 
 ## [Unreleased]
 
+## [0.1.7] - 2019-05-16
+### Fixed
+- Removed button `add item to cart` in wish list.
+- Adjusted screen scroll in wish list.
+
 ## [0.1.6] - 2019-05-15
 ### Added
 - Add `iconId` in the `AddProductBtn`'s props to customize the button's icon.
