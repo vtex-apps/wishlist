@@ -1,5 +1,5 @@
 mutation updateList($id: ID!, $list: ListInput) {
-  updateList(id: $id, list: $list) {
+  updateList(id: $id, list: $list) @context(provider: "vtex.store-graphql") {
     id
     name
     isPublic

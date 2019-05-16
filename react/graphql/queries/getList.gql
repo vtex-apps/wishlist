@@ -1,5 +1,5 @@
-query getList($id: ID){
-  list(id: $id) {
+query getList($id: ID) {
+  list(id: $id) @context(provider: "vtex.store-graphql") {
     id
     name
     isPublic
