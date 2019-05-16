@@ -7,6 +7,7 @@ import { isMobile } from 'react-device-detect'
 import { InjectedIntlProps, injectIntl } from 'react-intl'
 import { getListsFromLocaleStorage, updateList } from '../../GraphqlClient'
 
+import messages from '../../constants/messages'
 import CreateList from '../Form/CreateList'
 import Header from '../Header'
 import ListDetails from '../ListDetails'
@@ -77,7 +78,7 @@ class AddToListContent extends Component<
     return (
       <div className={`${styles.addToListContent} z-4 bg-base`}>
         <Header
-          title={intl.formatMessage({ id: 'wishlist-add-to-list' })}
+          title={intl.formatMessage(messages.addToList)}
           onClose={onClose}
           action={() => this.setState({ showCreateList: true })}
         />

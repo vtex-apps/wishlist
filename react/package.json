@@ -2,7 +2,7 @@
   "name": "vtex.wishlist",
   "description": "A WishList component.",
   "scripts": {
-    "lint": "eslint --ext .tsx .",
+    "lint": "eslint --ext .tsx,.ts .",
     "pretest": "yarn",
     "test": "jest"
   },

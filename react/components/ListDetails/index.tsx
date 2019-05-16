@@ -11,6 +11,7 @@ import Header from '../Header'
 import renderLoading from '../Loading'
 import Content from './Content'
 import Footer from './Footer'
+import messages from '../../constants/messages'
 
 interface ListDetailState {
   list: List
@@ -67,10 +68,9 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
         {isLoading ? renderLoading() : this.renderContent()}
         {showDeleteConfirmation && (
           <DialogMessage
-            message={intl.formatMessage(
-              { id: 'wishlist-delete-confirmation-message' },
-              { listName: list.name }
-            )}
+            message={intl.formatMessage(messages.messageDeleteConfirmation, {
+              listName: list.name,
+            })}
             onClose={() => this.setState({ showDeleteConfirmation: false })}
             onSuccess={this.handleDeleteList}
           />
@@ -94,13 +94,11 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
     const options = [
       {
         onClick: () => this.setState({ showUpdateList: true }),
-        label: this.props.intl.formatMessage({
-          id: 'wishlist-option-configuration',
-        }),
+        label: this.props.intl.formatMessage(messages.optionConfiguration),
       },
       {
         onClick: () => this.setState({ showDeleteConfirmation: true }),
-        label: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
+        label: this.props.intl.formatMessage(messages.optionDelete),
       },
     ]
 

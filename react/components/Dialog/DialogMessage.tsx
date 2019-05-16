@@ -2,6 +2,7 @@ import React, { Component, ReactNode } from 'react'
 import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
 import { Button } from 'vtex.styleguide'
 import Dialog from './index'
+import messages from '../../constants/messages'
 
 interface DialogMessageProps extends InjectedIntlProps {
   message: string
@@ -32,7 +33,7 @@ class DialogMessage extends Component<DialogMessageProps, DialogMessageState> {
               onClick={onClose}
               disabled={isLoading}
             >
-              <FormattedMessage id="wishlist-dialog-cancel" />
+              <FormattedMessage {...messages.cancelDialog} />
             </Button>
             <div className="ml3">
               <Button
@@ -44,7 +45,7 @@ class DialogMessage extends Component<DialogMessageProps, DialogMessageState> {
                 }}
                 isLoading={isLoading}
               >
-                <FormattedMessage id="wishlist-dialog-confirm" />
+                <FormattedMessage {...messages.confirmDialog} />
               </Button>
             </div>
           </div>

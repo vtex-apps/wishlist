@@ -6,6 +6,7 @@ import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import { Button } from 'vtex.styleguide'
 import ItemDetails from './ItemDetails'
+import messages from '../../constants/messages'
 
 import styles from '../../wishList.css'
 
@@ -33,7 +34,7 @@ class Content extends Component<ContentProps, {}> {
               <div className="h3 flex items-center justify-center c-muted-1">
                 <span>
                   <FormattedMessage
-                    id="wishlist-quantity-of-items"
+                    id={messages.itemsQuantity.id}
                     values={{ itemsQuantity: items.length }}
                   />
                 </span>
@@ -65,11 +66,11 @@ class Content extends Component<ContentProps, {}> {
         } flex flex-column w-100 h-100 items-center mv8 c-muted-2`}
       >
         <div className={styles.listEmptyLabel}>
-          <FormattedMessage id="wishlist-list-empty" />
+          <FormattedMessage {...messages.emptyList} />
         </div>
         <div className={`${styles.goToAddProductsButtonContainer} mt8`}>
           <Button variation="primary" onClick={this.handleRedirectToGallery}>
-            <FormattedMessage id="wishlist-add-itens" />
+            <FormattedMessage {...messages.addItems} />
           </Button>
         </div>
       </div>

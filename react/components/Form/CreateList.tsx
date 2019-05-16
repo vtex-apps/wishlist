@@ -9,6 +9,7 @@ import { createList, saveListIdInLocalStorage } from '../../GraphqlClient'
 import Header from '../Header'
 import FormView from './FormView'
 import ListForm from './ListForm'
+import messages from '../../constants/messages'
 
 import styles from '../../wishList.css'
 
@@ -41,12 +42,12 @@ class CreateList extends Component<CreateListProps, CreateListState> {
       <FormView onClose={onClose}>
         <div className={`${styles.createList} bg-base h-100`}>
           <Header
-            title={intl.formatMessage({ id: 'wishlist-new' })}
+            title={intl.formatMessage(messages.new)}
             onClose={onClose}
             showIconBack
           />
           <ListForm
-            buttonLabel={intl.formatMessage({ id: 'wishlist-add-button' })}
+            buttonLabel={intl.formatMessage(messages.addButton)}
             onSubmit={this.handleSubmit}
             isLoading={isLoading}
           />

@@ -1,6 +1,7 @@
 import React, { Component, FormEvent, Fragment, ReactNode } from 'react'
 import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
 import { Button, Input, Toggle } from 'vtex.styleguide'
+import messages from '../../constants/messages'
 
 import styles from '../../wishList.css'
 
@@ -47,10 +48,8 @@ class ListForm extends Component<ListFormProps, ListFormState> {
             <Input
               autoFocus
               value={name || ''}
-              placeholder={intl.formatMessage({
-                id: 'wishlist-list-name-placeholder',
-              })}
-              label={intl.formatMessage({ id: 'wishlist-list-name-label' })}
+              placeholder={intl.formatMessage(messages.listNamePlaceholder)}
+              label={intl.formatMessage(messages.listNameLabel)}
               onChange={this.handleChangeName}
             />
           </div>
@@ -61,10 +60,10 @@ class ListForm extends Component<ListFormProps, ListFormState> {
           >
             <div className="flex flex-column">
               <span className={`${styles.isPublicLabel} c-on-base mt1 t-small`}>
-                <FormattedMessage id="wishlist-is-public" />
+                <FormattedMessage {...messages.isPublic} />
               </span>
               <span className={`${styles.isPublicHint} light-gray mt3`}>
-                <FormattedMessage id="wishlist-is-public-hint" />
+                <FormattedMessage {...messages.isPublicHint} />
               </span>
             </div>
             <Toggle

@@ -1,6 +1,7 @@
 import React from 'react'
 import { FormattedMessage } from 'react-intl'
 import { Button } from 'vtex.styleguide'
+import messages from '../../constants/messages'
 
 import styles from '../../wishList.css'
 
@@ -23,7 +24,7 @@ const Footer = ({
       onClick={onClick}
       isLoading={isLoading}
     >
-      <FormattedMessage id="wishlist-apply" />
+      <FormattedMessage {...messages.apply} />
     </Button>
   </div>
 )

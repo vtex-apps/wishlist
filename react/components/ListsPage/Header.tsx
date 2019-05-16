@@ -1,6 +1,7 @@
 import React, { Component, ReactNode } from 'react'
 import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
 import { ActionMenu, IconOptionsDots } from 'vtex.styleguide'
+import messages from '../../constants/messages'
 
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 
@@ -29,13 +30,11 @@ class Header extends Component<HeaderProps, HeaderState> {
   private options = [
     {
       onClick: () => this.setState({ showUpdateList: true }),
-      label: this.props.intl.formatMessage({
-        id: 'wishlist-option-configuration',
-      }),
+      label: this.props.intl.formatMessage(messages.optionConfiguration),
     },
     {
       onClick: () => this.setState({ showDeleteConfirmation: true }),
-      label: this.props.intl.formatMessage({ id: 'wishlist-option-delete' }),
+      label: this.props.intl.formatMessage(messages.optionDelete),
     },
   ]
 
@@ -50,7 +49,7 @@ class Header extends Component<HeaderProps, HeaderState> {
           <div className="ttu mh2">
             <span>
               <FormattedMessage
-                id="wishlist-quantity-products"
+                id={messages.productsQuantity.id}
                 values={{ productsQuantity: list.items && list.items.length }}
               />
             </span>
@@ -77,10 +76,9 @@ class Header extends Component<HeaderProps, HeaderState> {
         )}
         {showDeleteConfirmation && (
           <DialogMessage
-            message={intl.formatMessage(
-              { id: 'wishlist-delete-confirmation-message' },
-              { listName: list.name }
-            )}
+            message={intl.formatMessage(messages.messageDeleteConfirmation, {
+              listName: list.name,
+            })}
             onClose={() => this.setState({ showDeleteConfirmation: false })}
             onSuccess={this.handleDeleteList}
           />
