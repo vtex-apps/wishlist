@@ -67,7 +67,7 @@ class Header extends Component<HeaderProps, HeaderState> {
             <span>
              corrigir esse id
               <FormattedMessage
-                id={messages.productsQuantity.id}
+                {...messages.productsQuantity}
                 values={{ productsQuantity: list.items && list.items.length }}
               />
             </span>

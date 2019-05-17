@@ -49,7 +49,7 @@ class Content extends Component<ContentProps, {}> {
                 <span>
                   //corrigir esse id
                   <FormattedMessage
-                    id={messages.itemsQuantity.id}
+                    {...messages.itemsQuantity}
                     values={{ itemsQuantity: items.length }}
                   />
                 </span>
