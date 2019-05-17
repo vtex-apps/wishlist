@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { append, head, map, path } from 'ramda'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
-import { InjectedIntlProps, injectIntl } from 'react-intl'
+import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { ExtensionPoint, withRuntimeContext } from 'vtex.render-runtime'
 import {
   ButtonWithIcon,
@@ -14,7 +14,6 @@ import {
   ActionMenu,
 } from 'vtex.styleguide'
 import renderLoading from '../Loading'
-import messages from '../../constants/messages'
 
 import { getListDetailed, updateList } from '../../GraphqlClient'
 
@@ -34,6 +33,21 @@ interface ItemDetailsState {
   isLoading?: boolean
   isCopying?: boolean
 }
+
+const messages = defineMessages({
+  copyTo: {
+    defaultMessage: '',
+    id: 'store/wishlist-copy-to',
+  },
+  see: {
+    defaultMessage: '',
+    id: 'store/wishlist-see',
+  },
+  copied: {
+    defaultMessage: '',
+    id: 'store/wishlist-copied',
+  },
+})
 
 class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
   public state: ItemDetailsState = {}

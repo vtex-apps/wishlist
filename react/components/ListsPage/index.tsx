@@ -4,8 +4,7 @@ import { Spinner } from 'vtex.styleguide'
 
 import { concat, filter, findIndex, map, update } from 'ramda'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
-import { InjectedIntlProps, injectIntl } from 'react-intl'
-import messages from '../../constants/messages'
+import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 
 import {
   createList,
@@ -19,6 +18,12 @@ import ListSelector from './ListSelector'
 import styles from '../../wishList.css'
 
 const ON_LISTS_PAGE_CLASS = 'vtex-lists-page'
+const messages = defineMessages({
+  listNameDefault: {
+    defaultMessage: '',
+    id: 'store/wishlist-default-list-name',
+  },
+})
 
 interface ListsPageState {
   lists: List[]

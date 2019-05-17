@@ -2,14 +2,13 @@ import React, { Component } from 'react'
 
 import { isMobile } from 'react-device-detect'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
-import { InjectedIntlProps, injectIntl } from 'react-intl'
+import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
 
 import { createList, saveListIdInLocalStorage } from '../../GraphqlClient'
 import Header from '../Header'
 import FormView from './FormView'
 import ListForm from './ListForm'
-import messages from '../../constants/messages'
 
 import styles from '../../wishList.css'
 
@@ -22,6 +21,17 @@ interface CreateListProps extends InjectedIntlProps, WithApolloClient<{}> {
 interface CreateListState {
   isLoading?: boolean
 }
+
+const messages = defineMessages({
+  new: {
+    defaultMessage: '',
+    id: 'store/wishlist-new',
+  },
+  addButton: {
+    defaultMessage: '',
+    id: 'store/wishlist-add-button',
+  },
+})
 
 class CreateList extends Component<CreateListProps, CreateListState> {
   public state: CreateListState = {}

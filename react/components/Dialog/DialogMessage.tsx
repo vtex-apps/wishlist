@@ -1,8 +1,7 @@
 import React, { Component, ReactNode } from 'react'
-import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
+import { FormattedMessage, InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { Button } from 'vtex.styleguide'
 import Dialog from './index'
-import messages from '../../constants/messages'
 
 interface DialogMessageProps extends InjectedIntlProps {
   message: string
@@ -13,6 +12,17 @@ interface DialogMessageProps extends InjectedIntlProps {
 interface DialogMessageState {
   isLoading?: boolean
 }
+
+const messages = defineMessages({
+  cancelDialog: {
+    defaultMessage: '',
+    id: 'store/wishlist-dialog-cancel',
+  },
+  confirmDialog: {
+    defaultMessage: '',
+    id: 'store/wishlist-dialog-confirm',
+  },
+})
 
 class DialogMessage extends Component<DialogMessageProps, DialogMessageState> {
   public state: DialogMessageState = {

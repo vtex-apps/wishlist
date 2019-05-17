@@ -1,13 +1,12 @@
 import { map } from 'ramda'
 import React, { Component } from 'react'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
-import { InjectedIntlProps, injectIntl } from 'react-intl'
+import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { withToast } from 'vtex.styleguide'
 import { updateList } from '../../GraphqlClient'
 import Header from '../Header'
 import FormView from './FormView'
 import ListForm from './ListForm'
-import messages from '../../constants/messages'
 
 import styles from '../../wishList.css'
 
@@ -21,6 +20,21 @@ interface UpdateListProps extends InjectedIntlProps, WithApolloClient<{}> {
 interface UpdateListState {
   isLoading?: boolean
 }
+
+const messages = defineMessages({
+  optionConfiguration: {
+    defaultMessage: '',
+    id: 'store/wishlist-option-configuration',
+  },
+  save: {
+    defaultMessage: '',
+    id: 'store/wishlist-save',
+  },
+  listUpdate: {
+    defaultMessage: '',
+    id: 'store/wishlist-list-updated',
+  },
+})
 
 class UpdateList extends Component<UpdateListProps, UpdateListState> {
   public state: UpdateListState = {}

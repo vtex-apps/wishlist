@@ -3,7 +3,7 @@ import { ActionMenu, IconOptionsDots } from 'vtex.styleguide'
 
 import { append, filter, map } from 'ramda'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
-import { InjectedIntlProps, injectIntl } from 'react-intl'
+import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { deleteList, getListDetailed, updateList } from '../../GraphqlClient'
 import DialogMessage from '../Dialog/DialogMessage'
 import UpdateList from '../Form/UpdateList'
@@ -11,7 +11,6 @@ import Header from '../Header'
 import renderLoading from '../Loading'
 import Content from './Content'
 import Footer from './Footer'
-import messages from '../../constants/messages'
 
 interface ListDetailState {
   list: List
@@ -29,6 +28,21 @@ interface ListDetailProps
   onClose: (lists?: List[]) => void
   onDeleted?: (id: string) => void
 }
+
+const messages = defineMessages({
+  optionConfiguration: {
+    defaultMessage: '',
+    id: 'store/wishlist-option-configuration',
+  },
+  optionDelete: {
+    defaultMessage: '',
+    id: 'store/wishlist-option-delete',
+  },
+  messageDeleteConfirmation: {
+    defaultMessage: '',
+    id: 'store/wishlist-delete-confirmation-message',
+  },
+})
 
 class ListDetail extends Component<ListDetailProps, ListDetailState> {
   public state: ListDetailState = {

@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+## [0.1.10] - 2019-05-17
+### Changed
+- Applying the new i18n configuration.
+
 ## [0.1.9] - 2019-05-16
 ### Changed
 - Use `defineMessages` instead of using id directly.

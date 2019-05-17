@@ -4,10 +4,9 @@ import classNames from 'classnames'
 import { append, filter, indexOf, map, path, remove, update } from 'ramda'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
-import { InjectedIntlProps, injectIntl } from 'react-intl'
+import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { getListsFromLocaleStorage, updateList } from '../../GraphqlClient'
 
-import messages from '../../constants/messages'
 import CreateList from '../Form/CreateList'
 import Header from '../Header'
 import ListDetails from '../ListDetails'
@@ -19,6 +18,12 @@ import styles from '../../wishList.css'
 
 const DEFAULT_LIST_INDEX = 0
 const QUANTITY_WITH_ONLY_DEFAULT_LIST = 1
+const messages = defineMessages({
+  addToList: {
+    defaultMessage: '',
+    id: 'store/wishlist-add-to-list',
+  },
+})
 
 interface AddToListContentProps
   extends InjectedIntlProps,

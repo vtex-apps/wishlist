@@ -1,7 +1,6 @@
 import React from 'react'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, defineMessages } from 'react-intl'
 import { Button } from 'vtex.styleguide'
-import messages from '../../constants/messages'
 
 import styles from '../../wishList.css'
 
@@ -10,6 +9,13 @@ interface FooterProps {
   changedLists: number[]
   onClick: () => void
 }
+
+const messages = defineMessages({
+  apply: {
+    defaultMessage: '',
+    id: 'store/wishlist-apply',
+  },
+})
 
 const Footer = ({
   isLoading,

@@ -1,11 +1,28 @@
 import React, { Component, FormEvent, Fragment, ReactNode } from 'react'
-import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
+import { FormattedMessage, InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { Button, Input, Toggle } from 'vtex.styleguide'
-import messages from '../../constants/messages'
 
 import styles from '../../wishList.css'
 
 const LIST_NAME_MINIMUM_LENGTH = 1
+const messages = defineMessages({
+  listNamePlaceholder: {
+    defaultMessage: '',
+    id: 'store/wishlist-list-name-placeholder',
+  },
+  listNameLabel: {
+    defaultMessage: '',
+    id: 'store/wishlist-list-name-label',
+  },
+  isPublic: {
+    defaultMessage: '',
+    id: 'store/wishlist-is-public',
+  },
+  isPublicHint: {
+    defaultMessage: '',
+    id: 'store/wishlist-is-public-hint',
+  },
+})
 
 interface ListFormProps extends InjectedIntlProps {
   buttonLabel: string
