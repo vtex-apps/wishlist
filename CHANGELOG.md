@@ -6,6 +6,8 @@
  and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.1.10] - 2019-05-17
 ### Changed
 - Applying the new i18n configuration.
 
