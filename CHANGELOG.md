@@ -7,7 +7,7 @@
 
 ## [Unreleased]
 ### Changed
-- Applying the i18n configuration.
+- Applying the new i18n configuration.
 
 ## [0.1.9] - 2019-05-16
 ### Changed
