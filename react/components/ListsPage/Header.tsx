@@ -1,7 +1,6 @@
 import React, { Component, ReactNode } from 'react'
-import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
+import { FormattedMessage, InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { ActionMenu, IconOptionsDots } from 'vtex.styleguide'
-import messages from '../../constants/messages'
 
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 
@@ -24,6 +23,24 @@ interface HeaderProps extends InjectedIntlProps, WithApolloClient<{}> {
 }
 
 const ICONS_SIZE = 20
+const messages = defineMessages({
+  optionConfiguration: {
+    defaultMessage: '',
+    id: 'wishlist-option-configuration',
+  },
+  optionDelete: {
+    defaultMessage: '',
+    id: 'wishlist-option-delete',
+  },
+  messageDeleteConfirmation: {
+    defaultMessage: '',
+    id: 'wishlist-delete-confirmation-message',
+  },
+  productsQuantity: {
+    defaultMessage: '',
+    id: 'wishlist-quantity-products',
+  },
+})
 
 class Header extends Component<HeaderProps, HeaderState> {
   public state: HeaderState = {}
@@ -48,6 +65,7 @@ class Header extends Component<HeaderProps, HeaderState> {
         <div className="flex flex-row items-center w-100 justify-end">
           <div className="ttu mh2">
             <span>
+             corrigir esse id
               <FormattedMessage
                 id={messages.productsQuantity.id}
                 values={{ productsQuantity: list.items && list.items.length }}

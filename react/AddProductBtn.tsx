@@ -2,11 +2,10 @@ import React, { Component, ReactNode } from 'react'
 import classNames from 'classnames'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
-import { InjectedIntlProps, injectIntl } from 'react-intl'
+import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import { IconHeart } from 'vtex.store-icons'
 import { ButtonWithIcon, withToast } from 'vtex.styleguide'
-import messages from './constants/messages'
 import AddToList from './components/AddToList/index'
 import MyLists from './MyLists'
 
@@ -28,6 +27,24 @@ interface AddProductBtnState {
 
 const ICON_SIZE_SMALL = 16
 const ICON_SIZE_LARGE = 32
+const messages = defineMessages({
+  seeLists: {
+    defaultMessage: '',
+    id: 'wishlist-see-lists',
+  },
+  productAddedToList: {
+    defaultMessage: '',
+    id: 'wishlist-product-added-to-list',
+  },
+  addProductFail: {
+    defaultMessage: '',
+    id: 'wishlist-add-product-fail',
+  },
+  listNameDefault: {
+    defaultMessage: '',
+    id: 'wishlist-default-list-name',
+  },
+})
 
 class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   public state: AddProductBtnState = {}

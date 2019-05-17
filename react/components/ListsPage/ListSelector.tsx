@@ -1,9 +1,8 @@
 import React, { Component, ReactNode } from 'react'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, defineMessages } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import { ButtonWithIcon, IconPlusLines } from 'vtex.styleguide'
 import CreateList from '../Form/CreateList'
-import messages from '../../constants/messages'
 
 import ListItem from '../ListItem'
 
@@ -19,6 +18,12 @@ interface ListSelectorState {
 }
 
 const ICONS_SIZE = 20
+const messages = defineMessages({
+  myLists: {
+    defaultMessage: '',
+    id: 'wishlist-my-lists',
+  },
+})
 
 class ListSelector extends Component<ListSelectorProps, ListSelectorState> {
   public state = {

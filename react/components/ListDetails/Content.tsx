@@ -2,11 +2,10 @@ import React, { Component, Fragment, ReactNode } from 'react'
 
 import { map } from 'ramda'
 import { compose } from 'react-apollo'
-import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
+import { FormattedMessage, InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import { Button } from 'vtex.styleguide'
 import ItemDetails from './ItemDetails'
-import messages from '../../constants/messages'
 
 import styles from '../../wishList.css'
 
@@ -18,6 +17,21 @@ interface ContentProps extends InjectedIntlProps {
   onItemRemove: (id: string) => Promise<void>
   runtime: Runtime
 }
+
+const messages = defineMessages({
+  itemsQuantity: {
+    defaultMessage: '',
+    id: 'wishlist-quantity-of-items',
+  },
+  emptyList: {
+    defaultMessage: '',
+    id: 'wishlist-list-empty',
+  },
+  addItems: {
+    defaultMessage: '',
+    id: 'wishlist-add-items',
+  },
+})
 
 class Content extends Component<ContentProps, {}> {
   public render(): ReactNode {
@@ -33,6 +47,7 @@ class Content extends Component<ContentProps, {}> {
             {!hideItemsQuantityLabel && (
               <div className="h3 flex items-center justify-center c-muted-1">
                 <span>
+                  //corrigir esse id
                   <FormattedMessage
                     id={messages.itemsQuantity.id}
                     values={{ itemsQuantity: items.length }}

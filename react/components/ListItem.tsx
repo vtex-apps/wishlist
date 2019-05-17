@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import React, { Component, ReactNode } from 'react'
-import { InjectedIntlProps, injectIntl } from 'react-intl'
+import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import {
   ActionMenu,
   Checkbox,
@@ -9,7 +9,6 @@ import {
   IconVisibilityOn,
 } from 'vtex.styleguide'
 import DialogMessage from './Dialog/DialogMessage'
-import messages from '../constants/messages'
 
 interface ListItemProps extends InjectedIntlProps {
   id: number
@@ -30,6 +29,20 @@ interface ListItemState {
 }
 
 const ICON_SIZE = 20
+const messages = defineMessages({
+  optionConfiguration: {
+    defaultMessage: '',
+    id: 'wishlist-option-configuration',
+  },
+  optionDelete: {
+    defaultMessage: '',
+    id: 'wishlist-option-delete',
+  },
+  messageDeleteConfirmation: {
+    defaultMessage: '',
+    id: 'wishlist-delete-confirmation-message',
+  },
+})
 
 class ListItem extends Component<ListItemProps, {}> {
   public state: ListItemState = {}

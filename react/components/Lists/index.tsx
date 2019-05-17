@@ -3,7 +3,7 @@ import React, { Component, Fragment, ReactNode } from 'react'
 import { append, filter, map, update } from 'ramda'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { createPortal } from 'react-dom'
-import { FormattedMessage, InjectedIntlProps, injectIntl } from 'react-intl'
+import { FormattedMessage, InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 
 import { withRuntimeContext } from 'vtex.render-runtime'
 import { deleteList, getListsFromLocaleStorage } from '../../GraphqlClient'
@@ -15,12 +15,21 @@ import ListDetails from '../ListDetails/index'
 import ListItem from '../ListItem'
 import renderLoading from '../Loading'
 import Screen from '../Screen'
-import messages from '../../constants/messages'
 
 import styles from '../../wishList.css'
 
 const DEFAULT_LIST_INDEX = 0
 const OPEN_LISTS_CLASS = styles.open
+const messages = defineMessages({
+  myLists: {
+    defaultMessage: '',
+    id: 'wishlist-my-lists',
+  },
+  noListCreated: {
+    defaultMessage: '',
+    id: 'wishlist-no-list-created',
+  },
+})
 
 interface ListsState {
   listSelected: number
