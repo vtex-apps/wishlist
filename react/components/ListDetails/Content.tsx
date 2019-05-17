@@ -46,13 +46,10 @@ class Content extends Component<ContentProps, {}> {
           <div>
             {!hideItemsQuantityLabel && (
               <div className="h3 flex items-center justify-center c-muted-1">
-                <span>
-                  //corrigir esse id
-                  <FormattedMessage
-                    {...messages.itemsQuantity}
-                    values={{ itemsQuantity: items.length }}
-                  />
-                </span>
+                <FormattedMessage
+                  {...messages.itemsQuantity}
+                  values={{ itemsQuantity: items.length }}
+                />
               </div>
             )}
             {this.renderItems()}

@@ -64,13 +64,10 @@ class Header extends Component<HeaderProps, HeaderState> {
         <div className="w-100 t-heading-2">{list.name}</div>
         <div className="flex flex-row items-center w-100 justify-end">
           <div className="ttu mh2">
-            <span>
-             corrigir esse id
-              <FormattedMessage
-                {...messages.productsQuantity}
-                values={{ productsQuantity: list.items && list.items.length }}
-              />
-            </span>
+            <FormattedMessage
+              {...messages.productsQuantity}
+              values={{ productsQuantity: list.items && list.items.length }}
+            />
           </div>
           {list.isEditable && (
             <div className="ml3">
