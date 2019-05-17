@@ -6,6 +6,8 @@
  and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Correct use of messages.
 
 ## [0.1.9] - 2019-05-16
 ### Changed
