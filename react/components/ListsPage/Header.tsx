@@ -26,19 +26,19 @@ const ICONS_SIZE = 20
 const messages = defineMessages({
   optionConfiguration: {
     defaultMessage: '',
-    id: 'wishlist-option-configuration',
+    id: 'store/wishlist-option-configuration',
   },
   optionDelete: {
     defaultMessage: '',
-    id: 'wishlist-option-delete',
+    id: 'store/wishlist-option-delete',
   },
   messageDeleteConfirmation: {
     defaultMessage: '',
-    id: 'wishlist-delete-confirmation-message',
+    id: 'store/wishlist-delete-confirmation-message',
   },
   productsQuantity: {
     defaultMessage: '',
-    id: 'wishlist-quantity-products',
+    id: 'store/wishlist-quantity-products',
   },
 })
 

@@ -22,15 +22,15 @@ interface FooterState {
 const messages = defineMessages({
   selectedItemsQuantity: {
     defaultMessage: '',
-    id: 'wishlist-quantity-selected-items',
+    id: 'store/wishlist-quantity-selected-items',
   },
   total: {
     defaultMessage: '',
-    id: 'wishlist-total',
+    id: 'store/wishlist-total',
   },
   buyItems: {
     defaultMessage: '',
-    id: 'wishlist-buy-items',
+    id: 'store/wishlist-buy-items',
   },
 })
 

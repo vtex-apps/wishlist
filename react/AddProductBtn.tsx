@@ -30,19 +30,19 @@ const ICON_SIZE_LARGE = 32
 const messages = defineMessages({
   seeLists: {
     defaultMessage: '',
-    id: 'wishlist-see-lists',
+    id: 'store/wishlist-see-lists',
   },
   productAddedToList: {
     defaultMessage: '',
-    id: 'wishlist-product-added-to-list',
+    id: 'store/wishlist-product-added-to-list',
   },
   addProductFail: {
     defaultMessage: '',
-    id: 'wishlist-add-product-fail',
+    id: 'store/wishlist-add-product-fail',
   },
   listNameDefault: {
     defaultMessage: '',
-    id: 'wishlist-default-list-name',
+    id: 'store/wishlist-default-list-name',
   },
 })
 

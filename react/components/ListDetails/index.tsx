@@ -32,15 +32,15 @@ interface ListDetailProps
 const messages = defineMessages({
   optionConfiguration: {
     defaultMessage: '',
-    id: 'wishlist-option-configuration',
+    id: 'store/wishlist-option-configuration',
   },
   optionDelete: {
     defaultMessage: '',
-    id: 'wishlist-option-delete',
+    id: 'store/wishlist-option-delete',
   },
   messageDeleteConfirmation: {
     defaultMessage: '',
-    id: 'wishlist-delete-confirmation-message',
+    id: 'store/wishlist-delete-confirmation-message',
   },
 })
 

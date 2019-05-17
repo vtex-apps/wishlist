@@ -16,11 +16,11 @@ interface DialogMessageState {
 const messages = defineMessages({
   cancelDialog: {
     defaultMessage: '',
-    id: 'wishlist-dialog-cancel',
+    id: 'store/wishlist-dialog-cancel',
   },
   confirmDialog: {
     defaultMessage: '',
-    id: 'wishlist-dialog-confirm',
+    id: 'store/wishlist-dialog-confirm',
   },
 })
 

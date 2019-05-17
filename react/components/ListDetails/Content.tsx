@@ -21,15 +21,15 @@ interface ContentProps extends InjectedIntlProps {
 const messages = defineMessages({
   itemsQuantity: {
     defaultMessage: '',
-    id: 'wishlist-quantity-of-items',
+    id: 'store/wishlist-quantity-of-items',
   },
   emptyList: {
     defaultMessage: '',
-    id: 'wishlist-list-empty',
+    id: 'store/wishlist-list-empty',
   },
   addItems: {
     defaultMessage: '',
-    id: 'wishlist-add-items',
+    id: 'store/wishlist-add-items',
   },
 })
 

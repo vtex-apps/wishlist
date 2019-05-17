@@ -8,19 +8,19 @@ const LIST_NAME_MINIMUM_LENGTH = 1
 const messages = defineMessages({
   listNamePlaceholder: {
     defaultMessage: '',
-    id: 'wishlist-list-name-placeholder',
+    id: 'store/wishlist-list-name-placeholder',
   },
   listNameLabel: {
     defaultMessage: '',
-    id: 'wishlist-list-name-label',
+    id: 'store/wishlist-list-name-label',
   },
   isPublic: {
     defaultMessage: '',
-    id: 'wishlist-is-public',
+    id: 'store/wishlist-is-public',
   },
   isPublicHint: {
     defaultMessage: '',
-    id: 'wishlist-is-public-hint',
+    id: 'store/wishlist-is-public-hint',
   },
 })
 

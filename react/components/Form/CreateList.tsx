@@ -25,11 +25,11 @@ interface CreateListState {
 const messages = defineMessages({
   new: {
     defaultMessage: '',
-    id: 'wishlist-new',
+    id: 'store/wishlist-new',
   },
   addButton: {
     defaultMessage: '',
-    id: 'wishlist-add-button',
+    id: 'store/wishlist-add-button',
   },
 })
 

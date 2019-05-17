@@ -21,7 +21,7 @@ const QUANTITY_WITH_ONLY_DEFAULT_LIST = 1
 const messages = defineMessages({
   addToList: {
     defaultMessage: '',
-    id: 'wishlist-add-to-list',
+    id: 'store/wishlist-add-to-list',
   },
 })
 

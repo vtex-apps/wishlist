@@ -13,7 +13,7 @@ interface FooterProps {
 const messages = defineMessages({
   apply: {
     defaultMessage: '',
-    id: 'wishlist-apply',
+    id: 'store/wishlist-apply',
   },
 })
 

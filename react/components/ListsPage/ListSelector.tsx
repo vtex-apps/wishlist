@@ -21,7 +21,7 @@ const ICONS_SIZE = 20
 const messages = defineMessages({
   myLists: {
     defaultMessage: '',
-    id: 'wishlist-my-lists',
+    id: 'store/wishlist-my-lists',
   },
 })
 

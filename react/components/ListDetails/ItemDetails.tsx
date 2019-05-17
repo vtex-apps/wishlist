@@ -37,15 +37,15 @@ interface ItemDetailsState {
 const messages = defineMessages({
   copyTo: {
     defaultMessage: '',
-    id: 'wishlist-copy-to',
+    id: 'store/wishlist-copy-to',
   },
   see: {
     defaultMessage: '',
-    id: 'wishlist-see',
+    id: 'store/wishlist-see',
   },
   copied: {
     defaultMessage: '',
-    id: 'wishlist-copied',
+    id: 'store/wishlist-copied',
   },
 })
 

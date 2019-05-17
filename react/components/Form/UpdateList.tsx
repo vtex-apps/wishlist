@@ -24,15 +24,15 @@ interface UpdateListState {
 const messages = defineMessages({
   optionConfiguration: {
     defaultMessage: '',
-    id: 'wishlist-option-configuration',
+    id: 'store/wishlist-option-configuration',
   },
   save: {
     defaultMessage: '',
-    id: 'wishlist-save',
+    id: 'store/wishlist-save',
   },
   listUpdate: {
     defaultMessage: '',
-    id: 'wishlist-list-updated',
+    id: 'store/wishlist-list-updated',
   },
 })
 

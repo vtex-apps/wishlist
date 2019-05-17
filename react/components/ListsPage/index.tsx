@@ -21,7 +21,7 @@ const ON_LISTS_PAGE_CLASS = 'vtex-lists-page'
 const messages = defineMessages({
   listNameDefault: {
     defaultMessage: '',
-    id: 'wishlist-default-list-name',
+    id: 'store/wishlist-default-list-name',
   },
 })
 

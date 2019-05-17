@@ -23,11 +23,11 @@ const OPEN_LISTS_CLASS = styles.open
 const messages = defineMessages({
   myLists: {
     defaultMessage: '',
-    id: 'wishlist-my-lists',
+    id: 'store/wishlist-my-lists',
   },
   noListCreated: {
     defaultMessage: '',
-    id: 'wishlist-no-list-created',
+    id: 'store/wishlist-no-list-created',
   },
 })
 
