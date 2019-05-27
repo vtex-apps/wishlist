@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from 'react'
+import React, { Component, ReactNode, RefObject } from 'react'
 import classNames from 'classnames'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
@@ -9,7 +9,7 @@ import { ButtonWithIcon, withToast } from 'vtex.styleguide'
 import AddToList from './components/AddToList/index'
 import MyLists from './MyLists'
 
-import { addProductToDefaultList, getListsIdFromCookies } from './GraphqlClient'
+import { addProductToDefaultList, /*getListsIdFromCookies*/ } from './GraphqlClient'
 
 interface AddProductBtnProps extends InjectedIntlProps, WithApolloClient<{}> {
   icon?: ReactNode
@@ -48,35 +48,49 @@ const messages = defineMessages({
 
 class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   public state: AddProductBtnState = {}
+  public buttonIconRef: RefObject<HTMLDivElement>
+
+  constructor(props: AddProductBtnProps) {
+    super(props)
+    
+    this.buttonIconRef = React.createRef<HTMLDivElement>()
+  }
+
+  public getHeightOfHeartIcon() {
+    return this.buttonIconRef.current && this.buttonIconRef.current.clientHeight
+  }
 
   public render() {
     const { product, large, icon } = this.props
     const { showContent, showLists, isLoading } = this.state
-
+    const heightOfHeartIcon = this.getHeightOfHeartIcon()
     const addProductBtnClasses = classNames('absolute z-5', {
       'ph6 pv7': large,
     })
 
     return (
       <div className={addProductBtnClasses}>
-        <ButtonWithIcon
-          variation="tertiary"
-          onClick={this.handleAddProductClick}
-          isLoading={isLoading}
-          icon={
-            icon || (
-              <IconHeart
-                color="c-muted-3"
-                size={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
-              />
-            )
-          }
-        />
+        <div ref={this.buttonIconRef}>
+          <ButtonWithIcon
+            variation="tertiary"
+            onClick={this.handleAddProductClick}
+            isLoading={isLoading}
+            icon={
+              icon || (
+                <IconHeart
+                  color="c-muted-3"
+                  size={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
+                />
+              )
+            }
+          />
+        </div>
         {showContent && (
           <AddToList
             onAddToListsFail={this.handleAddToListsFail}
             onAddToListsSuccess={this.handleAddToListsSuccess}
             product={product}
+            iconSize={heightOfHeartIcon}
             onClose={() => this.setState({ showContent: false })}
           />
         )}
@@ -88,27 +102,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   }
 
   private handleAddProductSuccess = (): void => {
-    const [listId] = getListsIdFromCookies()
-    const {
-      showToast,
-      intl,
-      runtime: { navigate },
-    } = this.props
-    this.setState({ showContent: isMobile, isLoading: false })
-
-    if (!isMobile) {
-      showToast({
-        action: {
-          label: intl.formatMessage(messages.seeLists),
-          onClick: () =>
-            navigate({
-              page: 'store.lists',
-              query: `listId=${listId}`,
-            }),
-        },
-        message: intl.formatMessage(messages.productAddedToList),
-      })
-    }
+    this.setState({ showContent: true, isLoading: false })
   }
 
   private handleAddProductFailed = (error: string): void => {
@@ -134,6 +128,9 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     )
       .then(this.handleAddProductSuccess)
       .catch(this.handleAddProductFailed)
+
+      // Por enquanto
+      .finally(() => this.setState({ showContent: true, isLoading: false }))
   }
 
   private handleAddToListsFail = (): void => {

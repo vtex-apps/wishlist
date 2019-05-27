@@ -80,8 +80,13 @@ class AddToListContent extends Component<
       [styles.contentContainerMobile]: isMobile,
       [styles.contentContainerDesktop]: !isMobile,
     })
+
+    const contentClasses = classNames({
+      [styles.divContentDesktop]: !isMobile
+    })
+
     return (
-      <div className={`${styles.addToListContent} z-4 bg-base`}>
+      <div className={`${styles.addToListContent} ${contentClasses} z-4 bg-base`}>
         <Header
           title={intl.formatMessage(messages.addToList)}
           onClose={onClose}
@@ -228,6 +233,9 @@ class AddToListContent extends Component<
 
   private renderSwitchLists = (): ReactNode => {
     const { lists } = this.state
+    console.log("lists")
+    console.log(lists)
+    console.log("lists")
     return (
       <div className={`${styles.addToListListsToSwitch} flex flex-column`}>
         {lists.map((list: List, index: number) => (
