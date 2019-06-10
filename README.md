@@ -121,9 +121,6 @@ This app has an interface that describes what rules must be implemented by a blo
     "after": [
       "footer"
     ]
-  },
-  "footer": {
-     "component": "Footer"
   }
 }
 
