@@ -2,7 +2,7 @@
   "vendor": "vtex",
   "name": "wishlist",
   "title": "Wishlist",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "defaultLocale": "pt-BR",
   "builders": {
     "react": "3.x",
@@ -22,6 +22,8 @@
     "vtex.product-summary": "2.x",
     "vtex.product-details": "1.x",
     "vtex.store": "2.x",
+    "vtex.store-footer": "2.x",
     "vtex.store-header": "2.x"
-  }
+  },
+  "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }
