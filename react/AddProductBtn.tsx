@@ -9,7 +9,10 @@ import { ButtonWithIcon, withToast } from 'vtex.styleguide'
 import AddToList from './components/AddToList/index'
 import MyLists from './MyLists'
 
-import { addProductToDefaultList, getListsIdFromCookies } from './GraphqlClient'
+import {
+  addProductToDefaultList,
+  getListsIdFromCookies,
+} from './components/GraphqlClient'
 
 interface AddProductBtnProps extends InjectedIntlProps, WithApolloClient<{}> {
   icon?: ReactNode

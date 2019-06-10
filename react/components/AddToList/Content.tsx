@@ -5,7 +5,7 @@ import { append, filter, indexOf, map, path, remove, update } from 'ramda'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
 import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
-import { getListsFromLocaleStorage, updateList } from '../../GraphqlClient'
+import { getListsFromLocaleStorage, updateList } from '../GraphqlClient'
 
 import CreateList from '../Form/CreateList'
 import Header from '../Header'

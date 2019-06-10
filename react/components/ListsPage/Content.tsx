@@ -5,7 +5,7 @@ import { append, filter, map, tail } from 'ramda'
 import { Spinner } from 'vtex.styleguide'
 
 import { withApollo, WithApolloClient, compose } from 'react-apollo'
-import { getListDetailed, updateList } from '../../GraphqlClient'
+import { getListDetailed, updateList } from '../GraphqlClient'
 import ListItems from '../ListDetails/Content'
 import Footer from '../ListDetails/Footer'
 import Header from './Header'

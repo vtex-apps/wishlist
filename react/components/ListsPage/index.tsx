@@ -10,7 +10,7 @@ import {
   createList,
   getListsFromLocaleStorage,
   saveListIdInLocalStorage,
-} from '../../GraphqlClient'
+} from '../GraphqlClient'
 
 import Content from './Content'
 import ListSelector from './ListSelector'

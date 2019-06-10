@@ -15,7 +15,7 @@ import {
 } from 'vtex.styleguide'
 import renderLoading from '../Loading'
 
-import { getListDetailed, updateList } from '../../GraphqlClient'
+import { getListDetailed, updateList } from '../GraphqlClient'
 
 import styles from '../../wishList.css'
 
@@ -73,11 +73,14 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
       [styles.summaryContainerLarge]: !isMobile,
     })
 
+    const id = isLoading ? undefined : product && product.skuId
+
     return (
       <div className="relative">
         <div className="absolute ml4 mt4">
-          <label className="db pa3">
+          <label className="db pa3" htmlFor={id}>
             <Checkbox
+              id={id}
               checked={isSelected}
               onChange={this.handleItemSelectedChange}
             />

@@ -1,5 +1,10 @@
 import React, { Component, ReactNode } from 'react'
-import { FormattedMessage, InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
+import {
+  FormattedMessage,
+  InjectedIntlProps,
+  injectIntl,
+  defineMessages,
+} from 'react-intl'
 import { ActionMenu, IconOptionsDots } from 'vtex.styleguide'
 
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
@@ -7,7 +12,7 @@ import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import DialogMessage from '../Dialog/DialogMessage'
 import UpdateList from '../Form/UpdateList'
 
-import { deleteList } from '../../GraphqlClient'
+import { deleteList } from '../GraphqlClient'
 
 interface HeaderState {
   showcreateList?: boolean

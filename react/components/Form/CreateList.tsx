@@ -5,7 +5,7 @@ import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
 
-import { createList, saveListIdInLocalStorage } from '../../GraphqlClient'
+import { createList, saveListIdInLocalStorage } from '../GraphqlClient'
 import Header from '../Header'
 import FormView from './FormView'
 import ListForm from './ListForm'

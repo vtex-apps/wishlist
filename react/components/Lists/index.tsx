@@ -3,10 +3,15 @@ import React, { Component, Fragment, ReactNode } from 'react'
 import { append, filter, map, update } from 'ramda'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { createPortal } from 'react-dom'
-import { FormattedMessage, InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
+import {
+  FormattedMessage,
+  InjectedIntlProps,
+  injectIntl,
+  defineMessages,
+} from 'react-intl'
 
 import { withRuntimeContext } from 'vtex.render-runtime'
-import { deleteList, getListsFromLocaleStorage } from '../../GraphqlClient'
+import { deleteList, getListsFromLocaleStorage } from '../GraphqlClient'
 
 import CreateList from '../Form/CreateList'
 import UpdateList from '../Form/UpdateList'

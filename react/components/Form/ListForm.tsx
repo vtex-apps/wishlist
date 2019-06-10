@@ -1,5 +1,10 @@
 import React, { Component, FormEvent, Fragment, ReactNode } from 'react'
-import { FormattedMessage, InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
+import {
+  FormattedMessage,
+  InjectedIntlProps,
+  injectIntl,
+  defineMessages,
+} from 'react-intl'
 import { Button, Input, Toggle } from 'vtex.styleguide'
 
 import styles from '../../wishList.css'
@@ -63,7 +68,6 @@ class ListForm extends Component<ListFormProps, ListFormState> {
         <div className={`${styles.form} w-100 gray f5 pv5 ph5`}>
           <div className={`${styles.nameInputContainer} tl`}>
             <Input
-              autoFocus
               value={name || ''}
               placeholder={intl.formatMessage(messages.listNamePlaceholder)}
               label={intl.formatMessage(messages.listNameLabel)}
