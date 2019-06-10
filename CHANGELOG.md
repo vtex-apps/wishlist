@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Make it work with `product-summary.shelf` only.
+
 ## [0.1.10] - 2019-05-17
 ### Changed
 - Applying the new i18n configuration.
