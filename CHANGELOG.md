@@ -7,6 +7,8 @@
 
 ## [Unreleased]
 
+## [0.1.11] - 2019-06-10
+
 ### Fixed
 
 - Make it work with `product-summary.shelf` only.
