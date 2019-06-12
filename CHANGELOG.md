@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+## [0.1.12] - 2019-06-12
+### Fixed
+- Show the heart icon of wish list in product details.
+
 ## [0.1.11] - 2019-06-10
 
 ### Fixed

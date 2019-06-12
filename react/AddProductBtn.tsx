@@ -53,7 +53,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     const { product, large, icon } = this.props
     const { showContent, showLists, isLoading } = this.state
 
-    const addProductBtnClasses = classNames('relative', {
+    const addProductBtnClasses = classNames('absolute z-5', {
       'ph6 pv7': large,
     })
 
