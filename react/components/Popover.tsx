@@ -8,11 +8,8 @@ interface PopoverProps {
   onOutsideClick: () => void
   children: JSX.Element
   left?: boolean
-  iconSize: number | null
+  buttonHeight: number | null
 }
-
-const EMPTY_STRING = ""
-const PIXEL = "px"
 
 const Popover = (props: PopoverProps): JSX.Element => {
   const contentElement = React.createRef<HTMLDivElement>()
@@ -29,8 +26,14 @@ const Popover = (props: PopoverProps): JSX.Element => {
 
     if(!contentBound) return
     
-    setContentVerticalPosition(contentBound.top)
-    setContentHorizontalPosition(contentBound.right)
+    const {
+      top,
+      height,
+      right
+    } = contentBound
+
+    setContentVerticalPosition(top, height)
+    setContentHorizontalPosition(right)
   }
 
   const getContentBounds = (): ClientRect | null =>
@@ -38,28 +41,16 @@ const Popover = (props: PopoverProps): JSX.Element => {
     contentElement.current.getBoundingClientRect &&
     contentElement.current.getBoundingClientRect()
 
-  const setContentVerticalPosition = (contentTop: number): void => {
-    const contentChild = getContentChild()
-    const maxHeightContent: string | null = getMaxHeightContent(contentChild)
-
-    if(!maxHeightContent) return
-    
-    const maxHeightContentLength: number = Number(maxHeightContent.replace(PIXEL, EMPTY_STRING))
+  const setContentVerticalPosition = (contentTop: number, contentHeight: number): void => {
     const windowHeight = window.innerHeight
-    const isOutOfBottomBound = maxHeightContentLength + contentTop > windowHeight
+    const isOutOfBottomBound = contentHeight + contentTop > windowHeight
+
     if(isOutOfBottomBound) {
-      const iconSize = props.iconSize ? props.iconSize : 0
-      const newTopContent = -(maxHeightContentLength + iconSize)
+      const buttonHeight = props.buttonHeight ? props.buttonHeight : 0
+      const newTopContent = -(contentHeight + buttonHeight)
       setContentTop(newTopContent)
     }
   }
-
-  const getContentChild = (): HTMLElement | null =>
-    contentElement.current &&
-    (contentElement.current.children.item(0) as HTMLElement)
-
-  const getMaxHeightContent = (content: HTMLElement | null): string | null =>
-    content && window.getComputedStyle(content).maxHeight
 
   const setContentHorizontalPosition = (rightPosition: number): void => {
     const {

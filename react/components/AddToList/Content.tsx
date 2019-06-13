@@ -5,7 +5,7 @@ import { append, filter, indexOf, map, path, remove, update } from 'ramda'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
 import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
-import { getListsFromLocaleStorage, updateList } from '../../GraphqlClient'
+import { updateList } from '../../GraphqlClient'
 
 import CreateList from '../Form/CreateList'
 import Header from '../Header'
@@ -29,6 +29,7 @@ interface AddToListContentProps
   extends InjectedIntlProps,
     WithApolloClient<{}> {
   product: ListItem
+  lists: List[]
   onClose: () => void
   onAddToListsSuccess: () => void
   onAddToListsFail: () => void
@@ -50,19 +51,14 @@ class AddToListContent extends Component<
 > {
   public state: AddToListContentState = {
     changedLists: [],
-    isLoading: true,
+    isLoading: false,
     lists: [],
     selectedListId: '',
   }
 
   public componentDidMount(): void {
-    const { client } = this.props
-    getListsFromLocaleStorage(client)
-      .then((response: ResponseList[]) => {
-        const lists = map(item => item.data.list, response)
-        this.setState({ isLoading: false, lists })
-      })
-      .catch(() => this.setState({ isLoading: false }))
+    const { lists } = this.props
+    this.setState({ lists })
   }
 
   public render(): ReactNode {
@@ -81,12 +77,8 @@ class AddToListContent extends Component<
       [styles.contentContainerDesktop]: !isMobile,
     })
 
-    const contentClasses = classNames({
-      [styles.divContentDesktop]: !isMobile
-    })
-
     return (
-      <div className={`${styles.addToListContent} ${contentClasses} z-4 bg-base`}>
+      <div className={`${styles.addToListContent} z-4 bg-base`}>
         <Header
           title={intl.formatMessage(messages.addToList)}
           onClose={onClose}
@@ -232,8 +224,52 @@ class AddToListContent extends Component<
   }
 
   private renderSwitchLists = (): ReactNode => {
-    const { lists } = this.state
+    let { lists } = this.state
     console.log("lists")
+    lists = [
+      {
+        id: "121",
+        name: "meu desejo",
+        isPublic: true,
+        isEditable: true,
+        owner: "eu",
+        items: [{
+          id: "121321",
+          quantity: 1,
+          productId: "122312321",
+          skuId: "12121",
+          product: undefined
+        }]
+      },
+      {
+        id: "12112321",
+        name: "segunda lista",
+        isPublic: true,
+        isEditable: true,
+        owner: "eu",
+        items: [{
+          id: "12131232121",
+          quantity: 1,
+          productId: "12sads2312321",
+          skuId: "12121",
+          product: undefined
+        }]
+      },
+      {
+        id: "1211232111232",
+        name: "terceira lista",
+        isPublic: true,
+        isEditable: true,
+        owner: "eu tbm",
+        items: [{
+          id: "12131232121",
+          quantity: 1,
+          productId: "12sads2312321",
+          skuId: "12121",
+          product: undefined
+        }]
+      }
+    ]
     console.log(lists)
     console.log("lists")
     return (

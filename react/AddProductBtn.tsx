@@ -1,5 +1,6 @@
 import React, { Component, ReactNode, RefObject } from 'react'
 import classNames from 'classnames'
+import { map } from 'ramda'
 import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
 import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
@@ -9,7 +10,7 @@ import { ButtonWithIcon, withToast } from 'vtex.styleguide'
 import AddToList from './components/AddToList/index'
 import MyLists from './MyLists'
 
-import { addProductToDefaultList, /*getListsIdFromCookies*/ } from './GraphqlClient'
+import { addProductToDefaultList, getListsFromLocaleStorage } from './GraphqlClient'
 
 interface AddProductBtnProps extends InjectedIntlProps, WithApolloClient<{}> {
   icon?: ReactNode
@@ -23,6 +24,7 @@ interface AddProductBtnState {
   showContent?: boolean
   showLists?: boolean
   isLoading?: boolean
+  lists?: List[]
 }
 
 const ICON_SIZE_SMALL = 16
@@ -48,7 +50,7 @@ const messages = defineMessages({
 
 class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   public state: AddProductBtnState = {}
-  public buttonIconRef: RefObject<HTMLDivElement>
+  private buttonIconRef: RefObject<HTMLDivElement>
 
   constructor(props: AddProductBtnProps) {
     super(props)
@@ -62,8 +64,10 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
 
   public render() {
     const { product, large, icon } = this.props
-    const { showContent, showLists, isLoading } = this.state
+    const { showContent, showLists, isLoading, lists } = this.state
+    
     const heightOfHeartIcon = this.getHeightOfHeartIcon()
+    
     const addProductBtnClasses = classNames('absolute z-5', {
       'ph6 pv7': large,
     })
@@ -90,7 +94,8 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
             onAddToListsFail={this.handleAddToListsFail}
             onAddToListsSuccess={this.handleAddToListsSuccess}
             product={product}
-            iconSize={heightOfHeartIcon}
+            lists={lists}
+            buttonHeight={heightOfHeartIcon}
             onClose={() => this.setState({ showContent: false })}
           />
         )}
@@ -102,7 +107,13 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   }
 
   private handleAddProductSuccess = (): void => {
-    this.setState({ showContent: true, isLoading: false })
+    const { client } = this.props
+    getListsFromLocaleStorage(client)
+      .then((response: ResponseList[]) => {
+        const lists = map(item => item.data.list, response)
+        this.setState({ showContent: true, isLoading: false, lists })
+      })
+      .catch(() => this.setState({ isLoading: false }))
   }
 
   private handleAddProductFailed = (error: string): void => {
@@ -130,7 +141,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
       .catch(this.handleAddProductFailed)
 
       // Por enquanto
-      .finally(() => this.setState({ showContent: true, isLoading: false }))
+      .finally(this.handleAddProductSuccess)
   }
 
   private handleAddToListsFail = (): void => {
