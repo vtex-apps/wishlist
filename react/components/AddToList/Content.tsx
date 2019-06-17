@@ -224,54 +224,7 @@ class AddToListContent extends Component<
   }
 
   private renderSwitchLists = (): ReactNode => {
-    let { lists } = this.state
-    console.log("lists")
-    lists = [
-      {
-        id: "121",
-        name: "meu desejo",
-        isPublic: true,
-        isEditable: true,
-        owner: "eu",
-        items: [{
-          id: "121321",
-          quantity: 1,
-          productId: "122312321",
-          skuId: "12121",
-          product: undefined
-        }]
-      },
-      {
-        id: "12112321",
-        name: "segunda lista",
-        isPublic: true,
-        isEditable: true,
-        owner: "eu",
-        items: [{
-          id: "12131232121",
-          quantity: 1,
-          productId: "12sads2312321",
-          skuId: "12121",
-          product: undefined
-        }]
-      },
-      {
-        id: "1211232111232",
-        name: "terceira lista",
-        isPublic: true,
-        isEditable: true,
-        owner: "eu tbm",
-        items: [{
-          id: "12131232121",
-          quantity: 1,
-          productId: "12sads2312321",
-          skuId: "12121",
-          product: undefined
-        }]
-      }
-    ]
-    console.log(lists)
-    console.log("lists")
+    const { lists } = this.state
     return (
       <div className={`${styles.addToListListsToSwitch} flex flex-column`}>
         {lists.map((list: List, index: number) => (

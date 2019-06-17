@@ -139,9 +139,6 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     )
       .then(this.handleAddProductSuccess)
       .catch(this.handleAddProductFailed)
-
-      // Por enquanto
-      .finally(this.handleAddProductSuccess)
   }
 
   private handleAddToListsFail = (): void => {
