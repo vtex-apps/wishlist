@@ -25,5 +25,8 @@
     "after": [
       "footer"
     ]
+  },
+  "footer": {
+    "component": "Footer"
   }
 }
