@@ -7,7 +7,7 @@ import { compose, withApollo, WithApolloClient, graphql } from 'react-apollo'
 import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { session } from 'vtex.store-resources/Queries'
 import { getProfile } from '../../utils/profile'
-import { createList, getListByOwner } from '../../GraphqlClient'
+import { createList, getListsByOwner } from '../../GraphqlClient'
 
 import Content from './Content'
 import ListSelector from './ListSelector'
@@ -79,8 +79,6 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
 
   public render(): ReactNode {
     const { session } = this.props
-
-    console.log('the session', session)
 
     const profile = getProfile(session)
 
@@ -163,7 +161,7 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     const profile = getProfile(session)
 
     if (session && !session.loading && profile) {
-      getListByOwner(client, profile.email)
+      getListsByOwner(client, profile.email)
         .then((response: ResponseList) => {
           const lists = response.data.listsByOwner
           if (this.isComponentMounted) {
