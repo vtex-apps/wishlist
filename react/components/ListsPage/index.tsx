@@ -1,21 +1,20 @@
 import React, { Component, Fragment, ReactNode } from 'react'
-import { withRuntimeContext } from 'vtex.render-runtime'
+import { withRuntimeContext, withSession } from 'vtex.render-runtime'
 import { Spinner } from 'vtex.styleguide'
 
-import { concat, filter, findIndex, map, update } from 'ramda'
-import { compose, withApollo, WithApolloClient } from 'react-apollo'
+import { concat, filter, findIndex, update } from 'ramda'
+import { compose, withApollo, WithApolloClient, graphql } from 'react-apollo'
 import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
-
-import {
-  createList,
-  getListsFromLocaleStorage,
-  saveListIdInLocalStorage,
-} from '../../GraphqlClient'
+import { session } from 'vtex.store-resources/Queries'
+import { getProfile } from '../../utils/profile'
+import { createList, getListByOwner } from '../../GraphqlClient'
 
 import Content from './Content'
 import ListSelector from './ListSelector'
+import Lists from '../Lists'
 
 import styles from '../../wishList.css'
+import { isMobile } from 'react-device-detect'
 
 const ON_LISTS_PAGE_CLASS = 'vtex-lists-page'
 const messages = defineMessages({
@@ -33,6 +32,7 @@ interface ListsPageState {
 
 interface ListsPageProps extends InjectedIntlProps, WithApolloClient<{}> {
   runtime: Runtime
+  session: Session
 }
 
 class ListsPage extends Component<ListsPageProps, ListsPageState> {
@@ -51,38 +51,53 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     const {
       runtime: { query },
       client,
+      session,
     } = this.props
+    // Verify if the selected list changed by checking the location query
     if (
       client &&
       prevProps.runtime.query &&
       prevProps.runtime.query.listId !== query.listId
     ) {
       this.setState({ selectedListId: query.listId })
-      getListsFromLocaleStorage(client)
-        .then((response: ResponseList[]) => {
-          const lists = map(item => item.data.list, response)
-          if (this.isComponentMounted) {
-            this.setState({ isLoading: false, lists })
-          }
-        })
-        .catch(() => {
-          if (this.isComponentMounted) {
-            this.setState({ isLoading: false })
-          }
-        })
+    }
+    // Verify if the session is loaded, so it can fetch the user's lists
+    if (
+      session !== prevProps.session &&
+      prevProps.session &&
+      !prevProps.session.loading
+    ) {
+      this.fetchLists(prevProps)
     }
   }
 
   public componentDidMount(): void {
     document.body.classList.add(ON_LISTS_PAGE_CLASS)
     this.isComponentMounted = true
-    this.fetchLists()
+    this.fetchLists(this.props)
   }
 
   public render(): ReactNode {
+    const { session } = this.props
+
+    console.log('the session', session)
+
+    const profile = getProfile(session)
+
+    if (!session || session.loading) {
+      return null
+    }
+
+    if (session && !session.loading && !profile) {
+      this.redirect()
+    }
+
     const { selectedListId: id, lists, isLoading } = this.state
     const selectedListId = id || (lists.length > 0 && lists[0].id)
-    return (
+
+    return isMobile ? (
+      <Lists loading={!session || session.loading || isLoading} lists={lists} />
+    ) : (
       <div className={`${styles.listPage} flex flex-row mt6 ph10 pv8 h-100`}>
         {isLoading ? (
           <div className="flex justify-center w-100">
@@ -137,50 +152,71 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     })
   }
 
-  private fetchLists = (): void => {
+  private fetchLists = (props: ListsPageProps): void => {
     const {
       client,
       runtime: { query },
       intl,
-    } = this.props
+      session,
+    } = props
+    console.log(session)
+    const profile = getProfile(session)
 
-    getListsFromLocaleStorage(client)
-      .then((response: ResponseList[]) => {
-        const lists = map(item => item.data.list, response)
-        if (this.isComponentMounted) {
-          if (lists.length === 0) {
-            createList(client, {
-              isEditable: false,
-              items: [],
-              name: intl.formatMessage(messages.listNameDefault),
-            }).then((responseCreateList: ResponseList) => {
-              const list = responseCreateList.data.createList
+    if (session && !session.loading && profile) {
+      getListByOwner(client, profile.email)
+        .then((response: ResponseList) => {
+          const lists = response.data.listsByOwner
+          if (this.isComponentMounted) {
+            if (lists.length === 0) {
+              createList(client, {
+                isEditable: false,
+                items: [],
+                owner: profile.email,
+                name: intl.formatMessage(messages.listNameDefault),
+              })
+                .then((responseCreateList: ResponseList) => {
+                  const list = responseCreateList.data.createList
+                  this.setState({
+                    lists: [list],
+                    selectedListId: list.id,
+                  })
+                })
+                .finally(() => this.setState({ isLoading: false }))
+            } else {
               this.setState({
                 isLoading: false,
-                lists: [list],
-                selectedListId: list.id,
+                lists,
+                selectedListId: query ? query.listId : lists[0].id,
               })
-              saveListIdInLocalStorage(list.id)
-            })
-          } else {
-            this.setState({
-              isLoading: false,
-              lists,
-              selectedListId: query ? query.listId : lists[0].id,
-            })
+            }
           }
-        }
-      })
-      .catch(() => {
-        if (this.isComponentMounted) {
-          this.setState({ isLoading: false })
-        }
-      })
+        })
+        .catch(() => {
+          if (this.isComponentMounted) {
+            this.setState({ isLoading: false })
+          }
+        })
+    }
+  }
+
+  private redirect = (): void => {
+    this.props.runtime.navigate({
+      page: 'store.login',
+      fallbackToWindowLocation: true,
+    })
   }
 }
 
-export default compose(
-  injectIntl,
-  withRuntimeContext,
-  withApollo
-)(ListsPage)
+const options = {
+  name: 'session',
+  options: () => ({ ssr: false }),
+}
+
+export default withSession()(
+  compose(
+    injectIntl,
+    withRuntimeContext,
+    withApollo,
+    graphql(session, options)
+  )(ListsPage)
+)
