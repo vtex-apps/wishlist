@@ -7,6 +7,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- Build assets with new builder hub.
+
 ## [0.1.12] - 2019-06-12
 ### Fixed
 - Show the heart icon of wish list in product details.
