@@ -88,10 +88,10 @@ interface Option {
 
 interface ResponseList {
   data: {
-    list: List
-    createList: List
-    updateList: List
-    listsByOwner: List[]
+    list?: List
+    createList?: List
+    updateList?: List
+    listsByOwner?: List[]
   }
   errors?: {}
 }

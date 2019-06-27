@@ -1,5 +1,5 @@
 import { ApolloClient } from 'apollo-client'
-import { append, filter, map, path } from 'ramda'
+import { append, concat, contains, filter, map, path, without } from 'ramda'
 import createListMutation from './graphql/mutations/createList.gql'
 import deleteListMutation from './graphql/mutations/deleteList.gql'
 import updateListMutation from './graphql/mutations/updateList.gql'
@@ -45,7 +45,7 @@ export const getList = (
   })
 }
 
-export const getListsByOwner = (
+const fetchListsByOwner = (
   client: ApolloClient<ResponseList>,
   owner: string,
   page?: number,
@@ -56,6 +56,42 @@ export const getListsByOwner = (
     query: getListsByOwnerQuery,
     variables: { owner, page, pageSize },
   })
+
+const getSyncLists = async (
+  client: ApolloClient<ResponseList>,
+  owner: string
+): Promise<ResponseList> => {
+  const response = await fetchListsByOwner(client, owner)
+  const {
+    data: { listsByOwner },
+  } = response
+  const listsId = map(item => item.id, listsByOwner || [])
+  const listIdFromLocal = getListsIdFromCookies()
+  if (!listsId || !listsId.length) {
+    map(id => saveListIdInLocalStorage(id), listsId)
+    return response
+  } else {
+    const waza = without(listsId, listIdFromLocal)
+    const extra = await Promise.all(map(id => getList(client, id || ''), waza))
+    const vla = map(item => item.data.list || {}, extra)
+    filter
+    const lists = filter(
+      item => contains(item.id, getListsIdFromCookies()),
+      listsByOwner || []
+    )
+    return {
+      ...response,
+      data: {
+        listsByOwner: concat(lists, vla),
+      },
+    }
+  }
+}
+
+export const getListsByOwner = (
+  client: ApolloClient<ResponseList>,
+  owner: string
+): Promise<ResponseList> => getSyncLists(client, owner)
 
 export const updateList = (
   client: ApolloClient<ResponseList>,
@@ -79,27 +115,35 @@ export const createList = (
   client: ApolloClient<ResponseList>,
   list: List
 ): Promise<ResponseList> =>
-  client.mutate({
-    mutation: createListMutation,
-    variables: {
-      ...list,
-    },
-  })
+  client
+    .mutate({
+      mutation: createListMutation,
+      variables: {
+        ...list,
+      },
+    })
+    .then((response: ResponseList) => {
+      const {
+        data: { createList },
+      } = response
+      saveListIdInLocalStorage(createList ? createList.id : '')
+      return response
+    })
 
-export const addProductToDefaultList = (
+export const addProductToDefaultList = async (
   client: ApolloClient<ResponseList>,
   owner: string,
   listName: string,
   product: ListItem
 ): Promise<ResponseList> => {
-  const listsId = getListsIdFromCookies()
-  if (listsId && listsId.length) {
-    return getList(client, listsId[0]).then((response: ResponseList) => {
-      const list = response.data.list
-      return updateList(client, listsId[0], {
-        items: append(product, list.items || []),
-        name: list.name,
-      })
+  const {
+    data: { listsByOwner },
+  } = await getSyncLists(client, owner)
+  if (listsByOwner && listsByOwner.length) {
+    const list = listsByOwner[0]
+    return updateList(client, list.id || '', {
+      items: append(product, list ? list.items || [] : []),
+      name: list ? list.name : '',
     })
   }
   return createList(client, {

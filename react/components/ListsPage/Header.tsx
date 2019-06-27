@@ -1,5 +1,10 @@
 import React, { Component, ReactNode } from 'react'
-import { FormattedMessage, InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
+import {
+  FormattedMessage,
+  InjectedIntlProps,
+  injectIntl,
+  defineMessages,
+} from 'react-intl'
 import { ActionMenu, IconOptionsDots } from 'vtex.styleguide'
 
 import { compose, withApollo, WithApolloClient } from 'react-apollo'

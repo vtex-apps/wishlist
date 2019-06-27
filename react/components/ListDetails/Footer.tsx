@@ -3,7 +3,12 @@ import React, { Component, ReactNode } from 'react'
 import { map, path, head } from 'ramda'
 import { compose } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
-import { FormattedMessage, InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
+import {
+  FormattedMessage,
+  InjectedIntlProps,
+  injectIntl,
+  defineMessages,
+} from 'react-intl'
 import { withToast } from 'vtex.styleguide'
 
 import BuyButton from 'vtex.store-components/BuyButton'

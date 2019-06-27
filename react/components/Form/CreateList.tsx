@@ -5,7 +5,7 @@ import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { withRuntimeContext } from 'vtex.render-runtime'
 
-import { createList, saveListIdInLocalStorage } from '../../GraphqlClient'
+import { createList } from '../../GraphqlClient'
 import Header from '../Header'
 import FormView from './FormView'
 import ListForm from './ListForm'
@@ -71,9 +71,10 @@ class CreateList extends Component<CreateListProps, CreateListState> {
     this.setState({ isLoading: true })
     createList(client, { ...listData, items: [], isEditable: true })
       .then((response: ResponseList) => {
-        !isMobile && this.redirectToList(response.data.createList.id)
-        this.props.onFinishAdding(response.data.createList)
-        saveListIdInLocalStorage(response.data.createList.id)
+        if (response.data.createList) {
+          !isMobile && this.redirectToList(response.data.createList.id)
+          this.props.onFinishAdding(response.data.createList)
+        }
         if (this.isComponentMounted) {
           this.setState({ isLoading: false })
         }

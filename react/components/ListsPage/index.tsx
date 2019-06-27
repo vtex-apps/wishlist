@@ -25,7 +25,7 @@ const messages = defineMessages({
 })
 
 interface ListsPageState {
-  lists: List[]
+  lists: any
   selectedListId?: string
   isLoading?: boolean
 }
@@ -157,14 +157,13 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
       intl,
       session,
     } = props
-    console.log(session)
     const profile = getProfile(session)
 
     if (session && !session.loading && profile) {
       getListsByOwner(client, profile.email)
         .then((response: ResponseList) => {
           const lists = response.data.listsByOwner
-          if (this.isComponentMounted) {
+          if (this.isComponentMounted && lists) {
             if (lists.length === 0) {
               createList(client, {
                 isEditable: false,
@@ -176,7 +175,7 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
                   const list = responseCreateList.data.createList
                   this.setState({
                     lists: [list],
-                    selectedListId: list.id,
+                    selectedListId: list ? list.id : '',
                   })
                 })
                 .finally(() => this.setState({ isLoading: false }))

@@ -38,7 +38,7 @@ interface AddToListContentState {
   isLoading: boolean
   isAdding?: boolean
   showCreateList?: boolean
-  lists: List[]
+  lists: any
   changedLists: number[]
   showListDetails?: boolean
   selectedListId: string

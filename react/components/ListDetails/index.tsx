@@ -57,7 +57,7 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
     this.isComponentMounted = true
     getListDetailed(client, listId)
       .then((response: ResponseList) => {
-        if (this.isComponentMounted) {
+        if (this.isComponentMounted && response.data.list) {
           this.setState({ list: response.data.list, isLoading: false })
         }
         return response
