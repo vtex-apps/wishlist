@@ -7,6 +7,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- Build assets with new builder hub (again hehe).
+
 ## [0.1.13] - 2019-06-27
 
 ### Fixed
