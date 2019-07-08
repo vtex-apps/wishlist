@@ -61,30 +61,29 @@ const getSyncLists = async (
   client: ApolloClient<ResponseList>,
   owner: string
 ): Promise<ResponseList> => {
-  const response = await fetchListsByOwner(client, owner)
   const {
     data: { listsByOwner },
-  } = response
+  } = await fetchListsByOwner(client, owner)
+
   const listsId = map(item => item.id, listsByOwner || [])
   const listIdFromLocal = getListsIdFromCookies()
   if (!listIdFromLocal || !listIdFromLocal.length) {
     map(id => saveListIdInLocalStorage(id), listsId)
-    return response
-  } else {
-    const waza = without(listsId, listIdFromLocal)
-    const extra = await Promise.all(map(id => getList(client, id || ''), waza))
-    const vla = map(item => item.data.list || {}, extra)
-    filter
-    const lists = filter(
-      item => contains(item.id, getListsIdFromCookies()),
-      listsByOwner || []
-    )
-    return {
-      ...response,
-      data: {
-        listsByOwner: concat(lists, vla),
-      },
-    }
+    return { data: { listsByOwner } }
+  }
+  const listsIdNotIndexed = without(listsId, listIdFromLocal)
+  const listsNotIndexed = await Promise.all(
+    map(id => getList(client, id || ''), listsIdNotIndexed)
+  )
+  const notIndexed = map(item => item.data.list || {}, listsNotIndexed)
+  const lists = filter(
+    item => contains(item.id, getListsIdFromCookies()),
+    listsByOwner || []
+  )
+  return {
+    data: {
+      listsByOwner: concat(lists, notIndexed),
+    },
   }
 }
 

@@ -53,7 +53,7 @@ const messages = defineMessages({
     id: 'store/wishlist-login',
   },
   notLogged: {
-    default: '',
+    defaultMessage: '',
     id: 'store/wishlist-not-logged',
   },
 })

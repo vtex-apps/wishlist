@@ -40,10 +40,8 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     isLoading: true,
     lists: [],
   }
-  private isComponentMounted: boolean = false
 
   public componentWillUnmount(): void {
-    this.isComponentMounted = false
     document.body.classList.remove(ON_LISTS_PAGE_CLASS)
   }
 
@@ -73,7 +71,6 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
 
   public componentDidMount(): void {
     document.body.classList.add(ON_LISTS_PAGE_CLASS)
-    this.isComponentMounted = true
     this.fetchLists(this.props)
   }
 
@@ -159,7 +156,7 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     })
   }
 
-  private fetchLists = (props: ListsPageProps): void => {
+  private fetchLists = async (props: ListsPageProps): Promise<void> => {
     const {
       client,
       runtime: { query },
@@ -168,40 +165,31 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     } = props
     const profile = getProfile(session)
 
-    if (session && !session.loading && profile) {
-      getListsByOwner(client, profile.email)
-        .then((response: ResponseList) => {
-          const lists = response.data.listsByOwner
-          if (this.isComponentMounted && lists) {
-            if (lists.length === 0) {
-              createList(client, {
-                isEditable: false,
-                items: [],
-                owner: profile.email,
-                name: intl.formatMessage(messages.listNameDefault),
-              })
-                .then((responseCreateList: ResponseList) => {
-                  const list = responseCreateList.data.createList
-                  this.setState({
-                    lists: [list],
-                    selectedListId: list ? list.id : '',
-                  })
-                })
-                .finally(() => this.setState({ isLoading: false }))
-            } else {
-              this.setState({
-                isLoading: false,
-                lists,
-                selectedListId: query ? query.listId : lists[0].id,
-              })
-            }
-          }
-        })
-        .catch(() => {
-          if (this.isComponentMounted) {
-            this.setState({ isLoading: false })
-          }
-        })
+    if (session && !session.loading && profile && profile.email) {
+      const {
+        data: { listsByOwner: lists },
+      } = await getListsByOwner(client, profile.email)
+
+      if (lists) {
+        if (lists.length == 0) {
+          const {
+            data: { createList: defaultList },
+          } = await createList(client, {
+            isEditable: false,
+            items: [],
+            owner: profile.email,
+            name: intl.formatMessage(messages.listNameDefault),
+          })
+          this.setState({
+            lists: [defaultList],
+            selectedListId: defaultList ? defaultList.id : '',
+          })
+        } else {
+          const selectedListId = query ? query.listId : lists[0].id
+          this.setState({ lists, selectedListId })
+        }
+      }
+      this.setState({ isLoading: false })
     }
   }
 
