@@ -78,7 +78,10 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
   }
 
   public render(): ReactNode {
-    const { session } = this.props
+    const {
+      session,
+      runtime: { goBack },
+    } = this.props
 
     const profile = getProfile(session)
 
@@ -98,6 +101,7 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
         <Lists
           loading={!session || session.loading || isLoading}
           lists={lists}
+          onClose={goBack}
         />
       ) : null
     ) : (

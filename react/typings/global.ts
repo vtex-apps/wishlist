@@ -78,6 +78,7 @@ interface Runtime {
     listId?: string
   }
   setQuery: (query: Query, options: Options) => void
+  goBack: () => void
 }
 
 interface Option {
