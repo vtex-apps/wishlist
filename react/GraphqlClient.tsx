@@ -67,7 +67,7 @@ const getSyncLists = async (
   } = response
   const listsId = map(item => item.id, listsByOwner || [])
   const listIdFromLocal = getListsIdFromCookies()
-  if (!listsId || !listsId.length) {
+  if (!listIdFromLocal || !listIdFromLocal.length) {
     map(id => saveListIdInLocalStorage(id), listsId)
     return response
   } else {
