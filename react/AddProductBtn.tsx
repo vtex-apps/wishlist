@@ -48,6 +48,14 @@ const messages = defineMessages({
     defaultMessage: '',
     id: 'store/wishlist-default-list-name',
   },
+  login: {
+    defaultMessage: '',
+    id: 'store/wishlist-login',
+  },
+  notLogged: {
+    default: '',
+    id: 'store/wishlist-not-logged',
+  },
 })
 
 class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
@@ -149,10 +157,10 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     } else {
       showToast({
         action: {
-          label: 'login',
+          label: intl.formatMessage(messages.login),
           onClick: () => navigate({ page: 'store.login' }),
         },
-        message: 'You must be logged',
+        message: intl.formatMessage(messages.notLogged),
       })
     }
   }

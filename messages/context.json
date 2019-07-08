@@ -29,5 +29,7 @@
   "store/wishlist-quantity-products": "store/wishlist-quantity-products",
   "store/wishlist-copy-to": "store/wishlist-copy-to",
   "store/wishlist-copied": "store/wishlist-copied",
-  "store/wishlist-see": "store/wishlist-see"
+  "store/wishlist-see": "store/wishlist-see",
+  "store/wishlist-login": "login",
+  "store/wishlist-not-logged": "store/wishlist-not-logged"
 }

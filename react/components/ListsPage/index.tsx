@@ -57,12 +57,12 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     if (
       client &&
       prevProps.runtime.query &&
-      prevProps.runtime.query.listId !== query.listId
+      prevProps.runtime.query.listId !== this.state.selectedListId
     ) {
       this.setState({ selectedListId: query.listId })
     }
     // Verify if the session is loaded, so it can fetch the user's lists
-    if (
+    else if (
       session !== prevProps.session &&
       prevProps.session &&
       !prevProps.session.loading

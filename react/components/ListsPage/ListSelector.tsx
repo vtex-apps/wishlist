@@ -15,6 +15,7 @@ interface ListSelectorProps {
 
 interface ListSelectorState {
   showCreateList: boolean
+  selectedListId: string
 }
 
 const ICONS_SIZE = 20
@@ -28,6 +29,11 @@ const messages = defineMessages({
 class ListSelector extends Component<ListSelectorProps, ListSelectorState> {
   public state = {
     showCreateList: false,
+    selectedListId: '',
+  }
+
+  public componentDidMount(): void {
+    this.setState({ selectedListId: this.props.selectedListId })
   }
 
   public render(): ReactNode {
@@ -58,7 +64,8 @@ class ListSelector extends Component<ListSelectorProps, ListSelectorState> {
   }
 
   private renderLists = (): ReactNode => {
-    const { lists, selectedListId } = this.props
+    const { lists } = this.props
+    const { selectedListId } = this.state
     return lists
       ? lists.map((list: List, index: number) => (
           <ListItem
@@ -90,6 +97,7 @@ class ListSelector extends Component<ListSelectorProps, ListSelectorState> {
       runtime: { setQuery },
       lists,
     } = this.props
+    this.setState({ selectedListId: lists[id].id || '' })
     setQuery({ listId: lists[id].id }, { merge: false, replace: true })
   }
 }
