@@ -1,6 +1,6 @@
 import React, { Component, Fragment, ReactNode } from 'react'
 
-// import { append, filter, update } from 'ramda'
+import { append, filter, update } from 'ramda'
 import { compose, withApollo, WithApolloClient, graphql } from 'react-apollo'
 import { createPortal } from 'react-dom'
 import {
@@ -12,7 +12,7 @@ import {
 import { session } from 'vtex.store-resources/Queries'
 
 import { withRuntimeContext, withSession } from 'vtex.render-runtime'
-// import { deleteList } from '../../GraphqlClient'
+import { deleteList } from '../../GraphqlClient'
 
 import CreateList from '../Form/CreateList'
 import UpdateList from '../Form/UpdateList'
@@ -39,10 +39,10 @@ const messages = defineMessages({
 
 interface ListsState {
   listSelected: number
-  show: boolean
   showCreateList?: boolean
   showUpdateList?: boolean
   showListDetails?: boolean
+  lists?: List[]
 }
 
 interface ListsProps extends InjectedIntlProps, WithApolloClient<{}> {
@@ -55,76 +55,74 @@ interface ListsProps extends InjectedIntlProps, WithApolloClient<{}> {
 class Lists extends Component<ListsProps, ListsState> {
   public state: ListsState = {
     listSelected: -1,
-    show: true,
   }
 
-  // private isComponentMounted: boolean = false
+  private isComponentMounted: boolean = false
 
   public componentWillUnmount() {
-    // this.isComponentMounted = false
+    this.isComponentMounted = false
     document.body.classList.remove(OPEN_LISTS_CLASS)
   }
 
   public componentDidMount(): void {
-    // this.isComponentMounted = true
+    this.isComponentMounted = true
+    this.setState({ lists: this.props.lists })
   }
 
   public render = (): ReactNode => {
     const {
-      show,
       showCreateList,
       showUpdateList,
       showListDetails,
       listSelected,
+      lists,
     } = this.state
-    const { onClose, intl, lists } = this.props
+    const { onClose, intl } = this.props
 
-    return !show
-      ? null
-      : createPortal(
-          <Screen>
-            <Header
-              title={intl.formatMessage(messages.myLists)}
-              onClose={onClose}
-              action={() => this.setState({ showCreateList: true })}
+    return createPortal(
+      <Screen>
+        <Header
+          title={intl.formatMessage(messages.myLists)}
+          onClose={onClose}
+          action={() => this.setState({ showCreateList: true })}
+        />
+        {this.renderContent()}
+        {showCreateList && (
+          <div className="fixed vw-100 top-0 bg-base">
+            <CreateList
+              onClose={() => this.setState({ showCreateList: false })}
+              onFinishAdding={this.handleListCreated}
             />
-            {this.renderContent()}
-            {showCreateList && (
-              <div className="fixed vw-100 top-0 bg-base">
-                <CreateList
-                  onClose={() => this.setState({ showCreateList: false })}
-                  onFinishAdding={this.handleListCreated}
-                />
-              </div>
-            )}
-            {showUpdateList && (
-              <Screen>
-                <UpdateList
-                  onClose={() => this.setState({ showUpdateList: false })}
-                  list={lists[listSelected]}
-                  onFinishUpdate={this.handleListUpdated}
-                />
-              </Screen>
-            )}
-            {showListDetails && (
-              <div className="fixed vw-100 top-0 left-0 bg-base">
-                <ListDetails
-                  onClose={() => this.setState({ showListDetails: false })}
-                  listId={lists[listSelected].id}
-                  onDeleted={this.handleDeleteList}
-                />
-              </div>
-            )}
-          </Screen>,
-          document.body
-        )
+          </div>
+        )}
+        {showUpdateList && (
+          <Screen>
+            <UpdateList
+              onClose={() => this.setState({ showUpdateList: false })}
+              list={lists && lists[listSelected]}
+              onFinishUpdate={this.handleListUpdated}
+            />
+          </Screen>
+        )}
+        {showListDetails && (
+          <div className="fixed vw-100 top-0 left-0 bg-base">
+            <ListDetails
+              onClose={() => this.setState({ showListDetails: false })}
+              listId={lists && lists[listSelected].id}
+              onDeleted={this.handleDeleteList}
+            />
+          </div>
+        )}
+      </Screen>,
+      document.body
+    )
   }
 
   private renderLists = (): ReactNode => {
-    const { lists } = this.props
+    const { lists } = this.state
     return (
       <Fragment>
-        {lists.length ? (
+        {lists && lists.length ? (
           <div className="bb b--muted-4 h-100 overflow-auto">
             {lists.map((list, key) => (
               <ListItem
@@ -151,38 +149,35 @@ class Lists extends Component<ListsProps, ListsState> {
   }
 
   private handleDeleteList = (listId: string): Promise<void> => {
-    console.log(listId)
-    return new Promise(() => {})
-    // const { client, lists } = this.props
-    // return deleteList(client, listId)
-    //   .then(() => {
-    //     if (this.isComponentMounted) {
-    //       this.setState({
-    //         lists: filter(list => list.id !== listId, lists),
-    //         showListDetails: false,
-    //       })
-    //     }
-    //   })
-    //   .catch(error => console.error(error))
+    const { client } = this.props
+    const { lists } = this.state
+    return deleteList(client, listId)
+      .then(() => {
+        if (this.isComponentMounted) {
+          this.setState({
+            lists: filter(list => list.id !== listId, lists || []),
+            showListDetails: false,
+          })
+        }
+      })
+      .catch(error => console.error(error))
   }
 
   private handleUpdateList = (index: number): void => {
     this.setState({ listSelected: index, showUpdateList: true })
   }
 
-  private handleListCreated = () => {
-    // (list: List): void => {
-    // const { lists } = this.state
-    // this.setState({ showCreateList: false, lists: append(list, lists) })
+  private handleListCreated = (list: List): void => {
+    const { lists } = this.state
+    this.setState({ showCreateList: false, lists: append(list, lists || []) })
   }
 
-  private handleListUpdated = () => {
-    // (list: List): void => {
-    // const { lists, listSelected } = this.state
-    // this.setState({
-    //   lists: update(listSelected, list, lists),
-    //   showUpdateList: false,
-    // })
+  private handleListUpdated = (list: List): void => {
+    const { lists, listSelected } = this.state
+    this.setState({
+      lists: update(listSelected, list, lists || []),
+      showUpdateList: false,
+    })
   }
 
   private renderContent = (): ReactNode => {

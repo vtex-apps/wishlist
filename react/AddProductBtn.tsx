@@ -173,13 +173,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     showToast({
       action: {
         label: intl.formatMessage(messages.seeLists),
-        onClick: () => {
-          if (isMobile) {
-            this.setState({ showLists: true })
-          } else {
-            navigate({ page: 'store.lists' })
-          }
-        },
+        onClick: () => navigate({ page: 'store.lists' }),
       },
       message: intl.formatMessage(messages.productAddedToList),
     })

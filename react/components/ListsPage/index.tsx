@@ -94,7 +94,12 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     const selectedListId = id || (lists.length > 0 && lists[0].id)
 
     return isMobile ? (
-      <Lists loading={!session || session.loading || isLoading} lists={lists} />
+      lists.length ? (
+        <Lists
+          loading={!session || session.loading || isLoading}
+          lists={lists}
+        />
+      ) : null
     ) : (
       <div className={`${styles.listPage} flex flex-row mt6 ph10 pv8 h-100`}>
         {isLoading ? (
