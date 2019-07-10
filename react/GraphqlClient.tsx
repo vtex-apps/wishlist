@@ -57,11 +57,30 @@ const fetchListsByOwner = (
     variables: { owner, page, pageSize },
   })
 
+const joinLists = (
+  listsByOwner: List[] | undefined,
+  listsNotIndexed: ResponseList[]
+) => {
+  const notIndexed = map(item => item.data.list || {}, listsNotIndexed)
+  const lists = filter(
+    item => contains(item.id, getListsIdFromCookies()),
+    listsByOwner || []
+  )
+  return concat(notIndexed, lists)
+}
+
+const isListFromOwner = (listsNotIndexed: ResponseList[], owner: string) => {
+  return (
+    listsNotIndexed.length > 0 &&
+    path(['data', 'list', 'owner'], listsNotIndexed[0]) !== owner
+  )
+}
+
 const getSyncLists = async (
   client: ApolloClient<ResponseList>,
   owner: string
 ): Promise<ResponseList> => {
-  const {
+  let {
     data: { listsByOwner },
   } = await fetchListsByOwner(client, owner)
 
@@ -69,22 +88,21 @@ const getSyncLists = async (
   const listIdFromLocal = getListsIdFromCookies()
   if (!listIdFromLocal || !listIdFromLocal.length) {
     map(id => saveListIdInLocalStorage(id), listsId)
-    return { data: { listsByOwner } }
+  } else {
+    const listsIdNotIndexed = without(listsId, listIdFromLocal)
+    const listsNotIndexed = await Promise.all(
+      map(id => getList(client, id || ''), listsIdNotIndexed)
+    )
+
+    if (isListFromOwner(listsNotIndexed, owner)) {
+      localStorage.removeItem(WISHLIST_STORAKE_KEY)
+      map(id => saveListIdInLocalStorage(id), listsId)
+    } else {
+      listsByOwner = joinLists(listsByOwner, listsNotIndexed)
+    }
   }
-  const listsIdNotIndexed = without(listsId, listIdFromLocal)
-  const listsNotIndexed = await Promise.all(
-    map(id => getList(client, id || ''), listsIdNotIndexed)
-  )
-  const notIndexed = map(item => item.data.list || {}, listsNotIndexed)
-  const lists = filter(
-    item => contains(item.id, getListsIdFromCookies()),
-    listsByOwner || []
-  )
-  return {
-    data: {
-      listsByOwner: concat(lists, notIndexed),
-    },
-  }
+
+  return { data: { listsByOwner } }
 }
 
 export const getListsByOwner = (
@@ -150,9 +168,6 @@ export const addProductToDefaultList = async (
     items: [product],
     name: listName,
     owner,
-  }).then((response: ResponseList) => {
-    saveListIdInLocalStorage(path(['data', 'createList', 'id'], response) || '')
-    return response
   })
 }
 
