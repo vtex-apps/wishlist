@@ -66,7 +66,7 @@ const joinLists = (
     item => contains(item.id, getListsIdFromCookies()),
     listsByOwner || []
   )
-  return concat(notIndexed, lists)
+  return concat(lists, notIndexed)
 }
 
 const isListFromOwner = (listsNotIndexed: ResponseList[], owner: string) => {
