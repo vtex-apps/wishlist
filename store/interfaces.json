@@ -19,11 +19,11 @@
     "required": [
       "lists"
     ],
-    "before": [
-      "header.full"
-    ],
     "after": [
       "footer"
     ]
+  },
+  "footer": {
+    "component": "Footer"
   }
 }

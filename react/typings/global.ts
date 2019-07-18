@@ -54,6 +54,7 @@ interface List {
 }
 
 interface NavigateInput {
+  fallbackToWindowLocation?: boolean
   to?: string
   page?: string
   params?: {
@@ -77,6 +78,7 @@ interface Runtime {
     listId?: string
   }
   setQuery: (query: Query, options: Options) => void
+  goBack: () => void
 }
 
 interface Option {
@@ -87,9 +89,10 @@ interface Option {
 
 interface ResponseList {
   data: {
-    list: List
-    createList: List
-    updateList: List
+    list?: List
+    createList?: List
+    updateList?: List
+    listsByOwner?: List[]
   }
   errors?: {}
 }
@@ -102,4 +105,17 @@ interface ListItemWithProduct {
 interface ActionMenuItem {
   label?: string
   onClick: () => void
+}
+
+interface Profile {
+  email: string
+}
+
+interface GetSession {
+  profile: Profile
+}
+
+interface Session {
+  loading: boolean
+  getSession: GetSession
 }

@@ -1,5 +1,10 @@
 import React, { Component, FormEvent, Fragment, ReactNode } from 'react'
-import { FormattedMessage, InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
+import {
+  FormattedMessage,
+  InjectedIntlProps,
+  injectIntl,
+  defineMessages,
+} from 'react-intl'
 import { Button, Input, Toggle } from 'vtex.styleguide'
 
 import styles from '../../wishList.css'

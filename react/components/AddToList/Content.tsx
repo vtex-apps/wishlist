@@ -59,7 +59,7 @@ class AddToListContent extends Component<
     const { client } = this.props
     getListsFromLocaleStorage(client)
       .then((response: ResponseList[]) => {
-        const lists = map(item => item.data.list, response)
+        const lists = map(item => item.data.list || {}, response)
         this.setState({ isLoading: false, lists })
       })
       .catch(() => this.setState({ isLoading: false }))

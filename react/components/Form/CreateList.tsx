@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 
 import { isMobile } from 'react-device-detect'
-import { compose, withApollo, WithApolloClient } from 'react-apollo'
+import { compose, withApollo, WithApolloClient, graphql } from 'react-apollo'
 import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
-import { withRuntimeContext } from 'vtex.render-runtime'
+import { withRuntimeContext, withSession } from 'vtex.render-runtime'
+import { session } from 'vtex.store-resources/Queries'
+import { getProfile } from '../../utils/profile'
 
-import { createList, saveListIdInLocalStorage } from '../../GraphqlClient'
+import { createList } from '../../GraphqlClient'
 import Header from '../Header'
 import FormView from './FormView'
 import ListForm from './ListForm'
@@ -16,6 +18,7 @@ interface CreateListProps extends InjectedIntlProps, WithApolloClient<{}> {
   onFinishAdding: (list: List) => void
   onClose: () => void
   runtime: Runtime
+  session: Session
 }
 
 interface CreateListState {
@@ -67,13 +70,21 @@ class CreateList extends Component<CreateListProps, CreateListState> {
   }
 
   private handleSubmit = (listData: List): void => {
-    const { client } = this.props
+    const { client, session } = this.props
+    const profile = getProfile(session)
     this.setState({ isLoading: true })
-    createList(client, { ...listData, items: [], isEditable: true })
+    createList(client, {
+      ...listData,
+      items: [],
+      isEditable: true,
+      owner: profile ? profile.email : '',
+    })
       .then((response: ResponseList) => {
-        !isMobile && this.redirectToList(response.data.createList.id)
-        this.props.onFinishAdding(response.data.createList)
-        saveListIdInLocalStorage(response.data.createList.id)
+        const list = response.data.createList
+        if (list) {
+          !isMobile && this.redirectToList(list.id)
+          this.props.onFinishAdding(list)
+        }
         if (this.isComponentMounted) {
           this.setState({ isLoading: false })
         }
@@ -91,8 +102,16 @@ class CreateList extends Component<CreateListProps, CreateListState> {
   }
 }
 
-export default compose(
-  injectIntl,
-  withApollo,
-  withRuntimeContext
-)(CreateList)
+const options = {
+  name: 'session',
+  options: () => ({ ssr: false }),
+}
+
+export default withSession()(
+  compose(
+    injectIntl,
+    withApollo,
+    withRuntimeContext,
+    graphql(session, options)
+  )(CreateList)
+)

@@ -3,6 +3,7 @@ mutation createList(
   $isPublic: Boolean
   $isEditable: Boolean
   $items: [ListItemInput]
+  $owner: String
 ) {
   createList(
     list: {
@@ -10,6 +11,7 @@ mutation createList(
       isPublic: $isPublic
       items: $items
       isEditable: $isEditable
+      owner: $owner
     }
   ) @context(provider: "vtex.store-graphql") {
     id

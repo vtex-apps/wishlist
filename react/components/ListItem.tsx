@@ -86,7 +86,7 @@ class ListItem extends Component<ListItemProps, {}> {
     const { showDeleteDialog } = this.state
     const className = classNames('w-100 flex flex-row items-center pv4', {
       'bg-action-secondary': isDefault,
-      'bt b--muted-4': !hideBorders,
+      'bb b--muted-4': !hideBorders,
       'c-emphasis': hideBorders && isSelected,
       'c-muted-2': !isSelected || !hideBorders,
       pl4: showMenuOptions,

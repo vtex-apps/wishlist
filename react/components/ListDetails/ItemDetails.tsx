@@ -189,13 +189,18 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
     const {
       data: { list },
     } = await getListDetailed(client, listId)
-    list.items = append(
-      this.itemWithoutProduct(item),
-      map((listItem: ListItem) => this.itemWithoutProduct(listItem), list.items)
-    )
-    await updateList(client, listId, list)
-    this.showMessage(list.name || '', listId)
-    this.setState({ isCopying: false })
+    if (list) {
+      list.items = append(
+        this.itemWithoutProduct(item),
+        map(
+          (listItem: ListItem) => this.itemWithoutProduct(listItem),
+          list.items
+        )
+      )
+      await updateList(client, listId, list)
+      this.showMessage(list.name || '', listId)
+      this.setState({ isCopying: false })
+    }
   }
 
   private itemWithoutProduct = ({

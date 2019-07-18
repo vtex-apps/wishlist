@@ -29,5 +29,7 @@
   "store/wishlist-quantity-products": "{productsQuantity} productos",
   "store/wishlist-copy-to": "Copiar a",
   "store/wishlist-copied": "Artículo copiado a {listName}",
-  "store/wishlist-see": "Ver"
+  "store/wishlist-see": "Ver",
+  "store/wishlist-login": "entrar",
+  "store/wishlist-not-logged": "Usted debe estar conectado."
 }

@@ -1,15 +1,18 @@
 import React, { Component, ReactNode } from 'react'
 import classNames from 'classnames'
-import { compose, withApollo, WithApolloClient } from 'react-apollo'
+import { compose, withApollo, WithApolloClient, graphql } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
 import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
-import { withRuntimeContext } from 'vtex.render-runtime'
+import { withRuntimeContext, withSession } from 'vtex.render-runtime'
 import { IconHeart } from 'vtex.store-icons'
 import { ButtonWithIcon, withToast } from 'vtex.styleguide'
+import { session } from 'vtex.store-resources/Queries'
+
+import { getProfile } from './utils/profile'
 import AddToList from './components/AddToList/index'
 import MyLists from './MyLists'
 
-import { addProductToDefaultList, getListsIdFromCookies } from './GraphqlClient'
+import { addProductToDefaultList } from './GraphqlClient'
 
 interface AddProductBtnProps extends InjectedIntlProps, WithApolloClient<{}> {
   icon?: ReactNode
@@ -17,6 +20,7 @@ interface AddProductBtnProps extends InjectedIntlProps, WithApolloClient<{}> {
   product: ListItem
   showToast: (toastInput: ToastInput) => void
   runtime: Runtime
+  session: Session
 }
 
 interface AddProductBtnState {
@@ -43,6 +47,14 @@ const messages = defineMessages({
   listNameDefault: {
     defaultMessage: '',
     id: 'store/wishlist-default-list-name',
+  },
+  login: {
+    defaultMessage: '',
+    id: 'store/wishlist-login',
+  },
+  notLogged: {
+    defaultMessage: '',
+    id: 'store/wishlist-not-logged',
   },
 })
 
@@ -87,8 +99,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     )
   }
 
-  private handleAddProductSuccess = (): void => {
-    const [listId] = getListsIdFromCookies()
+  private handleAddProductSuccess = () => {
     const {
       showToast,
       intl,
@@ -103,7 +114,6 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
           onClick: () =>
             navigate({
               page: 'store.lists',
-              query: `listId=${listId}`,
             }),
         },
         message: intl.formatMessage(messages.productAddedToList),
@@ -125,15 +135,34 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     if (isLoading) {
       return
     }
-    const { client, product, intl } = this.props
-    this.setState({ isLoading: true })
-    addProductToDefaultList(
-      intl.formatMessage(messages.listNameDefault),
+    const {
       client,
-      product
-    )
-      .then(this.handleAddProductSuccess)
-      .catch(this.handleAddProductFailed)
+      product,
+      intl,
+      session,
+      showToast,
+      runtime: { navigate },
+    } = this.props
+    const profile = getProfile(session)
+    if (profile) {
+      this.setState({ isLoading: true })
+      addProductToDefaultList(
+        client,
+        profile.email,
+        intl.formatMessage(messages.listNameDefault),
+        product
+      )
+        .then(this.handleAddProductSuccess)
+        .catch(this.handleAddProductFailed)
+    } else {
+      showToast({
+        action: {
+          label: intl.formatMessage(messages.login),
+          onClick: () => navigate({ page: 'store.login' }),
+        },
+        message: intl.formatMessage(messages.notLogged),
+      })
+    }
   }
 
   private handleAddToListsFail = (): void => {
@@ -152,22 +181,24 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     showToast({
       action: {
         label: intl.formatMessage(messages.seeLists),
-        onClick: () => {
-          if (isMobile) {
-            this.setState({ showLists: true })
-          } else {
-            navigate({ page: 'store.lists' })
-          }
-        },
+        onClick: () => navigate({ page: 'store.lists' }),
       },
       message: intl.formatMessage(messages.productAddedToList),
     })
   }
 }
 
-export default compose(
-  withRuntimeContext,
-  injectIntl,
-  withToast,
-  withApollo
-)(AddProductBtn)
+const options = {
+  name: 'session',
+  options: () => ({ ssr: false }),
+}
+
+export default withSession()(
+  compose(
+    withRuntimeContext,
+    injectIntl,
+    withToast,
+    withApollo,
+    graphql(session, options)
+  )(AddProductBtn)
+)
