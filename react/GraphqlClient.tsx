@@ -7,10 +7,10 @@ import getListQuery from './graphql/queries/getList.gql'
 import getListDetailedQuery from './graphql/queries/getListDetails.gql'
 import getListsByOwnerQuery from './graphql/queries/getListsByOwner.gql'
 
-const WISHLIST_STORAKE_KEY = 'vtexwishlists'
+const WISHLIST_STORAGE_KEY = 'vtexwishlists'
 
 export const getListsIdFromCookies = () => {
-  const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
+  const lists = localStorage.getItem(WISHLIST_STORAGE_KEY)
   return (
     (lists &&
       lists
@@ -22,16 +22,16 @@ export const getListsIdFromCookies = () => {
 
 export const saveListIdInLocalStorage = (id: string | undefined): void => {
   if (id) {
-    const lists = localStorage.getItem(WISHLIST_STORAKE_KEY)
+    const lists = localStorage.getItem(WISHLIST_STORAGE_KEY)
     const newLists = lists ? lists + ',' + id : id
-    localStorage.setItem(WISHLIST_STORAKE_KEY, newLists)
+    localStorage.setItem(WISHLIST_STORAGE_KEY, newLists)
   }
 }
 
 export const removeListIdFromLocalStorage = (listId: string): void => {
   const listsId = getListsIdFromCookies()
   const listsIdWithoutRemoved = filter((id: string) => id !== listId, listsId)
-  localStorage.setItem(WISHLIST_STORAKE_KEY, listsIdWithoutRemoved.toString())
+  localStorage.setItem(WISHLIST_STORAGE_KEY, listsIdWithoutRemoved.toString())
 }
 
 export const getList = (
@@ -95,7 +95,7 @@ const getSyncLists = async (
     )
 
     if (isListFromOwner(listsNotIndexed, owner)) {
-      localStorage.removeItem(WISHLIST_STORAKE_KEY)
+      localStorage.removeItem(WISHLIST_STORAGE_KEY)
       map(id => saveListIdInLocalStorage(id), listsId)
     } else {
       listsByOwner = joinLists(listsByOwner, listsNotIndexed)

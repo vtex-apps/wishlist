@@ -87,7 +87,7 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     }
 
     if (session && !session.loading && !profile) {
-      this.redirect()
+      this.toLogin()
     }
 
     const { selectedListId: id, lists, isLoading } = this.state
@@ -193,7 +193,7 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     }
   }
 
-  private redirect = (): void => {
+  private toLogin = (): void => {
     this.props.runtime.navigate({
       page: 'store.login',
       fallbackToWindowLocation: true,

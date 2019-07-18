@@ -1,6 +1,6 @@
 import React, { Component, Fragment, ReactNode } from 'react'
 
-import { append, filter, update } from 'ramda'
+import { append, filter, update, isEmpty } from 'ramda'
 import { compose, withApollo, WithApolloClient, graphql } from 'react-apollo'
 import { createPortal } from 'react-dom'
 import {
@@ -122,7 +122,7 @@ class Lists extends Component<ListsProps, ListsState> {
     const { lists } = this.state
     return (
       <Fragment>
-        {lists && lists.length ? (
+        {lists && !isEmpty(lists) ? (
           <div className="bb b--muted-4 h-100 overflow-auto">
             {lists.map((list, key) => (
               <ListItem
