@@ -80,9 +80,10 @@ class CreateList extends Component<CreateListProps, CreateListState> {
       owner: profile ? profile.email : '',
     })
       .then((response: ResponseList) => {
-        if (response.data.createList) {
-          !isMobile && this.redirectToList(response.data.createList.id)
-          this.props.onFinishAdding(response.data.createList)
+        const list = response.data.createList
+        if (list) {
+          !isMobile && this.redirectToList(list.id)
+          this.props.onFinishAdding(list)
         }
         if (this.isComponentMounted) {
           this.setState({ isLoading: false })

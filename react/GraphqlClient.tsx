@@ -61,9 +61,10 @@ const joinLists = (
   listsByOwner: List[] | undefined,
   listsNotIndexed: ResponseList[]
 ) => {
+  const localListsId = getListsIdFromCookies()
   const notIndexed = map(item => item.data.list || {}, listsNotIndexed)
   const lists = filter(
-    item => contains(item.id, getListsIdFromCookies()),
+    item => contains(item.id, localListsId),
     listsByOwner || []
   )
   return concat(lists, notIndexed)
@@ -87,7 +88,7 @@ const getSyncLists = async (
   const listsId = map(item => item.id, listsByOwner || [])
   const listIdFromLocal = getListsIdFromCookies()
   if (!listIdFromLocal || !listIdFromLocal.length) {
-    map(id => saveListIdInLocalStorage(id), listsId)
+    map(saveListIdInLocalStorage, listsId)
   } else {
     const listsIdNotIndexed = without(listsId, listIdFromLocal)
     const listsNotIndexed = await Promise.all(
@@ -101,7 +102,6 @@ const getSyncLists = async (
       listsByOwner = joinLists(listsByOwner, listsNotIndexed)
     }
   }
-
   return { data: { listsByOwner } }
 }
 
