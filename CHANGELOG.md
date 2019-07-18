@@ -6,6 +6,8 @@
  and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.2.0] - 2019-07-18
 ### Changed
 - Make it possible to add products to lists only if the user is logged in.
 
