@@ -96,7 +96,7 @@ const getSyncLists = async (
 
     if (isListFromOwner(listsNotIndexed, owner)) {
       localStorage.removeItem(WISHLIST_STORAGE_KEY)
-      map(id => saveListIdInLocalStorage(id), listsId)
+      map(saveListIdInLocalStorage, listsId)
     } else {
       listsByOwner = joinLists(listsByOwner, listsNotIndexed)
     }
