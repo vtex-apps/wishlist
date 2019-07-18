@@ -66,7 +66,7 @@ class Lists extends Component<ListsProps, ListsState> {
 
   public componentDidMount(): void {
     this.isComponentMounted = true
-    this.setState({ lists: this.props.lists })
+    this.setState({ this.props.lists })
   }
 
   public render = (): ReactNode => {
