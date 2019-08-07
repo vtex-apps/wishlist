@@ -31,5 +31,7 @@
   "store/wishlist-copied": "",
   "store/wishlist-see": "",
   "store/wishlist-login": "",
-  "store/wishlist-not-logged": ""
+  "store/wishlist-not-logged": "",
+  "admin/editor.wishlist.title": "",
+  "admin/editor.wishlist.enable-multiple-lists.title": ""
 }

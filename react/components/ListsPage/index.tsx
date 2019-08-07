@@ -16,11 +16,17 @@ import Lists from '../Lists'
 import styles from '../../wishList.css'
 import { isMobile } from 'react-device-detect'
 
+import { withWishListContext } from 'vtex.store/WishListContext'
+
 const ON_LISTS_PAGE_CLASS = 'vtex-lists-page'
 const messages = defineMessages({
   listNameDefault: {
     defaultMessage: '',
     id: 'store/wishlist-default-list-name',
+  },
+  title: {
+    id: 'admin/editor.wishlist.title',
+    defaultMessage: '',
   },
 })
 
@@ -40,6 +46,18 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     isLoading: true,
     lists: [],
   }
+
+  public static getSchema = () => ({
+    title: 'admin/editor.wishlist.title',
+    type: 'object',
+    properties: {
+      enableMultipleLists: {
+        title: 'admin/editor.wishlist.enable-multiple-lists.title',
+        type: 'boolean',
+        default: false,
+      },
+    },
+  })
 
   public componentWillUnmount(): void {
     document.body.classList.remove(ON_LISTS_PAGE_CLASS)
@@ -206,11 +224,13 @@ const options = {
   options: () => ({ ssr: false }),
 }
 
-export default withSession()(
-  compose(
-    injectIntl,
-    withRuntimeContext,
-    withApollo,
-    graphql(session, options)
-  )(ListsPage)
+export default withWishListContext(
+  withSession()(
+    compose(
+      injectIntl,
+      withRuntimeContext,
+      withApollo,
+      graphql(session, options)
+    )(ListsPage)
+  )
 )

@@ -7,6 +7,7 @@ import { withRuntimeContext, withSession } from 'vtex.render-runtime'
 import { IconHeart } from 'vtex.store-icons'
 import { ButtonWithIcon, withToast } from 'vtex.styleguide'
 import { session } from 'vtex.store-resources/Queries'
+import WishListContext from 'vtex.store/WishListContext'
 
 import { getProfile } from './utils/profile'
 import AddToList from './components/AddToList/index'
@@ -61,6 +62,18 @@ const messages = defineMessages({
 class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   public state: AddProductBtnState = {}
 
+  public static getSchema = () => ({
+    title: 'Wazaaa',
+    type: 'object',
+    properties: {
+      bla: {
+        title: 'this is a prop',
+        type: 'boolean',
+        default: false,
+      },
+    },
+  })
+
   public render() {
     const { product, large, icon } = this.props
     const { showContent, showLists, isLoading } = this.state
@@ -70,32 +83,34 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
     })
 
     return (
-      <div className={addProductBtnClasses}>
-        <ButtonWithIcon
-          variation="tertiary"
-          onClick={this.handleAddProductClick}
-          isLoading={isLoading}
-          icon={
-            icon || (
-              <IconHeart
-                color="c-muted-3"
-                size={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
-              />
-            )
-          }
-        />
-        {showContent && (
-          <AddToList
-            onAddToListsFail={this.handleAddToListsFail}
-            onAddToListsSuccess={this.handleAddToListsSuccess}
-            product={product}
-            onClose={() => this.setState({ showContent: false })}
+      <WishListContext>
+        <div className={addProductBtnClasses}>
+          <ButtonWithIcon
+            variation="tertiary"
+            onClick={this.handleAddProductClick}
+            isLoading={isLoading}
+            icon={
+              icon || (
+                <IconHeart
+                  color="c-muted-3"
+                  size={large ? ICON_SIZE_LARGE : ICON_SIZE_SMALL}
+                />
+              )
+            }
           />
-        )}
-        {showLists && (
-          <MyLists onClose={() => this.setState({ showLists: false })} />
-        )}
-      </div>
+          {showContent && (
+            <AddToList
+              onAddToListsFail={this.handleAddToListsFail}
+              onAddToListsSuccess={this.handleAddToListsSuccess}
+              product={product}
+              onClose={() => this.setState({ showContent: false })}
+            />
+          )}
+          {showLists && (
+            <MyLists onClose={() => this.setState({ showLists: false })} />
+          )}
+        </div>
+      </WishListContext>
     )
   }
 

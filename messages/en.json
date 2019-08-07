@@ -31,5 +31,7 @@
   "store/wishlist-copied": "Item copied to {listName}",
   "store/wishlist-see": "See",
   "store/wishlist-login": "login",
-  "store/wishlist-not-logged": "You must be logged"
+  "store/wishlist-not-logged": "You must be logged",
+  "admin/editor.wishlist.title": "Wish List",
+  "admin/editor.wishlist.enable-multiple-lists.title": "Enable the user create multiple lists"
 }
