@@ -16,7 +16,7 @@ import Lists from '../Lists'
 import styles from '../../wishList.css'
 import { isMobile } from 'react-device-detect'
 
-import { withWishListContext } from 'vtex.store/WishListContext'
+import withContext from '../../withContext'
 
 const ON_LISTS_PAGE_CLASS = 'vtex-lists-page'
 const messages = defineMessages({
@@ -36,7 +36,10 @@ interface ListsPageState {
   isLoading?: boolean
 }
 
-interface ListsPageProps extends InjectedIntlProps, WithApolloClient<{}> {
+interface ListsPageProps
+  extends InjectedIntlProps,
+    WithApolloClient<{}>,
+    ContextProps {
   runtime: Runtime
   session: Session
 }
@@ -46,18 +49,6 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     isLoading: true,
     lists: [],
   }
-
-  public static getSchema = () => ({
-    title: 'admin/editor.wishlist.title',
-    type: 'object',
-    properties: {
-      enableMultipleLists: {
-        title: 'admin/editor.wishlist.enable-multiple-lists.title',
-        type: 'boolean',
-        default: false,
-      },
-    },
-  })
 
   public componentWillUnmount(): void {
     document.body.classList.remove(ON_LISTS_PAGE_CLASS)
@@ -224,7 +215,7 @@ const options = {
   options: () => ({ ssr: false }),
 }
 
-export default withWishListContext(
+export default withContext(
   withSession()(
     compose(
       injectIntl,

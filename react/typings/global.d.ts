@@ -119,3 +119,7 @@ interface Session {
   loading: boolean
   getSession: GetSession
 }
+
+interface ContextProps {
+  enableMultipleLists: boolean
+}
