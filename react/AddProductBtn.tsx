@@ -67,11 +67,11 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   public state: AddProductBtnState = {}
 
   public render() {
-    const { product, large, icon, enableMultipleLists } = this.props
+    const { product, large, icon } = this.props
     const { showContent, showLists, isLoading } = this.state
 
     const addProductBtnClasses = classNames('absolute z-5', {
-      'ph6 pv7': enableMultipleLists,
+      'ph6 pv7': large,
     })
 
     return (
@@ -98,21 +98,28 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
           />
         )}
         {showLists && (
-          <MyLists onClose={() => this.setState({ showLists: false })} />
+          <MyLists
+            {...this.props}
+            onClose={() => this.setState({ showLists: false })}
+          />
         )}
       </div>
     )
   }
 
   private handleAddProductSuccess = () => {
+    const { enableMultipleLists } = this.props
     const {
       showToast,
       intl,
       runtime: { navigate },
     } = this.props
-    this.setState({ showContent: isMobile, isLoading: false })
+    this.setState({
+      showContent: isMobile && enableMultipleLists,
+      isLoading: false,
+    })
 
-    if (!isMobile) {
+    if (!isMobile || !enableMultipleLists) {
       showToast({
         action: {
           label: intl.formatMessage(messages.seeLists),

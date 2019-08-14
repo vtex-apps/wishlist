@@ -105,6 +105,7 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     return isMobile ? (
       lists.length ? (
         <Lists
+          {...this.props}
           loading={!session || session.loading || isLoading}
           lists={lists}
           onClose={goBack}

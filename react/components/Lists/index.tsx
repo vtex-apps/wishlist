@@ -45,7 +45,10 @@ interface ListsState {
   lists?: List[]
 }
 
-interface ListsProps extends InjectedIntlProps, WithApolloClient<{}> {
+interface ListsProps
+  extends InjectedIntlProps,
+    WithApolloClient<{}>,
+    ContextProps {
   onClose: () => void
   session: Session
   lists: List[]
@@ -54,7 +57,7 @@ interface ListsProps extends InjectedIntlProps, WithApolloClient<{}> {
 
 class Lists extends Component<ListsProps, ListsState> {
   public state: ListsState = {
-    listSelected: -1,
+    listSelected: 0,
   }
 
   private isComponentMounted: boolean = false
@@ -77,37 +80,44 @@ class Lists extends Component<ListsProps, ListsState> {
       listSelected,
       lists,
     } = this.state
-    const { onClose, intl } = this.props
+    const { onClose, intl, enableMultipleLists } = this.props
 
     return createPortal(
       <Screen>
-        <Header
-          title={intl.formatMessage(messages.myLists)}
-          onClose={onClose}
-          action={() => this.setState({ showCreateList: true })}
-        />
-        {this.renderContent()}
-        {showCreateList && (
-          <div className="fixed vw-100 top-0 bg-base">
-            <CreateList
-              onClose={() => this.setState({ showCreateList: false })}
-              onFinishAdding={this.handleListCreated}
+        {enableMultipleLists && (
+          <Fragment>
+            <Header
+              title={intl.formatMessage(messages.myLists)}
+              onClose={onClose}
+              action={() => this.setState({ showCreateList: true })}
             />
-          </div>
+            {this.renderContent()}
+            {showCreateList && (
+              <div className="fixed vw-100 top-0 bg-base">
+                <CreateList
+                  onClose={() => this.setState({ showCreateList: false })}
+                  onFinishAdding={this.handleListCreated}
+                />
+              </div>
+            )}
+            {showUpdateList && (
+              <Screen>
+                <UpdateList
+                  onClose={() => this.setState({ showUpdateList: false })}
+                  list={lists && lists[listSelected]}
+                  onFinishUpdate={this.handleListUpdated}
+                />
+              </Screen>
+            )}
+          </Fragment>
         )}
-        {showUpdateList && (
-          <Screen>
-            <UpdateList
-              onClose={() => this.setState({ showUpdateList: false })}
-              list={lists && lists[listSelected]}
-              onFinishUpdate={this.handleListUpdated}
-            />
-          </Screen>
-        )}
-        {showListDetails && (
+        {(showListDetails || !enableMultipleLists) && (
           <div className="fixed vw-100 top-0 left-0 bg-base">
             <ListDetails
-              onClose={() => this.setState({ showListDetails: false })}
+              onClose={
+                enableMultipleLists &&
+                (() => this.setState({ showListDetails: false }))
+              }
               listId={lists && lists[listSelected].id}
               onDeleted={this.handleDeleteList}
             />
@@ -120,6 +130,7 @@ class Lists extends Component<ListsProps, ListsState> {
 
   private renderLists = (): ReactNode => {
     const { lists } = this.state
+
     return (
       <Fragment>
         {lists && !isEmpty(lists) ? (
