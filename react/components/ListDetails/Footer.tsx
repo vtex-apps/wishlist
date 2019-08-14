@@ -20,10 +20,6 @@ interface FooterProps extends InjectedIntlProps {
   items: ListItemWithProduct[]
 }
 
-interface FooterState {
-  isLoading?: boolean
-}
-
 const messages = defineMessages({
   selectedItemsQuantity: {
     defaultMessage: '',
@@ -39,11 +35,7 @@ const messages = defineMessages({
   },
 })
 
-class Footer extends Component<FooterProps, FooterState> {
-  public state: FooterState = {
-    isLoading: false,
-  }
-
+class Footer extends Component<FooterProps, {}> {
   public render(): ReactNode {
     const { items } = this.props
     const totalPrice = this.calculateTotal()

@@ -7,7 +7,6 @@ import { withRuntimeContext, withSession } from 'vtex.render-runtime'
 import { IconHeart } from 'vtex.store-icons'
 import { ButtonWithIcon, withToast } from 'vtex.styleguide'
 import { session } from 'vtex.store-resources/Queries'
-import withContext from './withContext'
 
 import { getProfile } from './utils/profile'
 import AddToList from './components/AddToList/index'
@@ -215,4 +214,4 @@ const EnhancedAddProductButton = withSession()(
   )(AddProductBtn)
 )
 
-export default withContext(EnhancedAddProductButton)
+export default EnhancedAddProductButton

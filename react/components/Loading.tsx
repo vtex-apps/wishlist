@@ -1,9 +1,9 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { Spinner } from 'vtex.styleguide'
 
 const SPINNER_SIZE = 20
 
-const Loading = (): ReactNode => {
+const Loading = () => {
   return (
     <div className="flex justify-center pt4">
       <span className="dib c-muted-1">
