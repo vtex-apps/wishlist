@@ -120,6 +120,7 @@ interface Session {
   getSession: GetSession
 }
 
-interface ContextProps {
+interface Settings {
   enableMultipleLists: boolean
+  defaultListName: string
 }

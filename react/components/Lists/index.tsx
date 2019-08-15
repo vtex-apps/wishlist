@@ -45,14 +45,12 @@ interface ListsState {
   lists?: List[]
 }
 
-interface ListsProps
-  extends InjectedIntlProps,
-    WithApolloClient<{}>,
-    ContextProps {
+interface ListsProps extends InjectedIntlProps, WithApolloClient<{}> {
   onClose: () => void
   session: Session
   lists: List[]
   loading?: boolean
+  enableMultipleLists: boolean
 }
 
 class Lists extends Component<ListsProps, ListsState> {

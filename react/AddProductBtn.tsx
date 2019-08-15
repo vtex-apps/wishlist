@@ -17,22 +17,20 @@ import { session } from 'vtex.store-resources/Queries'
 import { getProfile } from './utils/profile'
 import AddToList from './components/AddToList/index'
 import MyLists from './MyLists'
-import withSettings, { Settings } from './withSettings'
+import withSettings from './withSettings'
 
 import { addProductToDefaultList } from './GraphqlClient'
 
 interface AddProductBtnProps
   extends InjectedIntlProps,
     WithApolloClient<{}>,
-    ChildDataProps<{}, { appSettings: Settings }, {}>,
-    ContextProps {
+    ChildDataProps<{}, { appSettings: Settings }, {}> {
   icon?: ReactNode
   large?: boolean
   product: ListItem
   showToast: (toastInput: ToastInput) => void
   runtime: Runtime
   session: Session
-  waza?: string
 }
 
 interface AddProductBtnState {
@@ -214,14 +212,13 @@ const options = {
   options: () => ({ ssr: false }),
 }
 
-const EnhancedAddProductButton = withSession()(
+export default withSession()(
   compose(
     withRuntimeContext,
     injectIntl,
     withToast,
     withApollo,
-    graphql(session, options)
+    graphql(session, options),
+    withSettings
   )(AddProductBtn)
 )
-
-export default withSettings(EnhancedAddProductButton)

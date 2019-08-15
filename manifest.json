@@ -28,16 +28,16 @@
     "vtex.store-header": "2.x"
   },
   "settingsSchema": {
-    "title": "Waza",
+    "title": "Wish List",
     "type": "object",
     "properties": {
       "enableMultipleLists": {
-        "title": "Waza",
+        "title": "Enable creating custom lists",
         "type": "boolean",
         "default": false
       },
       "defaultListName": {
-        "title": "Wazaa",
+        "title": "Default list name",
         "type": "string"
       }
     }

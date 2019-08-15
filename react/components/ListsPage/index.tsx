@@ -14,7 +14,7 @@ import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { session } from 'vtex.store-resources/Queries'
 import { getProfile } from '../../utils/profile'
 import { createList, getListsByOwner } from '../../GraphqlClient'
-import withSettings, { Settings } from '../../withSettings'
+import withSettings from '../../withSettings'
 
 import Content from './Content'
 import ListSelector from './ListSelector'
@@ -23,17 +23,11 @@ import Lists from '../Lists'
 import styles from '../../wishList.css'
 import { isMobile } from 'react-device-detect'
 
-import Loading from '../Loading'
-
 const ON_LISTS_PAGE_CLASS = 'vtex-lists-page'
 const messages = defineMessages({
   listNameDefault: {
     defaultMessage: '',
     id: 'store/wishlist-default-list-name',
-  },
-  title: {
-    id: 'admin/editor.wishlist.title',
-    defaultMessage: '',
   },
 })
 interface ListsPageState {
@@ -45,8 +39,7 @@ interface ListsPageState {
 interface ListsPageProps
   extends InjectedIntlProps,
     WithApolloClient<{}>,
-    ChildDataProps<{}, { appSettings: Settings }, {}>,
-    ContextProps {
+    ChildDataProps<{}, { appSettings: Settings }, {}> {
   runtime: Runtime
   session: Session
 }
@@ -101,7 +94,7 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     const profile = getProfile(session)
 
     if (!session || session.loading) {
-      return <Loading />
+      return null
     }
 
     if (session && !session.loading && !profile) {

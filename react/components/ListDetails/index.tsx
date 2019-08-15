@@ -30,7 +30,6 @@ interface ListDetailState {
 
 interface ListDetailProps
   extends InjectedIntlProps,
-    ContextProps,
     WithApolloClient<{}>,
     ChildDataProps<{}, { list: List }, {}> {
   listId: string

@@ -31,7 +31,5 @@
   "store/wishlist-copied": "Artículo copiado a {listName}",
   "store/wishlist-see": "Ver",
   "store/wishlist-login": "entrar",
-  "store/wishlist-not-logged": "Usted debe estar conectado.",
-  "admin/editor.wishlist.title": "Wish List",
-  "admin/editor.wishlist.enable-multiple-lists.title": "Permitir al usuario crear múltiples listas"
+  "store/wishlist-not-logged": "Usted debe estar conectado."
 }
