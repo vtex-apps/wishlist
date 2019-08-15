@@ -1,0 +1,6 @@
+query appSettings {
+  appSettings {
+    enableMultipleLists
+    defaultListName
+  }
+}
