@@ -9,8 +9,12 @@ import {
   IconVisibilityOn,
 } from 'vtex.styleguide'
 import DialogMessage from './Dialog/DialogMessage'
+import withSettings from '../withSettings'
+import { compose, ChildDataProps } from 'react-apollo'
 
-interface ListItemProps extends InjectedIntlProps {
+interface ListItemProps
+  extends InjectedIntlProps,
+    ChildDataProps<{}, { appSettings: Settings }, {}> {
   id: number
   list: List
   isDefault: boolean
@@ -41,6 +45,10 @@ const messages = defineMessages({
   messageDeleteConfirmation: {
     defaultMessage: '',
     id: 'store/wishlist-delete-confirmation-message',
+  },
+  defaultListName: {
+    id: 'store/wishlist-default-list-name',
+    defaultMessage: '',
   },
 })
 
@@ -78,12 +86,17 @@ class ListItem extends Component<ListItemProps, {}> {
       showMenuOptions,
       hideAction,
       hideBorders,
-      intl,
+      intl: { formatMessage },
       onClick,
       onDeleted,
       onSelected,
+      data: { appSettings },
     } = this.props
     const { showDeleteDialog } = this.state
+    const defaultListName =
+      (appSettings && appSettings.defaultListName) ||
+      formatMessage(messages.defaultListName)
+
     const className = classNames('w-100 flex flex-row items-center pv4', {
       'bg-action-secondary': isDefault,
       'bb b--muted-4': !hideBorders,
@@ -95,6 +108,7 @@ class ListItem extends Component<ListItemProps, {}> {
     const nameClassName = classNames('w-100 mh4 mv1', {
       'flex justify-center pv2': isDefault,
     })
+
     return (
       <div className={className}>
         <div
@@ -109,7 +123,9 @@ class ListItem extends Component<ListItemProps, {}> {
               {isPublic ? <IconVisibilityOn /> : <IconVisibilityOff />}
             </div>
           )}
-          <span className={nameClassName}>{name}</span>
+          <span className={nameClassName}>
+            {isDefault ? defaultListName : name}
+          </span>
         </div>
         {!hideAction &&
           (showMenuOptions
@@ -134,7 +150,7 @@ class ListItem extends Component<ListItemProps, {}> {
               ))}
         {showDeleteDialog && (
           <DialogMessage
-            message={intl.formatMessage(messages.messageDeleteConfirmation, {
+            message={formatMessage(messages.messageDeleteConfirmation, {
               listName: name,
             })}
             onClose={() => this.setState({ showDeleteDialog: false })}
@@ -166,4 +182,7 @@ class ListItem extends Component<ListItemProps, {}> {
   }
 }
 
-export default injectIntl<ListItemProps>(ListItem)
+export default compose(
+  injectIntl,
+  withSettings
+)(ListItem)

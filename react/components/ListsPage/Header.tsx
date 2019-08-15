@@ -7,12 +7,18 @@ import {
 } from 'react-intl'
 import { ActionMenu, IconOptionsDots } from 'vtex.styleguide'
 
-import { compose, withApollo, WithApolloClient } from 'react-apollo'
+import {
+  compose,
+  withApollo,
+  WithApolloClient,
+  ChildDataProps,
+} from 'react-apollo'
 
 import DialogMessage from '../Dialog/DialogMessage'
 import UpdateList from '../Form/UpdateList'
 
 import { deleteList } from '../../GraphqlClient'
+import withSettings from '../../withSettings'
 
 interface HeaderState {
   showcreateList?: boolean
@@ -20,9 +26,12 @@ interface HeaderState {
   showDeleteConfirmation?: boolean
 }
 
-interface HeaderProps extends InjectedIntlProps, WithApolloClient<{}> {
+interface HeaderProps
+  extends InjectedIntlProps,
+    WithApolloClient<{}>,
+    ChildDataProps<{}, { appSettings: Settings }> {
   isDefault?: boolean
-  list?: List
+  list: List
   onListUpdated: (list: List) => void
   onListDeleted: () => void
 }
@@ -45,6 +54,10 @@ const messages = defineMessages({
     defaultMessage: '',
     id: 'store/wishlist-quantity-products',
   },
+  defaultListName: {
+    id: 'store/wishlist-default-list-name',
+    defaultMessage: '',
+  },
 })
 
 class Header extends Component<HeaderProps, HeaderState> {
@@ -62,19 +75,28 @@ class Header extends Component<HeaderProps, HeaderState> {
 
   public render(): ReactNode {
     const { showUpdateList, showDeleteConfirmation } = this.state
-    const { list, intl } = this.props
+    const {
+      list,
+      list: { name, isEditable, items },
+      data: { appSettings },
+      intl: { formatMessage },
+    } = this.props
+    const title = !isEditable
+      ? (appSettings && appSettings.defaultListName) ||
+        formatMessage(messages.defaultListName)
+      : name
 
-    return list ? (
+    return (
       <div className="w-100 flex items-center">
-        <div className="w-100 t-heading-2">{list.name}</div>
+        <div className="w-100 t-heading-2">{title}</div>
         <div className="flex flex-row items-center w-100 justify-end">
           <div className="ttu mh2">
             <FormattedMessage
               {...messages.productsQuantity}
-              values={{ productsQuantity: list.items && list.items.length }}
+              values={{ productsQuantity: items && items.length }}
             />
           </div>
-          {list.isEditable && (
+          {isEditable && (
             <div className="ml3">
               <ActionMenu
                 hideCaretIcon
@@ -96,15 +118,15 @@ class Header extends Component<HeaderProps, HeaderState> {
         )}
         {showDeleteConfirmation && (
           <DialogMessage
-            message={intl.formatMessage(messages.messageDeleteConfirmation, {
-              listName: list.name,
+            message={formatMessage(messages.messageDeleteConfirmation, {
+              listName: name,
             })}
             onClose={() => this.setState({ showDeleteConfirmation: false })}
             onSuccess={this.handleDeleteList}
           />
         )}
       </div>
-    ) : null
+    )
   }
 
   private handleListUpdated = (list: List) => {
@@ -125,5 +147,6 @@ class Header extends Component<HeaderProps, HeaderState> {
 
 export default compose(
   withApollo,
-  injectIntl
+  injectIntl,
+  withSettings
 )(Header)

@@ -22,6 +22,7 @@ import Lists from '../Lists'
 
 import styles from '../../wishList.css'
 import { isMobile } from 'react-device-detect'
+import Loading from '../Loading'
 
 const ON_LISTS_PAGE_CLASS = 'vtex-lists-page'
 const messages = defineMessages({
@@ -94,7 +95,7 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     const profile = getProfile(session)
 
     if (!session || session.loading) {
-      return null
+      return <Loading />
     }
 
     if (session && !session.loading && !profile) {

@@ -20,6 +20,8 @@ import Content from './Content'
 import Footer from './Footer'
 
 import LIST_DETAILS_QUERY from '../../graphql/queries/getListDetails.gql'
+import Loading from '../Loading'
+import withSettings from '../../withSettings'
 
 interface ListDetailState {
   isAddingToCart?: boolean
@@ -31,7 +33,7 @@ interface ListDetailState {
 interface ListDetailProps
   extends InjectedIntlProps,
     WithApolloClient<{}>,
-    ChildDataProps<{}, { list: List }, {}> {
+    ChildDataProps<{}, { list: List; appSettings: Settings }, {}> {
   listId: string
   onClose: (lists?: List[]) => void
   onDeleted?: (id: string) => void
@@ -50,6 +52,10 @@ const messages = defineMessages({
   messageDeleteConfirmation: {
     defaultMessage: '',
     id: 'store/wishlist-delete-confirmation-message',
+  },
+  defaultListName: {
+    id: 'store/wishlist-default-list-name',
+    defaultMessage: '',
   },
 })
 
@@ -94,8 +100,9 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
   private renderContent = (): ReactNode => {
     const { selectedItems } = this.state
     const {
-      data: { loading, list },
+      data: { loading, list, appSettings },
       onClose,
+      intl: { formatMessage },
     } = this.props
     const options = [
       {
@@ -108,34 +115,44 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
       },
     ]
 
+    if (loading || !list) {
+      return <Loading />
+    }
+    const { isEditable, name } = list
+
+    const title = !isEditable
+      ? (appSettings && appSettings.defaultListName) ||
+        formatMessage(messages.defaultListName)
+      : name
+
+    console.log('hellooo')
+
     return (
-      list && (
-        <Fragment>
-          <Header
-            title={list.name}
-            onClose={this.handleOnClose}
-            showIconBack={!!onClose}
-          >
-            {!loading && list.isEditable && (
-              <ActionMenu
-                options={options}
-                hideCaretIcon
-                buttonProps={{
-                  variation: 'tertiary',
-                  size: 'small',
-                  icon: <IconOptionsDots size={20} />,
-                }}
-              />
-            )}
-          </Header>
-          <Content
-            items={list.items}
-            onItemSelect={this.handleItemSelectedChange}
-            onItemRemove={this.handleItemRemove}
-          />
-          {selectedItems.length > 0 && <Footer items={selectedItems} />}
-        </Fragment>
-      )
+      <Fragment>
+        <Header
+          title={title}
+          onClose={this.handleOnClose}
+          showIconBack={!!onClose}
+        >
+          {!loading && list.isEditable && (
+            <ActionMenu
+              options={options}
+              hideCaretIcon
+              buttonProps={{
+                variation: 'tertiary',
+                size: 'small',
+                icon: <IconOptionsDots size={20} />,
+              }}
+            />
+          )}
+        </Header>
+        <Content
+          items={list.items}
+          onItemSelect={this.handleItemSelectedChange}
+          onItemRemove={this.handleItemRemove}
+        />
+        {selectedItems.length > 0 && <Footer items={selectedItems} />}
+      </Fragment>
     )
   }
 
@@ -234,6 +251,7 @@ const withQuery = graphql(LIST_DETAILS_QUERY, {
 export default compose(
   withApollo,
   withQuery,
+  withSettings,
   injectIntl,
   withRuntimeContext
 )(ListDetail)
