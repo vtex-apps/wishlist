@@ -3,11 +3,18 @@ import { withRuntimeContext, withSession } from 'vtex.render-runtime'
 import { Spinner } from 'vtex.styleguide'
 
 import { concat, filter, findIndex, update } from 'ramda'
-import { compose, withApollo, WithApolloClient, graphql } from 'react-apollo'
+import {
+  compose,
+  withApollo,
+  WithApolloClient,
+  graphql,
+  ChildDataProps,
+} from 'react-apollo'
 import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { session } from 'vtex.store-resources/Queries'
 import { getProfile } from '../../utils/profile'
 import { createList, getListsByOwner } from '../../GraphqlClient'
+import withSettings, { Settings } from '../../withSettings'
 
 import Content from './Content'
 import ListSelector from './ListSelector'
@@ -29,7 +36,6 @@ const messages = defineMessages({
     defaultMessage: '',
   },
 })
-
 interface ListsPageState {
   lists: any
   selectedListId?: string
@@ -39,6 +45,7 @@ interface ListsPageState {
 interface ListsPageProps
   extends InjectedIntlProps,
     WithApolloClient<{}>,
+    ChildDataProps<{}, { appSettings: Settings }, {}>,
     ContextProps {
   runtime: Runtime
   session: Session
@@ -87,8 +94,9 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     const {
       session,
       runtime: { goBack },
-      enableMultipleLists,
+      data: { appSettings },
     } = this.props
+    const enableMultipleLists = appSettings && appSettings.enableMultipleLists
 
     const profile = getProfile(session)
 
@@ -106,7 +114,7 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     return isMobile ? (
       lists.length ? (
         <Lists
-          {...this.props}
+          enableMultipleLists={enableMultipleLists}
           loading={!session || session.loading || isLoading}
           lists={lists}
           onClose={goBack}
@@ -225,6 +233,7 @@ export default withSession()(
     injectIntl,
     withRuntimeContext,
     withApollo,
-    graphql(session, options)
+    graphql(session, options),
+    withSettings
   )(ListsPage)
 )

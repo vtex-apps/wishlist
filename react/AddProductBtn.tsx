@@ -1,6 +1,12 @@
 import React, { Component, ReactNode } from 'react'
 import classNames from 'classnames'
-import { compose, withApollo, WithApolloClient, graphql } from 'react-apollo'
+import {
+  compose,
+  withApollo,
+  WithApolloClient,
+  graphql,
+  ChildDataProps,
+} from 'react-apollo'
 import { isMobile } from 'react-device-detect'
 import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { withRuntimeContext, withSession } from 'vtex.render-runtime'
@@ -11,12 +17,14 @@ import { session } from 'vtex.store-resources/Queries'
 import { getProfile } from './utils/profile'
 import AddToList from './components/AddToList/index'
 import MyLists from './MyLists'
+import withSettings, { Settings } from './withSettings'
 
 import { addProductToDefaultList } from './GraphqlClient'
 
 interface AddProductBtnProps
   extends InjectedIntlProps,
     WithApolloClient<{}>,
+    ChildDataProps<{}, { appSettings: Settings }, {}>,
     ContextProps {
   icon?: ReactNode
   large?: boolean
@@ -107,12 +115,14 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
   }
 
   private handleAddProductSuccess = () => {
-    const { enableMultipleLists } = this.props
     const {
       showToast,
       intl,
       runtime: { navigate },
+      data: { appSettings },
     } = this.props
+    const enableMultipleLists = appSettings && appSettings.enableMultipleLists
+
     this.setState({
       showContent: isMobile && enableMultipleLists,
       isLoading: false,
@@ -214,4 +224,4 @@ const EnhancedAddProductButton = withSession()(
   )(AddProductBtn)
 )
 
-export default EnhancedAddProductButton
+export default withSettings(EnhancedAddProductButton)
