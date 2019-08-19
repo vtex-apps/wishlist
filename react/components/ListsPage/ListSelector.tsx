@@ -72,7 +72,7 @@ class ListSelector extends Component<ListSelectorProps, ListSelectorState> {
             key={list.id}
             id={index}
             list={list}
-            isDefault={false}
+            isDefault={index === 0}
             hideAction
             hideBorders
             isSelected={list.id === selectedListId}

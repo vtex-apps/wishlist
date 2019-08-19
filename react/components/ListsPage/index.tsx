@@ -3,13 +3,7 @@ import { withRuntimeContext, withSession } from 'vtex.render-runtime'
 import { Spinner } from 'vtex.styleguide'
 
 import { concat, filter, findIndex, update } from 'ramda'
-import {
-  compose,
-  withApollo,
-  WithApolloClient,
-  graphql,
-  ChildDataProps,
-} from 'react-apollo'
+import { compose, withApollo, WithApolloClient, graphql } from 'react-apollo'
 import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { session } from 'vtex.store-resources/Queries'
 import { getProfile } from '../../utils/profile'
@@ -40,7 +34,7 @@ interface ListsPageState {
 interface ListsPageProps
   extends InjectedIntlProps,
     WithApolloClient<{}>,
-    ChildDataProps<{}, { appSettings: Settings }, {}> {
+    SettingsProps {
   runtime: Runtime
   session: Session
 }
@@ -88,7 +82,7 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     const {
       session,
       runtime: { goBack },
-      data: { appSettings },
+      settings: { appSettings },
     } = this.props
     const enableMultipleLists = appSettings && appSettings.enableMultipleLists
 

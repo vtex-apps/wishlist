@@ -124,3 +124,7 @@ interface Settings {
   enableMultipleLists: boolean
   defaultListName: string
 }
+
+interface SettingsProps {
+  settings: NamedProps<{ appSettings: Settings }, {}>
+}

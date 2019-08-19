@@ -33,7 +33,8 @@ interface ListDetailState {
 interface ListDetailProps
   extends InjectedIntlProps,
     WithApolloClient<{}>,
-    ChildDataProps<{}, { list: List; appSettings: Settings }, {}> {
+    ChildDataProps<{}, { list: List }, {}>,
+    SettingsProps {
   listId: string
   onClose: (lists?: List[]) => void
   onDeleted?: (id: string) => void
@@ -100,9 +101,10 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
   private renderContent = (): ReactNode => {
     const { selectedItems } = this.state
     const {
-      data: { loading, list, appSettings },
+      data: { loading, list },
       onClose,
       intl: { formatMessage },
+      settings: { appSettings },
     } = this.props
     const options = [
       {
@@ -124,8 +126,6 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
       ? (appSettings && appSettings.defaultListName) ||
         formatMessage(messages.defaultListName)
       : name
-
-    console.log('hellooo')
 
     return (
       <Fragment>

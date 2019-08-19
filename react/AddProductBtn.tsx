@@ -1,12 +1,6 @@
 import React, { Component, ReactNode } from 'react'
 import classNames from 'classnames'
-import {
-  compose,
-  withApollo,
-  WithApolloClient,
-  graphql,
-  ChildDataProps,
-} from 'react-apollo'
+import { compose, withApollo, WithApolloClient, graphql } from 'react-apollo'
 import { isMobile } from 'react-device-detect'
 import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { withRuntimeContext, withSession } from 'vtex.render-runtime'
@@ -24,7 +18,7 @@ import { addProductToDefaultList } from './GraphqlClient'
 interface AddProductBtnProps
   extends InjectedIntlProps,
     WithApolloClient<{}>,
-    ChildDataProps<{}, { appSettings: Settings }, {}> {
+    SettingsProps {
   icon?: ReactNode
   large?: boolean
   product: ListItem
@@ -117,7 +111,7 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
       showToast,
       intl,
       runtime: { navigate },
-      data: { appSettings },
+      settings: { appSettings },
     } = this.props
     const enableMultipleLists = appSettings && appSettings.enableMultipleLists
 

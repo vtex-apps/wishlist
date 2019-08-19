@@ -10,11 +10,9 @@ import {
 } from 'vtex.styleguide'
 import DialogMessage from './Dialog/DialogMessage'
 import withSettings from '../withSettings'
-import { compose, ChildDataProps } from 'react-apollo'
+import { compose } from 'react-apollo'
 
-interface ListItemProps
-  extends InjectedIntlProps,
-    ChildDataProps<{}, { appSettings: Settings }, {}> {
+interface ListItemProps extends InjectedIntlProps, SettingsProps {
   id: number
   list: List
   isDefault: boolean
@@ -90,7 +88,7 @@ class ListItem extends Component<ListItemProps, {}> {
       onClick,
       onDeleted,
       onSelected,
-      data: { appSettings },
+      settings: { appSettings },
     } = this.props
     const { showDeleteDialog } = this.state
     const defaultListName =
@@ -98,7 +96,7 @@ class ListItem extends Component<ListItemProps, {}> {
       formatMessage(messages.defaultListName)
 
     const className = classNames('w-100 flex flex-row items-center pv4', {
-      'bg-action-secondary': isDefault,
+      'bg-action-secondary': isDefault && !hideBorders,
       'bb b--muted-4': !hideBorders,
       'c-emphasis': hideBorders && isSelected,
       'c-muted-2': !isSelected || !hideBorders,
@@ -106,7 +104,7 @@ class ListItem extends Component<ListItemProps, {}> {
       ph4: !showMenuOptions,
     })
     const nameClassName = classNames('w-100 mh4 mv1', {
-      'flex justify-center pv2': isDefault,
+      'flex justify-center pv2': isDefault && !hideBorders,
     })
 
     return (
@@ -118,7 +116,7 @@ class ListItem extends Component<ListItemProps, {}> {
           onClick={() => onClick && onClick(id)}
           onKeyPress={this.handleKeyPress}
         >
-          {!isDefault && (
+          {(!isDefault || hideBorders) && (
             <div className="flex items-center ml2">
               {isPublic ? <IconVisibilityOn /> : <IconVisibilityOff />}
             </div>

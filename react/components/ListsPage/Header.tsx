@@ -7,12 +7,7 @@ import {
 } from 'react-intl'
 import { ActionMenu, IconOptionsDots } from 'vtex.styleguide'
 
-import {
-  compose,
-  withApollo,
-  WithApolloClient,
-  ChildDataProps,
-} from 'react-apollo'
+import { compose, withApollo, WithApolloClient } from 'react-apollo'
 
 import DialogMessage from '../Dialog/DialogMessage'
 import UpdateList from '../Form/UpdateList'
@@ -29,7 +24,7 @@ interface HeaderState {
 interface HeaderProps
   extends InjectedIntlProps,
     WithApolloClient<{}>,
-    ChildDataProps<{}, { appSettings: Settings }> {
+    SettingsProps {
   isDefault?: boolean
   list: List
   onListUpdated: (list: List) => void
@@ -78,7 +73,7 @@ class Header extends Component<HeaderProps, HeaderState> {
     const {
       list,
       list: { name, isEditable, items },
-      data: { appSettings },
+      settings: { appSettings },
       intl: { formatMessage },
     } = this.props
     const title = !isEditable
