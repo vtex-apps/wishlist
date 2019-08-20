@@ -32,7 +32,7 @@ To use this app, you need to add it in your `dependencies` in the `manifest.json
 
 ```json
   dependencies: {
-    "vtex.wishList": "0.x"
+    "vtex.wishlist": "0.x"
   }
 ```
 
