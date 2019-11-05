@@ -69,7 +69,7 @@ class ItemDetails extends Component<ItemDetailsProps, ItemDetailsState> {
     } = this.props
     const { isSelected, isLoading, isCopying } = this.state
     const deleteIcon = <IconDelete />
-    const className = classNames(styles.summaryContainer, 'h4 bb b--muted-4', {
+    const className = classNames(styles.summaryContainer, 'h4 b--muted-4', {
       [styles.summaryContainerLarge]: !isMobile,
     })
 

@@ -9,8 +9,10 @@ import {
   IconVisibilityOn,
 } from 'vtex.styleguide'
 import DialogMessage from './Dialog/DialogMessage'
+import withSettings from '../withSettings'
+import { compose } from 'react-apollo'
 
-interface ListItemProps extends InjectedIntlProps {
+interface ListItemProps extends InjectedIntlProps, SettingsProps {
   id: number
   list: List
   isDefault: boolean
@@ -41,6 +43,10 @@ const messages = defineMessages({
   messageDeleteConfirmation: {
     defaultMessage: '',
     id: 'store/wishlist-delete-confirmation-message',
+  },
+  defaultListName: {
+    id: 'store/wishlist-default-list-name',
+    defaultMessage: '',
   },
 })
 
@@ -78,14 +84,19 @@ class ListItem extends Component<ListItemProps, {}> {
       showMenuOptions,
       hideAction,
       hideBorders,
-      intl,
+      intl: { formatMessage },
       onClick,
       onDeleted,
       onSelected,
+      settings: { appSettings },
     } = this.props
     const { showDeleteDialog } = this.state
+    const defaultListName =
+      (appSettings && appSettings.defaultListName) ||
+      formatMessage(messages.defaultListName)
+
     const className = classNames('w-100 flex flex-row items-center pv4', {
-      'bg-action-secondary': isDefault,
+      'bg-action-secondary': isDefault && !hideBorders,
       'bb b--muted-4': !hideBorders,
       'c-emphasis': hideBorders && isSelected,
       'c-muted-2': !isSelected || !hideBorders,
@@ -93,8 +104,9 @@ class ListItem extends Component<ListItemProps, {}> {
       ph4: !showMenuOptions,
     })
     const nameClassName = classNames('w-100 mh4 mv1', {
-      'flex justify-center pv2': isDefault,
+      'flex justify-center pv2': isDefault && !hideBorders,
     })
+
     return (
       <div className={className}>
         <div
@@ -104,12 +116,14 @@ class ListItem extends Component<ListItemProps, {}> {
           onClick={() => onClick && onClick(id)}
           onKeyPress={this.handleKeyPress}
         >
-          {!isDefault && (
+          {(!isDefault || hideBorders) && (
             <div className="flex items-center ml2">
               {isPublic ? <IconVisibilityOn /> : <IconVisibilityOff />}
             </div>
           )}
-          <span className={nameClassName}>{name}</span>
+          <span className={nameClassName}>
+            {isDefault ? defaultListName : name}
+          </span>
         </div>
         {!hideAction &&
           (showMenuOptions
@@ -134,7 +148,7 @@ class ListItem extends Component<ListItemProps, {}> {
               ))}
         {showDeleteDialog && (
           <DialogMessage
-            message={intl.formatMessage(messages.messageDeleteConfirmation, {
+            message={formatMessage(messages.messageDeleteConfirmation, {
               listName: name,
             })}
             onClose={() => this.setState({ showDeleteDialog: false })}
@@ -166,4 +180,7 @@ class ListItem extends Component<ListItemProps, {}> {
   }
 }
 
-export default injectIntl<ListItemProps>(ListItem)
+export default compose(
+  injectIntl,
+  withSettings
+)(ListItem)

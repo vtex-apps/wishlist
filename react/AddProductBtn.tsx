@@ -11,10 +11,14 @@ import { session } from 'vtex.store-resources/Queries'
 import { getProfile } from './utils/profile'
 import AddToList from './components/AddToList/index'
 import MyLists from './MyLists'
+import withSettings from './withSettings'
 
 import { addProductToDefaultList } from './GraphqlClient'
 
-interface AddProductBtnProps extends InjectedIntlProps, WithApolloClient<{}> {
+interface AddProductBtnProps
+  extends InjectedIntlProps,
+    WithApolloClient<{}>,
+    SettingsProps {
   icon?: ReactNode
   large?: boolean
   product: ListItem
@@ -93,7 +97,10 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
           />
         )}
         {showLists && (
-          <MyLists onClose={() => this.setState({ showLists: false })} />
+          <MyLists
+            {...this.props}
+            onClose={() => this.setState({ showLists: false })}
+          />
         )}
       </div>
     )
@@ -104,10 +111,16 @@ class AddProductBtn extends Component<AddProductBtnProps, AddProductBtnState> {
       showToast,
       intl,
       runtime: { navigate },
+      settings: { appSettings },
     } = this.props
-    this.setState({ showContent: isMobile, isLoading: false })
+    const enableMultipleLists = appSettings && appSettings.enableMultipleLists
 
-    if (!isMobile) {
+    this.setState({
+      showContent: isMobile && enableMultipleLists,
+      isLoading: false,
+    })
+
+    if (!isMobile || !enableMultipleLists) {
       showToast({
         action: {
           label: intl.formatMessage(messages.seeLists),
@@ -199,6 +212,7 @@ export default withSession()(
     injectIntl,
     withToast,
     withApollo,
-    graphql(session, options)
+    graphql(session, options),
+    withSettings
   )(AddProductBtn)
 )

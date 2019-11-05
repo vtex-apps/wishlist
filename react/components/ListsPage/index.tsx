@@ -1,4 +1,4 @@
-import React, { Component, Fragment, ReactNode } from 'react'
+import React, { Component, Fragment } from 'react'
 import { withRuntimeContext, withSession } from 'vtex.render-runtime'
 import { Spinner } from 'vtex.styleguide'
 
@@ -8,6 +8,7 @@ import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
 import { session } from 'vtex.store-resources/Queries'
 import { getProfile } from '../../utils/profile'
 import { createList, getListsByOwner } from '../../GraphqlClient'
+import withSettings from '../../withSettings'
 
 import Content from './Content'
 import ListSelector from './ListSelector'
@@ -15,6 +16,7 @@ import Lists from '../Lists'
 
 import styles from '../../wishList.css'
 import { isMobile } from 'react-device-detect'
+import Loading from '../Loading'
 
 const ON_LISTS_PAGE_CLASS = 'vtex-lists-page'
 const messages = defineMessages({
@@ -23,14 +25,16 @@ const messages = defineMessages({
     id: 'store/wishlist-default-list-name',
   },
 })
-
 interface ListsPageState {
   lists: any
   selectedListId?: string
   isLoading?: boolean
 }
 
-interface ListsPageProps extends InjectedIntlProps, WithApolloClient<{}> {
+interface ListsPageProps
+  extends InjectedIntlProps,
+    WithApolloClient<{}>,
+    SettingsProps {
   runtime: Runtime
   session: Session
 }
@@ -74,16 +78,18 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     this.fetchLists(this.props)
   }
 
-  public render(): ReactNode {
+  public render() {
     const {
       session,
       runtime: { goBack },
+      settings: { appSettings },
     } = this.props
+    const enableMultipleLists = appSettings && appSettings.enableMultipleLists
 
     const profile = getProfile(session)
 
     if (!session || session.loading) {
-      return null
+      return <Loading />
     }
 
     if (session && !session.loading && !profile) {
@@ -96,6 +102,7 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
     return isMobile ? (
       lists.length ? (
         <Lists
+          enableMultipleLists={enableMultipleLists}
           loading={!session || session.loading || isLoading}
           lists={lists}
           onClose={goBack}
@@ -109,19 +116,22 @@ class ListsPage extends Component<ListsPageProps, ListsPageState> {
           </div>
         ) : (
           <Fragment>
-            <div className="h-100 mr6">
-              <ListSelector
-                {...this.state}
-                selectedListId={selectedListId}
-                onListCreated={this.handleListCreated}
-              />
-            </div>
-            <div className="w-100">
+            {enableMultipleLists && (
+              <div className="h-100 mr6">
+                <ListSelector
+                  {...this.state}
+                  selectedListId={selectedListId}
+                  onListCreated={this.handleListCreated}
+                />
+              </div>
+            )}
+            <div className="w-100 h-100">
               <Content
                 listId={selectedListId}
-                lists={lists}
+                lists={enableMultipleLists && lists}
                 onListUpdated={this.handleListUpdated}
                 onListDeleted={this.handleListDeleted}
+                enableCopy={enableMultipleLists}
               />
             </div>
           </Fragment>
@@ -211,6 +221,7 @@ export default withSession()(
     injectIntl,
     withRuntimeContext,
     withApollo,
-    graphql(session, options)
+    graphql(session, options),
+    withSettings
   )(ListsPage)
 )

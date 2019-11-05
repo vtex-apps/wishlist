@@ -1,10 +1,17 @@
 import React, { Component, Fragment, ReactNode } from 'react'
 import { ActionMenu, IconOptionsDots } from 'vtex.styleguide'
-
+import {
+  compose,
+  graphql,
+  WithApolloClient,
+  withApollo,
+  ChildDataProps,
+} from 'react-apollo'
 import { append, filter, map } from 'ramda'
-import { compose, withApollo, WithApolloClient } from 'react-apollo'
 import { InjectedIntlProps, injectIntl, defineMessages } from 'react-intl'
-import { deleteList, getListDetailed, updateList } from '../../GraphqlClient'
+import { withRuntimeContext } from 'vtex.render-runtime'
+
+import { deleteList, updateList } from '../../GraphqlClient'
 import DialogMessage from '../Dialog/DialogMessage'
 import UpdateList from '../Form/UpdateList'
 import Header from '../Header'
@@ -12,9 +19,11 @@ import renderLoading from '../Loading'
 import Content from './Content'
 import Footer from './Footer'
 
+import LIST_DETAILS_QUERY from '../../graphql/queries/getListDetails.gql'
+import Loading from '../Loading'
+import withSettings from '../../withSettings'
+
 interface ListDetailState {
-  list: List
-  isLoading: boolean
   isAddingToCart?: boolean
   selectedItems: ListItemWithProduct[]
   showDeleteConfirmation?: boolean
@@ -23,10 +32,13 @@ interface ListDetailState {
 
 interface ListDetailProps
   extends InjectedIntlProps,
-    WithApolloClient<ResponseList> {
+    WithApolloClient<{}>,
+    ChildDataProps<{}, { list: List }, {}>,
+    SettingsProps {
   listId: string
   onClose: (lists?: List[]) => void
   onDeleted?: (id: string) => void
+  runtime: Runtime
 }
 
 const messages = defineMessages({
@@ -42,44 +54,28 @@ const messages = defineMessages({
     defaultMessage: '',
     id: 'store/wishlist-delete-confirmation-message',
   },
+  defaultListName: {
+    id: 'store/wishlist-default-list-name',
+    defaultMessage: '',
+  },
 })
 
 class ListDetail extends Component<ListDetailProps, ListDetailState> {
   public state: ListDetailState = {
-    list: {},
-    isLoading: true,
     selectedItems: [],
-  }
-  private isComponentMounted: boolean = false
-
-  public componentDidMount(): void {
-    const { listId, client } = this.props
-    this.isComponentMounted = true
-    getListDetailed(client, listId)
-      .then((response: ResponseList) => {
-        if (this.isComponentMounted && response.data.list) {
-          this.setState({ list: response.data.list, isLoading: false })
-        }
-        return response
-      })
-      .catch((err: {}) => console.error(err))
-  }
-
-  public componentWillUnmount() {
-    this.isComponentMounted = false
   }
 
   public render(): ReactNode {
+    const { showDeleteConfirmation, showUpdateList } = this.state
     const {
-      list,
-      isLoading,
-      showDeleteConfirmation,
-      showUpdateList,
-    } = this.state
-    const { intl, listId } = this.props
-    return (
+      intl,
+      listId,
+      data: { loading, list },
+    } = this.props
+
+    return list ? (
       <div className="fixed top-0 left-0 vw-100 vh-100 flex flex-column z-4 bg-base">
-        {isLoading ? renderLoading() : this.renderContent()}
+        {loading ? renderLoading() : this.renderContent()}
         {showDeleteConfirmation && (
           <DialogMessage
             message={intl.formatMessage(messages.messageDeleteConfirmation, {
@@ -99,12 +95,17 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
           </div>
         )}
       </div>
-    )
+    ) : null
   }
 
   private renderContent = (): ReactNode => {
-    const { list, selectedItems, isLoading } = this.state
-
+    const { selectedItems } = this.state
+    const {
+      data: { loading, list },
+      onClose,
+      intl: { formatMessage },
+      settings: { appSettings },
+    } = this.props
     const options = [
       {
         onClick: () => this.setState({ showUpdateList: true }),
@@ -116,10 +117,24 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
       },
     ]
 
+    if (loading || !list) {
+      return <Loading />
+    }
+    const { isEditable, name } = list
+
+    const title = !isEditable
+      ? (appSettings && appSettings.defaultListName) ||
+        formatMessage(messages.defaultListName)
+      : name
+
     return (
       <Fragment>
-        <Header title={list.name} onClose={this.handleOnClose} showIconBack>
-          {!isLoading && list.isEditable && (
+        <Header
+          title={title}
+          onClose={this.handleOnClose}
+          showIconBack={!!onClose}
+        >
+          {!loading && list.isEditable && (
             <ActionMenu
               options={options}
               hideCaretIcon
@@ -165,40 +180,44 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
     quantity,
   }: ListItem): ListItem => ({ id, productId, skuId, quantity })
 
-  private handleItemRemove = (itemId: string): void => {
-    const { client, listId } = this.props
-    const { list, selectedItems } = this.state
-
-    const listUpdated = {
-      ...list,
-      items: filter(({ id }: ListItem) => id !== itemId, list.items || []),
-    }
-    const itemsUpdated = map(
-      item => this.itemWithoutProduct(item),
-      listUpdated.items
-    )
-
-    updateList(client, listId, { ...list, items: itemsUpdated }).then(() => {
-      if (this.isComponentMounted) {
-        this.setState({
-          list: listUpdated,
-          selectedItems: filter(
-            ({ itemId: id }) => id !== itemId,
-            selectedItems
-          ),
-        })
+  private handleItemRemove = async (itemId: string): Promise<void> => {
+    const {
+      client,
+      listId,
+      data: { list, refetch },
+    } = this.props
+    const { selectedItems } = this.state
+    if (list) {
+      const listUpdated = {
+        ...list,
+        items: filter(({ id }: ListItem) => id !== itemId, list.items || []),
       }
-    })
+      const itemsUpdated = map(
+        item => this.itemWithoutProduct(item),
+        listUpdated.items
+      )
+
+      await updateList(client, listId, { ...list, items: itemsUpdated })
+      refetch({ id: listId })
+      this.setState({
+        selectedItems: filter(({ itemId: id }) => id !== itemId, selectedItems),
+      })
+    }
   }
 
-  private handleFinishUpdate = (list: List): void => {
-    this.setState({ list, showUpdateList: false })
+  private handleFinishUpdate = (): void => {
+    this.setState({ showUpdateList: false })
   }
 
   private handleOnClose = (): void => {
-    const { list } = this.state
-    const { onClose } = this.props
-    if (list) {
+    const {
+      onClose,
+      data: { list },
+      runtime: { goBack },
+    } = this.props
+    if (!onClose) {
+      goBack()
+    } else if (list) {
       const currentList: List = {
         ...list,
         items: map(item => this.itemWithoutProduct(item), list.items || []),
@@ -220,7 +239,19 @@ class ListDetail extends Component<ListDetailProps, ListDetailState> {
   }
 }
 
+const withQuery = graphql(LIST_DETAILS_QUERY, {
+  options: (props: ListDetailProps) => ({
+    fetchPolicy: 'network-only',
+    variables: {
+      id: props.listId,
+    },
+  }),
+})
+
 export default compose(
   withApollo,
-  injectIntl
+  withQuery,
+  withSettings,
+  injectIntl,
+  withRuntimeContext
 )(ListDetail)

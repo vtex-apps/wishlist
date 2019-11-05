@@ -7,6 +7,12 @@
 
 ## [Unreleased]
 
+### Added
+
+- Modules typings.
+
+- `appSettings` to enable custom the list's default name and behavior to enable multiples lists or not.
+
 ## [0.2.0] - 2019-07-18
 ### Changed
 - Make it possible to add products to lists only if the user is logged in.

@@ -119,3 +119,12 @@ interface Session {
   loading: boolean
   getSession: GetSession
 }
+
+interface Settings {
+  enableMultipleLists: boolean
+  defaultListName: string
+}
+
+interface SettingsProps {
+  settings: NamedProps<{ appSettings: Settings }, {}>
+}

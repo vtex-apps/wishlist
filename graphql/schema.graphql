@@ -1,0 +1,8 @@
+type Query {
+  appSettings: Settings @cacheControl(scope: PUBLIC, maxAge: MEDIUM)
+}
+
+type Settings {
+  enableMultipleLists: Boolean
+  defaultListName: String
+}
