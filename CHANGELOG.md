@@ -9,6 +9,9 @@
 ### Added
 - Deprecation notice
 
+### Changed
+- `getList` query to `getListByOwner` on the getListByOwner file.
+
 ## [0.3.0] - 2019-11-05
 
 ### Added
