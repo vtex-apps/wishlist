@@ -1,4 +1,4 @@
-query getList($owner: ID!) {
+query getListByOwner($owner: ID!) {
   listsByOwner(owner: $owner) @context(provider: "vtex.store-graphql") {
     id
     name

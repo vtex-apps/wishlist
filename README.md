@@ -1,4 +1,7 @@
-# VTEX Wishlist app
+# Deprecated - VTEX Wishlist app
+
+:warning: This app is no longer maintained and shouldn't be used by any store.
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
 
 ## Description
